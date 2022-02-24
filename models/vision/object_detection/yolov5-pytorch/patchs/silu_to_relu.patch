@@ -1,0 +1,35 @@
+diff --git a/models/common.py b/models/common.py
+index 184c19e..fc1d34c 100644
+--- a/models/common.py
++++ b/models/common.py
+@@ -40,7 +40,7 @@ class Conv(nn.Module):
+         super().__init__()
+         self.conv = nn.Conv2d(c1, c2, k, s, autopad(k, p), groups=g, bias=False)
+         self.bn = nn.BatchNorm2d(c2)
+-        self.act = nn.SiLU() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())
++        self.act = nn.ReLU() if act is True else (act if isinstance(act, nn.Module) else nn.Identity())
+ 
+     def forward(self, x):
+         return self.act(self.bn(self.conv(x)))
+@@ -114,7 +114,7 @@ class BottleneckCSP(nn.Module):
+         self.cv3 = nn.Conv2d(c_, c_, 1, 1, bias=False)
+         self.cv4 = Conv(2 * c_, c2, 1, 1)
+         self.bn = nn.BatchNorm2d(2 * c_)  # applied to cat(cv2, cv3)
+-        self.act = nn.SiLU()
++        self.act = nn.ReLU()
+         self.m = nn.Sequential(*(Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)))
+ 
+     def forward(self, x):
+diff --git a/models/experimental.py b/models/experimental.py
+index 463e551..98817d0 100644
+--- a/models/experimental.py
++++ b/models/experimental.py
+@@ -66,7 +66,7 @@ class MixConv2d(nn.Module):
+         self.m = nn.ModuleList(
+             [nn.Conv2d(c1, int(c_), k, s, k // 2, groups=math.gcd(c1, int(c_)), bias=False) for k, c_ in zip(k, c_)])
+         self.bn = nn.BatchNorm2d(c2)
+-        self.act = nn.SiLU()
++        self.act = nn.ReLU()
+ 
+     def forward(self, x):
+         return self.act(self.bn(torch.cat([m(x) for m in self.m], 1)))

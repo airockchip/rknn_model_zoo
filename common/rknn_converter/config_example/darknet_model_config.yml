@@ -1,0 +1,21 @@
+model_name: yolov4
+RK_device_platform: RK1808
+model_framework: darknet
+cfg_file_path: ./yolov4.cfg
+weight_file_path: ./yolov4.weights
+quantize: True
+dataset: ./dataset.txt
+
+graph:
+  in_0:
+    shape: 3,608,608
+    mean_values: 0
+    std_values: 255
+    img_type: BGR
+
+configs:
+  quantized_dtype: asymmetric_quantized-u8
+  quantized_algorithm: normal
+  optimization_level: 3
+  do_sparse_network: True
+

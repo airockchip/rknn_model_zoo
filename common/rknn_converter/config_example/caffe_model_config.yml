@@ -1,0 +1,24 @@
+model_name: dpn68
+RK_device_platform: RK1808
+model_framework: caffe
+prototxt_file_path: ./deploy_dpn68-extra.prototxt
+caffemodel_file_path: ./dpn68-extra.caffemodel
+quantize: True
+pre_compile: online
+dataset: ./dataset.txt
+
+graph:
+  in_0:
+    name: data
+    shape: 3,224,224
+    mean_values: 123.675,116.28,103.53
+    std_values: 57.63
+    img_type: BGR
+  out_0:
+    name: prob
+
+configs:
+  quantized_dtype: asymmetric_quantized-u8
+  quantized_algorithm: normal
+  optimization_level: 3
+  do_sparse_network: True

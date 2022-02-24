@@ -1,0 +1,438 @@
+diff --git a/export.py b/export.py
+index 7feb525..4bb1ef2 100644
+--- a/export.py
++++ b/export.py
+@@ -42,6 +42,16 @@ import sys
+ import time
+ from pathlib import Path
+ 
++# activate rknn hack
++if len(sys.argv)>=3 and '--rknpu' in sys.argv:
++    _index = sys.argv.index('--rknpu')
++    if sys.argv[_index+1].upper() in ['RK1808', 'RV1109', 'RV1126','RK3399PRO']:
++        os.environ['RKNN_model_hack'] = 'npu_1'
++    elif sys.argv[_index+1].upper() in ['RK3566', 'RK3568', 'RK3588','RK3588S']:
++        os.environ['RKNN_model_hack'] = 'npu_2'
++    else:
++        assert False,"{} not recognized".format(sys.argv[_index+1])
++
+ import torch
+ import torch.nn as nn
+ from torch.utils.mobile_optimizer import optimize_for_mobile
+@@ -333,7 +341,8 @@ def run(data=ROOT / 'data/coco128.yaml',  # 'dataset.yaml path'
+         topk_per_class=100,  # TF.js NMS: topk per class to keep
+         topk_all=100,  # TF.js NMS: topk for all classes to keep
+         iou_thres=0.45,  # TF.js NMS: IoU threshold
+-        conf_thres=0.25  # TF.js NMS: confidence threshold
++        conf_thres=0.25,  # TF.js NMS: confidence threshold
++        rknn_friendly = False,
+         ):
+     t = time.time()
+     include = [x.lower() for x in include]
+@@ -365,6 +374,60 @@ def run(data=ROOT / 'data/coco128.yaml',  # 'dataset.yaml path'
+             m.onnx_dynamic = dynamic
+             # m.forward = m.forward_export  # assign forward (optional)
+ 
++        if os.getenv('RKNN_model_hack', '0') == 'npu_1':
++            from models.common import Focus
++            from models.common_rk_plug_in import surrogate_focus
++            if isinstance(model.model[0], Focus):
++                # For yolo v5 version
++                surrogate_focous = surrogate_focus(int(model.model[0].conv.conv.weight.shape[1]/4),
++                                                model.model[0].conv.conv.weight.shape[0],
++                                                k=tuple(model.model[0].conv.conv.weight.shape[2:4]),
++                                                s=model.model[0].conv.conv.stride,
++                                                p=model.model[0].conv.conv.padding,
++                                                g=model.model[0].conv.conv.groups,
++                                                act=True)
++                surrogate_focous.conv.conv.weight = model.model[0].conv.conv.weight
++                surrogate_focous.conv.conv.bias = model.model[0].conv.conv.bias
++                surrogate_focous.conv.act = model.model[0].conv.act
++                temp_i = model.model[0].i
++                temp_f = model.model[0].f
++
++                model.model[0] = surrogate_focous
++                model.model[0].i = temp_i
++                model.model[0].f = temp_f
++                model.model[0].eval()
++            elif isinstance(model.model[0], Conv) and model.model[0].conv.kernel_size == (6, 6):
++                # For yolo v6 version
++                surrogate_focous = surrogate_focus(model.model[0].conv.weight.shape[1],
++                                                model.model[0].conv.weight.shape[0],
++                                                k=(3,3), # 6/2, 6/2
++                                                s=1,
++                                                p=(1,1), # 2/2, 2/2
++                                                g=model.model[0].conv.groups,
++                                                act=hasattr(model.model[0], 'act'))
++                surrogate_focous.conv.conv.weight[:,:3,:,:] = model.model[0].conv.weight[:,:,::2,::2]
++                surrogate_focous.conv.conv.weight[:,3:6,:,:] = model.model[0].conv.weight[:,:,1::2,::2]
++                surrogate_focous.conv.conv.weight[:,6:9,:,:] = model.model[0].conv.weight[:,:,::2,1::2]
++                surrogate_focous.conv.conv.weight[:,9:,:,:] = model.model[0].conv.weight[:,:,1::2,1::2]
++                surrogate_focous.conv.conv.bias = model.model[0].conv.bias
++                surrogate_focous.conv.act = model.model[0].act
++                temp_i = model.model[0].i
++                temp_f = model.model[0].f
++
++                model.model[0] = surrogate_focous
++                model.model[0].i = temp_i
++                model.model[0].f = temp_f
++                model.model[0].eval()
++
++    # save anchors
++    if isinstance(model.model[-1], Detect):
++        print('---> save anchors for RKNN')
++        RK_anchors = model.model[-1].stride.reshape(3,1).repeat(1,3).reshape(-1,1)* model.model[-1].anchors.reshape(9,2)
++        RK_anchors = RK_anchors.tolist()
++        print(RK_anchors)
++        with open(file.with_suffix('.anchors.txt'), 'w') as anf:
++            anf.write(str(RK_anchors))
++
+     for _ in range(2):
+         y = model(im)  # dry runs
+     LOGGER.info(f"\n{colorstr('PyTorch:')} starting from {file} ({file_size(file):.1f} MB)")
+@@ -413,7 +476,7 @@ def parse_opt():
+     parser.add_argument('--int8', action='store_true', help='CoreML/TF INT8 quantization')
+     parser.add_argument('--dynamic', action='store_true', help='ONNX/TF: dynamic axes')
+     parser.add_argument('--simplify', action='store_true', help='ONNX: simplify model')
+-    parser.add_argument('--opset', type=int, default=14, help='ONNX: opset version')
++    parser.add_argument('--opset', type=int, default=12, help='ONNX: opset version')
+     parser.add_argument('--verbose', action='store_true', help='TensorRT: verbose log')
+     parser.add_argument('--workspace', type=int, default=4, help='TensorRT: workspace size (GB)')
+     parser.add_argument('--nms', action='store_true', help='TF: add NMS to model')
+@@ -423,8 +486,9 @@ def parse_opt():
+     parser.add_argument('--iou-thres', type=float, default=0.45, help='TF.js NMS: IoU threshold')
+     parser.add_argument('--conf-thres', type=float, default=0.25, help='TF.js NMS: confidence threshold')
+     parser.add_argument('--include', nargs='+',
+-                        default=['torchscript', 'onnx'],
++                        default=['torchscript'],
+                         help='available formats are (torchscript, onnx, engine, coreml, saved_model, pb, tflite, tfjs)')
++    parser.add_argument('--rknpu', default=None, help='RKNN npu platform')
+     opt = parser.parse_args()
+     print_args(FILE.stem, opt)
+     return opt
+@@ -437,4 +501,5 @@ def main(opt):
+ 
+ if __name__ == "__main__":
+     opt = parse_opt()
++    del opt.rknpu
+     main(opt)
+diff --git a/models/common.py b/models/common.py
+index c2edff4..184c19e 100644
+--- a/models/common.py
++++ b/models/common.py
+@@ -2,7 +2,7 @@
+ """
+ Common modules
+ """
+-
++import os
+ import json
+ import math
+ import platform
+@@ -161,39 +161,91 @@ class C3Ghost(C3):
+         c_ = int(c2 * e)  # hidden channels
+         self.m = nn.Sequential(*(GhostBottleneck(c_, c_) for _ in range(n)))
+ 
+-
+-class SPP(nn.Module):
+-    # Spatial Pyramid Pooling (SPP) layer https://arxiv.org/abs/1406.4729
+-    def __init__(self, c1, c2, k=(5, 9, 13)):
+-        super().__init__()
+-        c_ = c1 // 2  # hidden channels
+-        self.cv1 = Conv(c1, c_, 1, 1)
+-        self.cv2 = Conv(c_ * (len(k) + 1), c2, 1, 1)
+-        self.m = nn.ModuleList([nn.MaxPool2d(kernel_size=x, stride=1, padding=x // 2) for x in k])
+-
+-    def forward(self, x):
+-        x = self.cv1(x)
+-        with warnings.catch_warnings():
+-            warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
+-            return self.cv2(torch.cat([x] + [m(x) for m in self.m], 1))
+-
+-
+-class SPPF(nn.Module):
+-    # Spatial Pyramid Pooling - Fast (SPPF) layer for YOLOv5 by Glenn Jocher
+-    def __init__(self, c1, c2, k=5):  # equivalent to SPP(k=(5, 9, 13))
+-        super().__init__()
+-        c_ = c1 // 2  # hidden channels
+-        self.cv1 = Conv(c1, c_, 1, 1)
+-        self.cv2 = Conv(c_ * 4, c2, 1, 1)
+-        self.m = nn.MaxPool2d(kernel_size=k, stride=1, padding=k // 2)
+-
+-    def forward(self, x):
+-        x = self.cv1(x)
+-        with warnings.catch_warnings():
+-            warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
+-            y1 = self.m(x)
+-            y2 = self.m(y1)
+-            return self.cv2(torch.cat([x, y1, y2, self.m(y2)], 1))
++if os.getenv('RKNN_model_hack', '0') == '0':
++    class SPP(nn.Module):
++        # Spatial Pyramid Pooling (SPP) layer https://arxiv.org/abs/1406.4729
++        def __init__(self, c1, c2, k=(5, 9, 13)):
++            super().__init__()
++            c_ = c1 // 2  # hidden channels
++            self.cv1 = Conv(c1, c_, 1, 1)
++            self.cv2 = Conv(c_ * (len(k) + 1), c2, 1, 1)
++            self.m = nn.ModuleList([nn.MaxPool2d(kernel_size=x, stride=1, padding=x // 2) for x in k])
++
++        def forward(self, x):
++            x = self.cv1(x)
++            with warnings.catch_warnings():
++                warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
++                return self.cv2(torch.cat([x] + [m(x) for m in self.m], 1))
++elif os.getenv('RKNN_model_hack', '0') in ['npu_1', 'npu_2']:
++    # TODO remove this hack when rknn-toolkit1/2 add this optimize rules
++    class SPP(nn.Module):
++        def __init__(self, c1, c2, k=(5, 9, 13)):
++            super().__init__()
++            c_ = c1 // 2  # hidden channels
++            self.cv1 = Conv(c1, c_, 1, 1)
++            self.cv2 = Conv(c_ * (len(k) + 1), c2, 1, 1)
++            self.m = nn.ModuleList([nn.MaxPool2d(kernel_size=x, stride=1, padding=x // 2) for x in k])
++            for value in k:
++                assert (value%2 == 1) and (value!= 1), "value in [{}] only support odd number for RKNN model hack"
++
++        def forward(self, x):
++            x = self.cv1(x)
++            with warnings.catch_warnings():
++                warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
++                y = [x]
++                for maxpool in self.m:
++                    kernel_size = maxpool.kernel_size
++                    m = x
++                    for i in range(math.floor(kernel_size/2)):
++                        m = torch.nn.functional.max_pool2d(m, 3, 1, 1)
++                    y = [*y, m]
++            return self.cv2(torch.cat(y, 1))
++
++if os.getenv('RKNN_model_hack', '0') in ['0','npu_2']:
++    class SPPF(nn.Module):
++        # Spatial Pyramid Pooling - Fast (SPPF) layer for YOLOv5 by Glenn Jocher
++        def __init__(self, c1, c2, k=5):  # equivalent to SPP(k=(5, 9, 13))
++            super().__init__()
++            c_ = c1 // 2  # hidden channels
++            self.cv1 = Conv(c1, c_, 1, 1)
++            self.cv2 = Conv(c_ * 4, c2, 1, 1)
++            self.m = nn.MaxPool2d(kernel_size=k, stride=1, padding=k // 2)
++
++        def forward(self, x):
++            x = self.cv1(x)
++            with warnings.catch_warnings():
++                warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
++                y1 = self.m(x)
++                y2 = self.m(y1)
++                return self.cv2(torch.cat([x, y1, y2, self.m(y2)], 1))
++elif os.getenv('RKNN_model_hack', '0') == 'npu_1':
++    class SPPF(nn.Module):
++        # Spatial Pyramid Pooling - Fast (SPPF) layer for YOLOv5 by Glenn Jocher
++        def __init__(self, c1, c2, k=5):  # equivalent to SPP(k=(5, 9, 13))
++            super().__init__()
++            c_ = c1 // 2  # hidden channels
++            self.cv1 = Conv(c1, c_, 1, 1)
++            self.cv2 = Conv(c_ * 4, c2, 1, 1)
++            self.m = nn.MaxPool2d(kernel_size=k, stride=1, padding=k // 2)
++
++        def forward(self, x):
++            x = self.cv1(x)
++            with warnings.catch_warnings():
++                warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
++                y1 = self.m(x)
++                y2 = self.m(y1)
++
++            with warnings.catch_warnings():
++                warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
++                y = [x]
++                kernel_size = self.m.kernel_size
++                _3x3_stack = math.floor(kernel_size/2)
++                for i in range(3):
++                    m = y[-1]
++                    for _ in range(_3x3_stack):
++                        m = torch.nn.functional.max_pool2d(m, 3, 1, 1)
++                    y = [*y, m]
++            return self.cv2(torch.cat(y, 1))
+ 
+ 
+ class Focus(nn.Module):
+@@ -287,14 +339,15 @@ class DetectMultiBackend(nn.Module):
+         #   ONNX Runtime:           *.onnx
+         #   OpenCV DNN:             *.onnx with dnn=True
+         #   TensorRT:               *.engine
++        #   RKNN:                   *.rknn
+         from models.experimental import attempt_download, attempt_load  # scoped to avoid circular import
+ 
+         super().__init__()
+         w = str(weights[0] if isinstance(weights, list) else weights)
+         suffix = Path(w).suffix.lower()
+-        suffixes = ['.pt', '.torchscript', '.onnx', '.engine', '.tflite', '.pb', '', '.mlmodel']
++        suffixes = ['.pt', '.torchscript', '.onnx', '.engine', '.tflite', '.pb', '', '.mlmodel', '.rknn']
+         check_suffix(w, suffixes)  # check weights have acceptable suffix
+-        pt, jit, onnx, engine, tflite, pb, saved_model, coreml = (suffix == x for x in suffixes)  # backend booleans
++        pt, jit, onnx, engine, tflite, pb, saved_model, coreml, rknn_model = (suffix == x for x in suffixes)  # backend booleans
+         stride, names = 64, [f'class{i}' for i in range(1000)]  # assign defaults
+         attempt_download(w)  # download if not local
+ 
+@@ -342,6 +395,9 @@ class DetectMultiBackend(nn.Module):
+             binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
+             context = model.create_execution_context()
+             batch_size = bindings['images'].shape[0]
++        elif rknn_model:
++            # TODO if post-process in model, then we can add code here.
++            pass
+         else:  # TensorFlow model (TFLite, pb, saved_model)
+             if pb:  # https://www.tensorflow.org/guide/migrate#a_graphpb_or_graphpbtxt
+                 LOGGER.info(f'Loading {w} for TensorFlow *.pb inference...')
+@@ -402,6 +458,9 @@ class DetectMultiBackend(nn.Module):
+             self.binding_addrs['images'] = int(im.data_ptr())
+             self.context.execute_v2(list(self.binding_addrs.values()))
+             y = self.bindings['output'].data
++        elif self.rknn_model:
++            # TODO if post-process in model, then we can add code here.
++            pass
+         else:  # TensorFlow model (TFLite, pb, saved_model)
+             im = im.permute(0, 2, 3, 1).cpu().numpy()  # torch BCHW to numpy BHWC shape(1,320,192,3)
+             if self.pb:
+diff --git a/models/common_rk_plug_in.py b/models/common_rk_plug_in.py
+new file mode 100644
+index 0000000..eda6f76
+--- /dev/null
++++ b/models/common_rk_plug_in.py
+@@ -0,0 +1,103 @@
++# This file contains modules common to various models
++
++import torch
++import torch.nn as nn
++from models.common import Conv
++
++
++class surrogate_focus(nn.Module):
++    # surrogate_focus wh information into c-space
++    def __init__(self, c1, c2, k=1, s=1, p=None, g=1, act=True):  # ch_in, ch_out, kernel, stride, padding, groups
++        super(surrogate_focus, self).__init__()
++        self.conv = Conv(c1 * 4, c2, k, s, p, g, act)
++
++        with torch.no_grad():
++            self.conv1 = nn.Conv2d(3, 3, (2, 2), groups=3, bias=False, stride=(2, 2))
++            self.conv1.weight[:, :, 0, 0] = 1
++            self.conv1.weight[:, :, 0, 1] = 0
++            self.conv1.weight[:, :, 1, 0] = 0
++            self.conv1.weight[:, :, 1, 1] = 0
++
++            self.conv2 = nn.Conv2d(3, 3, (2, 2), groups=3, bias=False, stride=(2, 2))
++            self.conv2.weight[:, :, 0, 0] = 0
++            self.conv2.weight[:, :, 0, 1] = 0
++            self.conv2.weight[:, :, 1, 0] = 1
++            self.conv2.weight[:, :, 1, 1] = 0
++
++            self.conv3 = nn.Conv2d(3, 3, (2, 2), groups=3, bias=False, stride=(2, 2))
++            self.conv3.weight[:, :, 0, 0] = 0
++            self.conv3.weight[:, :, 0, 1] = 1
++            self.conv3.weight[:, :, 1, 0] = 0
++            self.conv3.weight[:, :, 1, 1] = 0
++
++            self.conv4 = nn.Conv2d(3, 3, (2, 2), groups=3, bias=False, stride=(2, 2))
++            self.conv4.weight[:, :, 0, 0] = 0
++            self.conv4.weight[:, :, 0, 1] = 0
++            self.conv4.weight[:, :, 1, 0] = 0
++            self.conv4.weight[:, :, 1, 1] = 1
++
++    def forward(self, x):  # x(b,c,w,h) -> y(b,4c,w/2,h/2)
++        return self.conv(torch.cat([self.conv1(x), self.conv2(x), self.conv3(x), self.conv4(x)], 1))
++
++
++class preprocess_conv_layer(nn.Module):
++    """docstring for preprocess_conv_layer"""
++    #   input_module 为输入模型，即为想要导出模型
++    #   mean_value 的值可以是 [m1, m2, m3] 或 常数m
++    #   std_value 的值可以是 [s1, s2, s3] 或 常数s
++    #   BGR2RGB的操作默认为首先执行，既替代的原有操作顺序为
++    #       BGR2RGB -> minus mean -> minus std (与rknn config 设置保持一致) -> nhwc2nchw
++    #
++    #   使用示例-伪代码：
++    #       from add_preprocess_conv_layer import preprocess_conv_layer
++    #       model_A = create_model()
++    #       model_output = preprocess_co_nv_layer(model_A, mean_value, std_value, BGR2RGB)
++    #       onnx_export(model_output)
++    #
++    #   量化时：
++    #       rknn.config的中 channel_mean_value 、reorder_channel 均不赋值。
++    #
++    #   部署代码：
++    #       rknn_input 的属性
++    #           pass_through = 1
++    #
++    #   另外：
++    #       由于加入permute操作，c端输入为opencv mat(hwc格式)即可，无需在外部将hwc改成chw格式。
++    #
++
++    def __init__(self, input_module, mean_value, std_value, BGR2RGB=False):
++        super(preprocess_conv_layer, self).__init__()
++        if isinstance(mean_value, int):
++            mean_value = [mean_value for i in range(3)]
++        if isinstance(std_value, int):
++            std_value = [std_value for i in range(3)]
++
++        assert len(mean_value) <= 3, 'mean_value should be int, or list with 3 element'
++        assert len(std_value) <= 3, 'std_value should be int, or list with 3 element'
++
++        self.input_module = input_module
++
++        with torch.no_grad():
++            self.conv1 = nn.Conv2d(3, 3, (1, 1), groups=1, bias=True, stride=(1, 1))
++
++            if BGR2RGB is False:
++                self.conv1.weight[:, :, :, :] = 0
++                self.conv1.weight[0, 0, :, :] = 1/std_value[0]
++                self.conv1.weight[1, 1, :, :] = 1/std_value[1]
++                self.conv1.weight[2, 2, :, :] = 1/std_value[2]
++            elif BGR2RGB is True:
++                self.conv1.weight[:, :, :, :] = 0
++                self.conv1.weight[0, 2, :, :] = 1/std_value[0]
++                self.conv1.weight[1, 1, :, :] = 1/std_value[1]
++                self.conv1.weight[2, 0, :, :] = 1/std_value[2]
++
++            self.conv1.bias[0] = -mean_value[0]/std_value[0]
++            self.conv1.bias[1] = -mean_value[1]/std_value[1]
++            self.conv1.bias[2] = -mean_value[2]/std_value[2]
++
++        self.conv1.eval()
++
++    def forward(self, x):
++        x = x.permute(0, 3, 1, 2)  # NHWC -> NCHW, apply for rknn_pass_through
++        x = self.conv1(x)
++        return self.input_module(x)
+\ No newline at end of file
+diff --git a/models/yolo.py b/models/yolo.py
+index db3d711..6227f4b 100644
+--- a/models/yolo.py
++++ b/models/yolo.py
+@@ -5,7 +5,7 @@ YOLO-specific modules
+ Usage:
+     $ python path/to/models/yolo.py --cfg yolov5s.yaml
+ """
+-
++import os
+ import argparse
+ import sys
+ from copy import deepcopy
+@@ -50,6 +50,10 @@ class Detect(nn.Module):
+         z = []  # inference output
+         for i in range(self.nl):
+             x[i] = self.m[i](x[i])  # conv
++
++            if os.getenv('RKNN_model_hack', '0') != '0':
++                continue
++
+             bs, _, ny, nx = x[i].shape  # x(bs,255,20,20) to x(bs,3,20,20,85)
+             x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
+ 
+@@ -67,6 +71,9 @@ class Detect(nn.Module):
+                     y = torch.cat((xy, wh, y[..., 4:]), -1)
+                 z.append(y.view(bs, -1, self.no))
+ 
++        if os.getenv('RKNN_model_hack', '0') != '0':
++                return x
++
+         return x if self.training else (torch.cat(z, 1), x)
+ 
+     def _make_grid(self, nx=20, ny=20, i=0):

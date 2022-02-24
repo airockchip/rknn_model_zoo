@@ -1,0 +1,19 @@
+model_name: mnasnet1_0
+RK_device_platform: RK1808
+model_framework: pytorch
+model_file_path: ./mnasnet1_0.pt
+quantize: True
+dataset: ./dataset.txt
+
+graph:
+  in_0:
+    shape: 3,224,224
+    mean_values: 123.675,116.28,103.53
+    std_values: 58.395
+    img_type: BGR
+
+configs:
+  quantized_dtype: asymmetric_quantized-u8
+  quantized_algorithm: normal
+  optimization_level: 3
+  do_sparse_network: True
