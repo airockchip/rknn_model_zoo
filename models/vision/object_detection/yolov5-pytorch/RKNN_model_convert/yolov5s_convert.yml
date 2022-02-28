@@ -19,3 +19,4 @@ configs:
   quantized_algorithm: normal
   optimization_level: 3
   output_optimize: 1
+  do_sparse_network: False
