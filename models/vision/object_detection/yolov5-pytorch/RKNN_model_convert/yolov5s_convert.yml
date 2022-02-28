@@ -1,7 +1,7 @@
 model_name: yolov5
-model_framework: pytorch
-model_file_path: ../yolov5/yolov5s.torchscript
-RK_device_platform: RK1808
+model_framework: onnx
+model_file_path: ../yolov5/yolov5s.onnx
+RK_device_platform: RV1109
 #RK_device_id: simulator
 dataset: ../../../../../datasets/COCO/coco_dataset_500.txt
 quantize: True
