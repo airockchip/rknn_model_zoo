@@ -236,8 +236,12 @@ if __name__ == '__main__':
         platform = 'rknn'
         from common.framework_excuter.rknn_excute import RKNN_model_container 
         model = RKNN_model_container(args.model_path, args.target, args.device_id)
+    elif model_path.endswith('onnx'):
+        platform = 'onnx'
+        from common.framework_excuter.onnx_excute import ONNX_model_container
+        model = ONNX_model_container(args.model_path)
     else:
-        assert False, "{} is not rknn/pytorch model".format(model_path)
+        assert False, "{} is not rknn/pytorch/onnx model".format(model_path)
     print('Model-{} is {} model, starting val'.format(model_path, platform))
 
     img_list = os.listdir(args.img_folder)
@@ -253,7 +257,7 @@ if __name__ == '__main__':
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # preprocee if not rknn model
-        if platform == 'pytorch':
+        if platform in ['pytorch', 'onnx']:
             input_data = img.transpose((2,0,1))
             input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
             input_data = input_data/255
