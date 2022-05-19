@@ -4,7 +4,7 @@ from ruamel import yaml
 from collections import OrderedDict
 
 # devices_type
-NPU_VERSION_1_DEVICES = ['RK3399pro', 'RK1808', 'RV1109', 'RV1126']
+NPU_VERSION_1_DEVICES = ['RK3399PRO', 'RK1808', 'RV1109', 'RV1126']
 NPU_VERSION_2_DEVICES = ['RK3566', 'RK3568', 'RK3588']
 
 def get_example_img_from_dataset(dataset_path, quantize_status):
