@@ -84,7 +84,7 @@ class RKNN_config_container:
         elif self.NPU_VERSION == 2:
             rknn_config['quantized_method'] = 'channel'
             rknn_config['custom_string'] = None
-            rknn_config['output_tensor_type'] = None
+            # rknn_config['output_tensor_type'] = None
 
         self.convert_config_dict['config'] = rknn_config
 
