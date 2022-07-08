@@ -4,11 +4,12 @@ import onnxruntime as rt
 
 class ONNX_model_container:
     def __init__(self, model_path) -> None:
-        self.sess = rt.InferenceSession(model_path)
+        self.model_path = model_path
+        self.sess = rt.InferenceSession(model_path, providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider'])
 
     def run(self, input_datas):
         if len(input_datas) < len(self.sess.get_inputs()):
-            assert False,'inputs_datas number not match onnx model{} input'.format(model_path)
+            assert False,'inputs_datas number not match onnx model{} input'.format(self.model_path)
         elif len(input_datas) > len(self.sess.get_inputs()):
             print('WARNING: input datas number large than onnx input node')
 
