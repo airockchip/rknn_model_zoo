@@ -212,6 +212,7 @@ def parse_opt():
     # basic params required= True, 
     parser.add_argument('--model_path', type=str, help='model path, could be .onnx or .rknn file')
     parser.add_argument('--img_save', action='store_true', default=False, help='draw the result and save')
+    parser.add_argument('--save_dir', type=str, default='./detect_result/', help='path for detected result to save')
     parser.add_argument('--imgsz', '--img', '--img_size', nargs='+', type=int, default=[640, 640], help='inference size h,w')
 
     # data params
@@ -232,8 +233,9 @@ def detect(args):
     is_url = args.source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
     webcam = args.source.isnumeric() or (is_url and not is_file)
 
-    # todo
     # save_dir
+    if not os.path.exists(args.save_dir):
+        os.mkdir(args.save_dir)
 
     # todo
     # pt model.stride
@@ -261,11 +263,11 @@ def detect(args):
     # Dataloader
     if webcam:
         # LoadWebcam
-        dataset = LoadWebcam(args.source, img_size=args.imgsz)
+        dataset = LoadWebcam(args.source, img_size=args.imgsz, save_dir=args.save_dir)
         # LoadStreams    
-        # dataset = LoadStreams(args.source, img_size=args.imgsz)
+        # dataset = LoadStreams(args.source, img_size=args.imgsz, save_dir=args.save_dir)
     else:
-        dataset = LoadImages(args.source, img_size=args.imgsz)
+        dataset = LoadImages(args.source, img_size=args.imgsz, save_dir=args.save_dir)
 
     # Run inference
     seen = 0
@@ -344,7 +346,7 @@ def detect(args):
                         img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
                         img = draw(img_p, boxes, scores, classes)
                         print(img.shape)
-                        cv2.imwrite("output.jpg", img)
+                        cv2.imwrite(args.save_dir + "output.jpg", img)
                     has_detect_num = 0
                     # has fire
                     ip = get_rtsp_ip(args.source)
@@ -363,7 +365,7 @@ def detect(args):
                 # img = draw(img_p, boxes, scores, classes)
                 # write the BGR frame
                 # if isinstance(dataset, LoadImages) and dataset.mode == "image":
-                #     cv2.imwrite("output.jpg", img)
+                #     cv2.imwrite(args.save_dir + "output.jpg", img)
                 # else:
                 #     dataset.save_video.write(img)
             else:

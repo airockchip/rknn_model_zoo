@@ -60,9 +60,10 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), scaleup=True):
 
 class LoadStreams:
     # YOLOv5 streamloader, i.e. `python detect.py --source 'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP streams`
-    def __init__(self, sources='streams.txt', img_size=640):
+    def __init__(self, sources='streams.txt', img_size=640, save_dir="./detect_result/"):
         self.mode = 'stream'
         self.img_size = img_size
+        self.save_dir = save_dir
 
         # todo 
         # .txt include mul rtsp url
@@ -99,7 +100,7 @@ class LoadStreams:
             else:
                 new_w, new_h = img_size[0], img_size[1]
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            self.save_video = cv2.VideoWriter("{0}{1}".format("output", str(i)+".mp4"), fourcc, self.fps[i], (new_w, new_h))
+            self.save_video = cv2.VideoWriter("{0}{1}{2}".format(self.save_dir, "output", str(i)+".mp4"), fourcc, self.fps[i], (new_w, new_h))
 
             _, self.imgs[i] = cap.read()  # guarantee first frame
             self.threads[i] = Thread(target=self.update, args=([i, cap, s]), daemon=True)
@@ -159,7 +160,7 @@ class LoadStreams:
 
 class LoadImages:
     # YOLOv5 image/video dataloader, i.e. `python detect.py --source image.jpg/vid.mp4`
-    def __init__(self, path, img_size=640):
+    def __init__(self, path, img_size=640, save_dir="./detect_result/"):
         p = str(Path(path).resolve())  # os-agnostic absolute path
         if '*' in p:
             files = sorted(glob.glob(p, recursive=True))  # glob
@@ -176,6 +177,7 @@ class LoadImages:
 
         self.img_size = img_size
         self.files = images + videos
+        self.save_dir = save_dir
         self.nf = ni + nv  # number of files
         self.video_flag = [False] * ni + [True] * nv
         self.mode = 'image'
@@ -240,7 +242,7 @@ class LoadImages:
         else:
             w, h = self.img_size[0], self.img_size[1]
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self.save_video = cv2.VideoWriter("{0}".format("output.mp4"), fourcc, self.fps, (w, h))
+        self.save_video = cv2.VideoWriter("{0}{1}".format(self.save_dir, "output.mp4"), fourcc, self.fps, (w, h))
 
 
     def __len__(self):
@@ -249,9 +251,10 @@ class LoadImages:
 
 class LoadWebcam: 
     # YOLOv5 local webcam dataloader, i.e. `python detect.py --source 0`
-    def __init__(self, source='0', img_size=640):
+    def __init__(self, source='0', img_size=640, save_dir="./detect_result/"):
         self.img_size = img_size
         self.source = source
+        self.save_dir = save_dir
         self.cap = cv2.VideoCapture(self.source)  # video capture object
         # self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)  # set buffer size
 
@@ -263,7 +266,7 @@ class LoadWebcam:
         else:
             w, h = self.img_size[0], self.img_size[1]
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self.save_video = cv2.VideoWriter("{0}".format("output.mp4"), fourcc, self.fps, (w, h))
+        self.save_video = cv2.VideoWriter("{0}{1}".format(self.save_dir, "output.mp4"), fourcc, self.fps, (w, h))
 
     def __iter__(self):
         self.count = -1
