@@ -13,19 +13,19 @@ class Letter_Box_Info():
         self.pad_color = pad_color
 
 
-def coco_eval_with_json(anno_json, pred_json):
-    from pycocotools.coco import COCO
-    from pycocotools.cocoeval import COCOeval
-    anno = COCO(anno_json)
-    pred = anno.loadRes(pred_json)
-    eval = COCOeval(anno, pred, 'bbox')
-    eval.evaluate()
-    eval.accumulate()
-    eval.summarize()
-    map, map50 = eval.stats[:2]  # update results (mAP@0.5:0.95, mAP@0.5)
+# def coco_eval_with_json(anno_json, pred_json):
+#     from pycocotools.coco import COCO
+#     from pycocotools.cocoeval import COCOeval
+#     anno = COCO(anno_json)
+#     pred = anno.loadRes(pred_json)
+#     eval = COCOeval(anno, pred, 'bbox')
+#     eval.evaluate()
+#     eval.accumulate()
+#     eval.summarize()
+#     map, map50 = eval.stats[:2]  # update results (mAP@0.5:0.95, mAP@0.5)
 
-    print('map  --> ', map)
-    print('map50--> ', map50)
+#     print('map  --> ', map)
+#     print('map50--> ', map50)
 
 class COCO_test_helper():
     def __init__(self, enable_letter_box = False) -> None:

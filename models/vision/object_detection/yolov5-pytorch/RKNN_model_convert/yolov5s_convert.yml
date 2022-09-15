@@ -1,17 +1,19 @@
-model_name: yolov5
+model_name: fire
 model_framework: onnx
-model_file_path: ../yolov5/yolov5s.onnx
-RK_device_platform: RV1109
-#RK_device_id: simulator
-dataset: ../../../../../datasets/COCO/coco_dataset_500.txt
+model_file_path: ./best.onnx
+RK_device_platform: RK3568
+RK_device_id: simulator
+dataset: ../../../../../datasets/fire/fire.txt
 quantize: True
+verbose_file: ./fire.log
 pre_compile: online
+
 
 graph:
   in_0:
     shape: 3,640,640
-    mean_values: 0
-    std_values: 255
+    mean_values: 110.8131,86.6802,71.8961
+    std_values: 76.8897,69.6669,68.0329
     img_type: RGB
 
 configs:

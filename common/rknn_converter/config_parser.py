@@ -108,6 +108,7 @@ class RKNN_config_container:
         self.convert_config_dict['dataset'] = self.project_config.get('dataset', None)
         if self.convert_config_dict['dataset'] is not None:
             self.convert_config_dict['dataset'] = os.path.join(model_path_dir, self.convert_config_dict['dataset'])
+        # 是否量化
         self.convert_config_dict['quantize'] = self.project_config.get('quantize', False)
 
         build_config = {}

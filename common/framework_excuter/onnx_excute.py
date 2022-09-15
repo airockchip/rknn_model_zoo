@@ -23,3 +23,6 @@ class ONNX_model_container:
         #forward model
         res = self.sess.run(output_list, input_dict)
         return res
+
+    def release(self):
+        pass

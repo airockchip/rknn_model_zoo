@@ -13,7 +13,7 @@ graph:
     shape: 3,224,224
     mean_values: 123.675,116.28,103.53
     std_values: 57.63
-    img_type: BGR
+    img_type: RGB
   out_0:
     name: prob
 

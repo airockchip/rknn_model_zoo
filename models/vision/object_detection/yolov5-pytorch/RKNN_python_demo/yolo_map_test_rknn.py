@@ -18,29 +18,11 @@ OBJ_THRESH = 0.1
 NMS_THRESH = 0.65
 IMG_SIZE = (640, 640)  # (width, height), such as (1280, 736)
 
-CLASSES = ("person", "bicycle", "car","motorbike ","aeroplane ","bus ","train","truck ","boat","traffic light",
-           "fire hydrant","stop sign ","parking meter","bench","bird","cat","dog ","horse ","sheep","cow","elephant",
-           "bear","zebra ","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite",
-           "baseball bat","baseball glove","skateboard","surfboard","tennis racket","bottle","wine glass","cup","fork","knife ",
-           "spoon","bowl","banana","apple","sandwich","orange","broccoli","carrot","hot dog","pizza ","donut","cake","chair","sofa",
-           "pottedplant","bed","diningtable","toilet ","tvmonitor","laptop	","mouse	","remote ","keyboard ","cell phone","microwave ",
-           "oven ","toaster","sink","refrigerator ","book","clock","vase","scissors ","teddy bear ","hair drier", "toothbrush ")
+CLASSES = ("fire",)
 
 
-coco_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27, 28, 31, 32, 33, 34,
-         35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-         64, 65, 67, 70, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 84, 85, 86, 87, 88, 89, 90]
+coco_id_list = [1]
 
-
-CLASSESCOCO = ('__background__', 'person', 'bicycle', 'car', 'motorbike', 'aeroplane', 'bus', 'train', 'truck', 'boat',
-           'traffic light', 'fire hydrant', '???', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse',
-           'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', '???', 'backpack', 'umbrella', '???', '???',
-           'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat',
-           'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', '???', 'wine glass', 'cup', 'fork',
-           'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza',
-           'donut', 'cake', 'chair', 'sofa', 'pottedplant', 'bed', '???', 'diningtable', '???', '???', 'toilet',
-           '???', 'tvmonitor', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink',
-           'refrigerator', '???', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush')
 
 
 def sigmoid(x):
@@ -147,8 +129,8 @@ def nms_boxes(boxes, scores):
 
 def yolov5_post_process(input_data):
     masks = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
-    anchors = [[10, 13], [16, 30], [33, 23], [30, 61], [62, 45],
-              [59, 119], [116, 90], [156, 198], [373, 326]]
+    anchors = [[10.0, 13.0], [16.0, 30.0], [33.0, 23.0], [30.0, 61.0], 
+    [62.0, 45.0], [59.0, 119.0], [116.0, 90.0], [156.0, 198.0], [373.0, 326.0]]
 
     boxes, classes, scores = [], [], []
     for input,mask in zip(input_data, masks):
@@ -210,15 +192,16 @@ def draw(image, boxes, scores, classes):
                     (top, left - 6),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.6, (0, 0, 255), 2)
+    cv2.imwrite("fire_detect.jpg", image)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     # basic params
     parser.add_argument('--model_path', type=str, required= True, help='model path, could be .pt or .rknn file')
-    parser.add_argument('--img_show', action='store_true', default=False, help='draw the result and show')
-    parser.add_argument('--target', type=str, default='rk1808', help='target platform')
-    parser.add_argument('--device_id', type=str, default=None, help='device id')
+    parser.add_argument('--img_save', action='store_true', default=False, help='draw the result and save')
+    parser.add_argument('--target', type=str, default='rk3568', help='target platform')
+    parser.add_argument('--device_id', type=str, default="simulator", help='device id')
 
     # data params
     parser.add_argument('--anno_json', type=str, default='../../../../../datasets/COCO/annotations/instances_val2017.json', help='coco annotation path')
@@ -272,12 +255,12 @@ if __name__ == '__main__':
 
         boxes, classes, scores = yolov5_post_process(outputs)
 
-        if args.img_show is True:
+        if args.img_save is True:
             img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             if boxes is not None:
                 draw(img_p, boxes, scores, classes)
-            cv2.imshow("full post process result", img_p)
-            cv2.waitKeyEx(0)
+            # cv2.imshow("full post process result", img_p)
+            # cv2.waitKeyEx(0)
 
         if args.coco_map_test is True:
             if boxes is not None:

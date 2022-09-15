@@ -137,7 +137,6 @@ def convert(model_config_dict, args):
                 imp.normalize(input_info['mean_values'], input_info['std_values'])
             framework_input_list.append(imp.get_input(framework))
         framework_result = model_runer.inference(framework_input_list)
-        
         model_type = 'fp'
         if model_config_dict['build']['do_quantization']:
             model_type = model_config_dict['config']['quantized_dtype']
@@ -145,13 +144,17 @@ def convert(model_config_dict, args):
         for i in range(len(framework_result)):
             cos_dist = compute_cos_dist(rknn_result[i], framework_result[i])
             print('     For output-{} : rknn({}) VS {} cos_similarity[{}]'.format(i, model_type, framework, cos_dist))
-
     elif args.compute_convert_loss and model_config_dict['input_example'] is None:
         print('WARNING: None example input exists, ignore compute convert loss')
 
     if args.eval_perf:
         print('---> Eval performance')
         rknn.eval_perf()
+
+    # quantitative accuracy analysis in simulator
+    ret = rknn.accuracy_analysis(inputs=['/mnt/hgfs/virtualmachineshare/rknn_model_zoo/datasets/fire/fire_00007.jpg'])
+    if ret != 0:
+        print('Accuracy analysis failed!') 
 
     rknn.release()
 
