@@ -1,5 +1,5 @@
 *.pyc
 *.mp4
+!**/test_data/huoyan1.mp4
 .idea/*
 .vscode/*
-__pyache__/
