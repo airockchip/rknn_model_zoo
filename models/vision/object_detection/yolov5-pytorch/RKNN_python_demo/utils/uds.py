@@ -2,9 +2,13 @@ import socket
 import time
 import os
 import re
+import signal
+import argparse
 
 from pathlib import Path
-from dataloaders import IMG_FORMATS, VID_FORMATS
+
+IMG_FORMATS = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo']  # acceptable image suffixes
+VID_FORMATS = ['mov', 'avi', 'mp4', 'mpg', 'mpeg', 'm4v', 'wmv', 'mkv']  # acceptable video suffixes
 
 
 class SocketClient:
@@ -24,9 +28,9 @@ class SocketClient:
         print('connecting to %s' % self.server_address)
         self.sock.connect(self.server_address)
 
-    # interval:间隔秒数,count：消息发送次数
+    # interval
     def send(self, msg, interval, count):
-        msg += "\n"
+        msg = msg + '\n'
         num = 0
         while num < count:
             # Send data
@@ -48,29 +52,51 @@ def get_rtsp_ip(source):
         return "192.168.17.12"
     is_url = source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
     if is_url:
-        g = re.match(r"(([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5]\d)\.){3}([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5]\d)", source)
+        g = re.search(r"(([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5]\d)\.){3}([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5]\d)", source)
         return g.group(0)
 
 
-if __name__ == "__main__":
-    import json
-    client = SocketClient()
-    client.connect_to_server()
-    # 有火
-    data = {
-        "CheckFire": True,
-        "DeviceIp": "192.168.17.12"
-    }
-    msg = json.dumps(data)
+def parse_opt():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--server_address', type=str, default= '/tmp/uds_socket', help='socket server address')
+    parser.add_argument('--socket_family', type=int, default = socket.AF_UNIX, help='socket server family')
+    args = parser.parse_args()
+    return args
 
-    # 间隔3秒发送三次，防止接收端应用挂了，接收不到
-    client.send(msg, 3, 3)
-    # 无火
-    time.sleep(10)
-    data = {
-        "CheckFire": False,
-        "DeviceIp": "192.168.17.12"
-    }
-    msg = json.dumps(data)
-    client.send(msg, 3, 3)
-    client.close()
+
+def main(args):
+    import json
+    server_address = args.server_address
+    socket_family = args.socket_family
+    # server_address = "/userdata/liug/stream/uds_socket/192.168.172.104:8080"
+    client = SocketClient(server_address=server_address, socket_family=socket_family)
+    client.connect_to_server()
+    def siginalHanler(signum, frame):
+        print('Signal handler called with signal', signum)
+        client.close()
+        exit()
+    signal.signal(signal.SIGINT, siginalHanler)
+    # 有火
+    while True:
+        data = {
+            "CheckFire": True,
+            "DeviceIp": "192.168.17.12"
+        }
+        msg = json.dumps(data)
+
+        # 间隔3秒发送三次，防止接收端应用挂了，接收不到
+        client.send(msg, 3, 3)
+        # 无火
+        data = {
+            "CheckFire": False,
+            "DeviceIp": "192.168.17.12"
+        }
+        msg = json.dumps(data)
+        client.send(msg, 3, 3)
+ 
+
+if __name__ == "__main__":
+
+    args = parse_opt()
+
+    main(args)

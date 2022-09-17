@@ -234,9 +234,11 @@ def detect(args):
     webcam = args.source.isnumeric() or (is_url and not is_file)
 
     # save_dir
+    args.save_dir = os.path.abspath(args.save_dir) + "/"
     if not os.path.exists(args.save_dir):
         os.mkdir(args.save_dir)
 
+    print(args.save_dir)
     # todo
     # pt model.stride
 
@@ -280,23 +282,14 @@ def detect(args):
     interval_detect_time = 1
     has_fire = False
     has_not_fire_time_num = 10
-    has_send_stop = False
+    has_send_stop = True
+    output_seq = 0
     try:
-        client = SocketClient()
+        # server_address = "/userdata/liug/stream/uds_socket/192.168.172.104:8080"
+        server_address = "/tmp/uds_socket"
+        client = SocketClient(server_address=server_address)
         client.connect_to_server()       
         for path, img, im0s, vid_cap, s in dataset:
-
-            if not has_fire and time.time() - last_has_fire_time > has_not_fire_time_num and not has_send_stop:
-                # send uds not fire                                     
-                ip = get_rtsp_ip(args.source)
-                data = {
-                    "CheckFire": False,
-                    "DeviceIp": ip
-                }
-                msg = json.dumps(data)
-                # 间隔3秒发送三次，防止接收端应用挂了，接收不到
-                client.send(msg, 3, 3)
-                has_send_stop = True
 
             if time.time() - last_detect_time < interval_detect_time:
                 continue
@@ -346,7 +339,9 @@ def detect(args):
                         img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
                         img = draw(img_p, boxes, scores, classes)
                         print(img.shape)
-                        cv2.imwrite(args.save_dir + "output.jpg", img)
+                        print("{0}{1}{2}{3}".format(args.save_dir, "output", output_seq, ".jpg"))
+                        cv2.imwrite("{0}{1}{2}{3}".format(args.save_dir, "output", output_seq, ".jpg"), img)
+                        output_seq += 1
                     has_detect_num = 0
                     # has fire
                     ip = get_rtsp_ip(args.source)
@@ -357,7 +352,7 @@ def detect(args):
                     msg = json.dumps(data)
 
                     # 间隔3秒发送三次，防止接收端应用挂了，接收不到
-                    client.send(msg, 3, 3)
+                    client.send(msg, 1, 2)
                     has_send_stop = False
 
                 # method 2
@@ -370,6 +365,19 @@ def detect(args):
                 #     dataset.save_video.write(img)
             else:
                 has_fire = False
+
+            if not has_fire and time.time() - last_has_fire_time > has_not_fire_time_num and not has_send_stop:
+                # send uds not fire                                     
+                ip = get_rtsp_ip(args.source)
+                data = {
+                    "CheckFire": False,
+                    "DeviceIp": ip
+                }
+                msg = json.dumps(data)
+                # 间隔3秒发送三次，防止接收端应用挂了，接收不到
+                client.send(msg, 1, 2)
+                has_send_stop = True
+
         t = tuple(x / seen * 1E3 for x in dt)  # speeds per image per detecede box unit:ms
         print("per image per detected box speend {0} ms".format(t[1]))
     except BaseException as e:
@@ -384,6 +392,8 @@ def detect(args):
             print("exit")
         else:
             print("except:" + str(e))
+        if not client:
+            client.close()
 
 
     # print(model.eval_perf())
