@@ -49,11 +49,21 @@ class SocketClient:
 def get_rtsp_ip(source):
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
     if is_file:
-        return "192.168.17.12"
+        return ["192.168.17.12"]
     is_url = source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
     if is_url:
         g = re.search(r"(([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5]\d)\.){3}([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5]\d)", source)
-        return g.group(0)
+        return [g.group(0)]
+    is_stream = args.source.endswith('.txt')
+    if is_stream:
+        sources = os.path.abspath(sources)
+        if os.path.isfile(sources):
+            with open(sources) as f:
+                sources = [x.strip() for x in f.read().strip().splitlines() if len(x.strip())]
+        else:
+            sources = [sources]  
+            return sources
+
 
 
 def parse_opt():

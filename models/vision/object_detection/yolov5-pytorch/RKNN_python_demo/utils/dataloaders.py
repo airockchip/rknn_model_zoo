@@ -1,3 +1,4 @@
+from code import interact
 import cv2
 import os
 import logging
@@ -5,6 +6,7 @@ import numpy as np
 import re
 import time
 import glob
+import signal
 
 from threading import Thread
 from pathlib import Path
@@ -25,9 +27,7 @@ LOGGER = set_logging(__name__)  # define globally (used in train.py, val.py, det
 
 def clean_str(s):
     # Cleans a string by replacing special characters with underscore _
-    # todo
-    # return re.sub(pattern="[|@#!¡·$€%&()=?¿^*;:,¨´><+]", repl="_", string=s)
-    return s
+    return re.sub(pattern="[|@#!¡·$€%&()=?¿^*;:,¨´><+]", repl="_", string=s)
 
 
 
@@ -50,6 +50,7 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), scaleup=True):
     dw /= 2  # divide padding into 2 sides
     dh /= 2
 
+    im = cv2.UMat(im)
     if shape[::-1] != new_unpad:  # resize
         im = cv2.resize(im, new_unpad, interpolation=cv2.INTER_LINEAR)
     top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
@@ -63,28 +64,28 @@ class LoadStreams:
     def __init__(self, sources='streams.txt', img_size=640, save_dir="./detect_result/"):
         self.mode = 'stream'
         self.img_size = img_size
+        # save_dir
+        save_dir = os.path.abspath(save_dir) + "/"
+        if not os.path.exists(save_dir):
+            os.mkdir(save_dir)        
         self.save_dir = save_dir
 
-        # todo 
-        # .txt include mul rtsp url
-        # if os.path.isfile(sources):
-        #     with open(sources) as f:
-        #         sources = [x.strip() for x in f.read().strip().splitlines() if len(x.strip())]
-        # else:
-        #     sources = [sources]
-
-        sources = [sources]
+        if sources.endswith('.txt') and os.path.isfile(sources):
+            sources = os.path.abspath(sources)
+            with open(sources) as f:
+                sources = [x.strip() for x in f.read().strip().splitlines() if len(x.strip())]
+        else:
+            sources = [sources]
 
         n = len(sources)
-        self.imgs, self.fps, self.frames, self.threads, self.save_video, self.caps = [None] * n, [0] * n, [0] * n, [None] * n, None, [None] * n
+        self.imgs, self.fps, self.frames, self.threads, self.caps = [None] * n, [0] * n, [0] * n, [None] * n, [None] * n
         self.sources = [clean_str(x) for x in sources]  # clean source names for later
         for i, s in enumerate(sources):  # index, source
             st = f'{i + 1}/{n}: {s}... '
             s = eval(s) if s.isnumeric() else s  # i.e. s = '0' local webcam
 
-            cap = cv2.VideoCapture(s)
+            cap = cv2.VideoCapture(s, cv2.CAP_GSTREAMER)
             assert cap.isOpened(), f'{st}Failed to open {s}'
-            # todo need to copy cap?
             self.caps[i] = cap
             w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -93,43 +94,40 @@ class LoadStreams:
             # frame:inf
             self.frames[i] = max(int(cap.get(cv2.CAP_PROP_FRAME_COUNT)), 0) or float('inf')  # infinite stream fallback
 
-            # Define the codec and create VideoWriter object
-            new_w, new_h = 0, 0
-            if isinstance(img_size, int):
-                 new_w, new_h = img_size, img_size
-            else:
-                new_w, new_h = img_size[0], img_size[1]
-            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-            self.save_video = cv2.VideoWriter("{0}{1}{2}".format(self.save_dir, "output", str(i)+".mp4"), fourcc, self.fps[i], (new_w, new_h))
 
-            _, self.imgs[i] = cap.read()  # guarantee first frame
+            # _, self.imgs[i] = cv2.UMat(cap.read()[1])  # guarantee first frame
+            _, self.imgs[i] = cap.read()
             self.threads[i] = Thread(target=self.update, args=([i, cap, s]), daemon=True)
             LOGGER.info(f"{st} Success ({self.frames[i]} frames {w}x{h} at {self.fps[i]:.2f} FPS)")
             self.threads[i].start()
         LOGGER.info('')  # newline
 
         # check for common shapes
-        s = np.stack([letterbox(x, self.img_size)[0].shape for x in self.imgs])
+        s = np.stack([cv2.UMat.get(letterbox(x, self.img_size)[0]).shape for x in self.imgs])
+        # s = np.stack([letterbox(x, self.img_size)[0].shape for x in self.imgs])
         self.rect = np.unique(s, axis=0).shape[0] == 1  # rect inference if all shapes equal
         if not self.rect:
             LOGGER.warning('WARNING: Stream shapes differ. For optimal performance supply similarly-shaped streams.')
 
     def update(self, i, cap, stream):
         # Read stream `i` frames in daemon thread
-        n, f, read = 0, self.frames[i], 1  # frame number, frame array, inference every 'read' frame
+        n, f, read = 0, self.frames[i], 1 # frame number, frame array, inference every 'read' frame
         while cap.isOpened() and n < f:
-            n += 1
             # _, self.imgs[index] = cap.read()
+            n += 1
             cap.grab()
             if n % read == 0:
                 success, im = cap.retrieve()
                 if success:
+                    # self.imgs[i] = cv2.UMat(im)
                     self.imgs[i] = im
                 else:
                     LOGGER.warning('WARNING: Video stream unresponsive, please check your IP camera connection.')
+                    # self.imgs[i] = cv2.UMat(np.zeros_like(self.imgs[i]))
                     self.imgs[i] = np.zeros_like(self.imgs[i])
                     cap.open(stream)  # re-open stream if signal was lost
-            time.sleep(1 / self.fps[i]) # wait time
+            time.sleep(1/self.fps[i])
+            # cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     def __iter__(self):
         self.count = -1
@@ -152,7 +150,7 @@ class LoadStreams:
         # img = img[..., ::-1].transpose((0, 3, 1, 2))  # BGR to RGB, BHWC to BCHW
         # img = np.ascontiguousarray(img)
 
-        return self.sources, img, img0, None, ''
+        return self.sources, img, None, ''
 
     def __len__(self):
         return len(self.sources)  # 1E12 frames = 32 streams at 30 FPS for 30 years
@@ -177,7 +175,14 @@ class LoadImages:
 
         self.img_size = img_size
         self.files = images + videos
+        
+        # save_dir
+        save_dir = os.path.abspath(save_dir) + "/"
+        if not os.path.exists(save_dir):
+            os.mkdir(save_dir)        
+
         self.save_dir = save_dir
+        self.save_video = None
         self.nf = ni + nv  # number of files
         self.video_flag = [False] * ni + [True] * nv
         self.mode = 'image'
@@ -211,6 +216,8 @@ class LoadImages:
                     self.new_video(path)
                     ret_val, img0 = self.cap.read()
 
+
+            time.sleep(1/self.fps)
             self.frame += 1
             s = f'video {self.count + 1}/{self.nf} ({self.frame}/{self.frames}) {path}: '
 
@@ -222,18 +229,18 @@ class LoadImages:
             s = f'image {self.count}/{self.nf} {path}: '
 
         # Padded resize
-        img = letterbox(img0, self.img_size)[0]
+        # img0 = cv2.UMat(img0)
+        img = [letterbox(img0, self.img_size)[0]]
 
         # # Convert
-        # todo
         # img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
-        img = np.ascontiguousarray(img)
+        # img = np.ascontiguousarray(img)
 
-        return path, img, img0, self.cap, s
+        return path, img, self.cap, s
 
     def new_video(self, path):
         self.frame = 0
-        self.cap = cv2.VideoCapture(path)
+        self.cap = cv2.VideoCapture(path, cv2.CAP_GSTREAMER)
         self.frames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
         self.fps = max(self.cap.get(cv2.CAP_PROP_FPS) % 100, 0) or 30.0
         w, h = 0, 0
@@ -242,88 +249,81 @@ class LoadImages:
         else:
             w, h = self.img_size[0], self.img_size[1]
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self.save_video = cv2.VideoWriter("{0}{1}".format(self.save_dir, "output.mp4"), fourcc, self.fps, (w, h))
+        self.save_video = cv2.VideoWriter("{0}{1}{2}".format(self.save_dir, os.path.basename(path).split(".")[0], "_output.mp4"), fourcc, self.fps, (w, h))
 
 
     def __len__(self):
         return self.nf  # number of files
 
 
-class LoadWebcam: 
-    # YOLOv5 local webcam dataloader, i.e. `python detect.py --source 0`
-    def __init__(self, source='0', img_size=640, save_dir="./detect_result/"):
-        self.img_size = img_size
-        self.source = source
-        self.save_dir = save_dir
-        self.cap = cv2.VideoCapture(self.source)  # video capture object
-        # self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)  # set buffer size
-
-        # add
-        self.fps = max(self.cap.get(cv2.CAP_PROP_FPS) % 100, 0) or 30.0
-        w, h = 0, 0
-        if isinstance(self.img_size , int):
-            w, h = self.img_size, self.img_size 
-        else:
-            w, h = self.img_size[0], self.img_size[1]
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self.save_video = cv2.VideoWriter("{0}{1}".format(self.save_dir, "output.mp4"), fourcc, self.fps, (w, h))
-
-    def __iter__(self):
-        self.count = -1
-        return self
-
-    def __next__(self):
-        self.count += 1
-
-        # Read frame
-        ret_val, img0 = self.cap.read()
-        # img0 = cv2.flip(img0, 1)  # flip left-right
-
-        # Print
-        assert ret_val, f'Camera Error {self.source}'
-        img_path = 'webcam.jpg'
-        s = f'webcam {self.count}: '
-
-        # Padded resize
-        img = letterbox(img0, self.img_size)[0]
-
-        # Convert
-        # img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
-        img = np.ascontiguousarray(img)
-
-        return img_path, img, img0, None, s
-
-    def __len__(self):
-        return 0
-
 if __name__ == "__main__":
-    # source = "/mnt/hgfs/virtualmachineshare/rknn_model_zoo/datasets/fire/huoyan1.mp4"
+    # source = "/mnt/hgfs/virtualmachineshare/PythonProject/edgeml/huoyan1.mp4"
+    # source = "/root/mgl/rknn_model_zoo/models/vision/object_detection/yolov5-pytorch/test_data/huoyan1.mp4"
     # source = "/mnt/hgfs/virtualmachineshare/rknn_model_zoo/datasets/fire/fire_00007.jpg"
     # dataset = LoadImages(source, img_size=640)
 
-    # source = "rtsp://192.168.17.12:554/11"
+    # source = "rtsp://192.168.8.12:554/live/test"
+    # source = "rtsp://admin:admin123@192.168.31.105:554/"
+    # source = "/mnt/hgfs/virtualmachineshare/PythonProject/edgeml/rknn_model_zoo/models/vision/object_detection/yolov5-pytorch/RKNN_python_demo/utils/streams.txt"
     # dataset = LoadStreams(source, img_size=640)
+    source = os.path.abspath('/root/mgl/rknn_model_zoo/models/vision/object_detection/yolov5-pytorch/RKNN_python_demo/utils/streams.txt')
+    dataset = LoadStreams(sources=source)
+    # dataset = LoadWebcam()
 
-    source = "rtsp://192.168.17.12:554/11"
-    dataset = LoadWebcam(source, img_size=640)
-
+    # source = "rtsp://192.168.17.12:554/11"
+    # dataset = LoadWebcam(source, img_size=640)
+    # last = time.time()
+    def siginalHanler(signum, frame):
+        print('Get signal:', signum)
+        if isinstance(dataset, LoadStreams):
+            for cap in dataset.caps:
+                if cap != None:
+                    cap.release()
+        else:
+            if dataset.cap != None:
+                dataset.cap.release()
+            if dataset.save_video != None:
+                dataset.save_video.release()
+        exit()
+    signal.signal(signal.SIGINT, siginalHanler)
+    j = 0
     try: 
-        for _, img, _, _, _ in dataset:
-            print(img.shape)
-            if isinstance(dataset, LoadImages) and dataset.mode == "image":
-                cv2.imwrite("output.jpg", img)
-            else:
-                dataset.save_video.write(img)
+        for _, img, _, _ in dataset:
+            for i, im in enumerate(img):
+                if isinstance(dataset, LoadImages) and dataset.mode == "image":
+                    cv2.imwrite(dataset.save_dir + "output.jpg", im)
+                elif isinstance(dataset, LoadImages) and dataset.mode == "video":
+                    # time.sleep(1)
+                    print("yes")
+                    dataset.save_video.write(im)
+                else:
+                    time.sleep(2)
+                    # cv2.imwrite("{0}{1}{2}{3}{4}".format("output", j, "_", i, ".jpg"), im)
+                    print("yes")
+            j += 1
     except BaseException as e:
         if isinstance(e, KeyboardInterrupt):
             if isinstance(dataset, LoadStreams):
                 for cap in dataset.caps:
-                    cap.release()
+                    if cap != None:
+                        cap.release()
             else:
                 if dataset.cap != None:
                     dataset.cap.release()
+                if dataset.save_video != None:
+                    dataset.save_video.release()
+            exit()
+        raise e
+
+    if isinstance(dataset, LoadStreams):
+        for cap in dataset.caps:
+            if cap != None:
+                cap.release()
+    else:
+        if dataset.cap != None:
+            dataset.cap.release()
+        if dataset.save_video != None:
             dataset.save_video.release()
-            print("exit")
-    
+    exit()    
 
 

@@ -1,0 +1,1 @@
+rtspsrc location=rtsp://admin:admin123@192.168.172.105:554/cam/realmonitor?channel=1&subtype=0 latency=0 ! rtph264depay ! h264parse ! mppvideodec ! rgaconvert ! video/x-raw,format=BGR,width=640,height=640 ! appsink sync=false

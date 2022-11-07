@@ -3,7 +3,7 @@ model_framework: onnx
 model_file_path: ./best.onnx
 RK_device_platform: RK3568
 RK_device_id: simulator
-dataset: ../../../../../datasets/fire/fire.txt
+dataset: ../../../../../datasets/fire/datasets.txt
 quantize: True
 verbose_file: ./fire.log
 pre_compile: online

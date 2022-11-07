@@ -4,12 +4,13 @@ import sys
 import argparse
 import time
 import json
+import signal
 
 import numpy as np
 
 from operator import truediv
 from pathlib import Path
-from utils.dataloaders import LoadImages, LoadStreams, IMG_FORMATS, VID_FORMATS, LoadWebcam
+from utils.dataloaders import LoadImages, LoadStreams, IMG_FORMATS, VID_FORMATS
 from utils.uds import SocketClient, get_rtsp_ip
 
 
@@ -23,14 +24,13 @@ sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:-1]))
 # '/mnt/hgfs/virtualmachineshare/rknn_model_zoo'
 sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('rknn_model_zoo')+1]))
 
-# todo 
-OBJ_THRESH = 0.1
+
+OBJ_THRESH = 0.25
 NMS_THRESH = 0.65
 IMG_SIZE = (640, 640)  # (width, height), such as (1280, 736)
 
-CLASSES = ("fire",)
+CLASSES = ("fire", )
 
-# todo
 # class_id_list = [1]
 
 
@@ -139,8 +139,7 @@ def nms_boxes(boxes, scores):
 
 def yolov5_post_process(input_data):
     masks = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
-    anchors = [[10.0, 13.0], [16.0, 30.0], [33.0, 23.0], [30.0, 61.0], 
-    [62.0, 45.0], [59.0, 119.0], [116.0, 90.0], [156.0, 198.0], [373.0, 326.0]]
+    anchors = [[10.0, 13.0], [16.0, 30.0], [33.0, 23.0], [30.0, 61.0], [62.0, 45.0], [59.0, 119.0], [116.0, 90.0], [156.0, 198.0], [373.0, 326.0]]
 
     boxes, classes, scores = [], [], []
     for input,mask in zip(input_data, masks):
@@ -214,33 +213,63 @@ def parse_opt():
     parser.add_argument('--img_save', action='store_true', default=False, help='draw the result and save')
     parser.add_argument('--save_dir', type=str, default='./detect_result/', help='path for detected result to save')
     parser.add_argument('--imgsz', '--img', '--img_size', nargs='+', type=int, default=[640, 640], help='inference size h,w')
-
+    parser.add_argument('--send_event', action='store_true', default=False, help='send fire event to unix domain socket')
+    parser.add_argument('--uds_path', type=str, default='/tmp/uds_socket', help='unix domain socket path')
+    parser.add_argument('--interval_time', type=int, default=1, help='detect interval time')
     # data params
     parser.add_argument('--anno_json', type=str, default='../../../../../datasets/COCO/annotations/instances_val2017.json', help='datasets annotation path')
-    parser.add_argument('--source', type=str, default='../../../../../datasets/COCO//val2017', help='source path')
+    parser.add_argument('--source', type=str, default='./streams.txt', help='source path')
     parser.add_argument('--map_test', action='store_true', help='enable map test')
     parser.add_argument('--eval_perf', action="store_true", help='eval performance')
+    parser.add_argument('--conf_thres', type=float, default=0.25, help='confidence threshold')
+    parser.add_argument('--iou_thres', type=float, default=0.65, help='NMS IoU threshold')
     args = parser.parse_args()
     args.imgsz *= 2 if len(args.imgsz) == 1 else 1  # expand
-    # todo
-    # print_args(vars(opt))
+    global OBJ_THRESH, NMS_THRESH
+    OBJ_THRESH = args.conf_thres
+    NMS_THRESH = args.iou_thres
     return args
+      
 
+def file_detect_process(args, dataset, boxes, scores, classes, client, i, img):
+    has_fire = False
+    if boxes is not None:
+        print("detect")
+        has_fire = True
+        if args.img_save is True:
+             # method 1 + uds socket
+            img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            img = draw(img_p, boxes, scores, classes)
+            if not dataset.save_video:
+                cv2.imwrite("{0}{1}{2}{3}".format(dataset.save_dir, "output_", str(i), ".jpg"), img)   
+            else:
+                dataset.save_video.write(img)              
+    else:               
+        print("not detect")
+        has_fire = False
+        if dataset.save_video:
+            dataset.save_video.write(img)  
+
+
+    if args.send_event:
+        check_fire = False
+        if has_fire:
+            check_fire = True
+        # has fire
+        ip = get_rtsp_ip(args.source)[i]
+        data = {
+            "CheckFire": check_fire,
+            "DeviceIp": ip
+        }
+        msg = json.dumps(data)
+        # interval 1 second to send 3 times for avoiding receiver dump which make it can't receive msg
+        client.send(msg, 1, 3)  
 
 def detect(args):
 
     is_file = Path(args.source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
     is_url = args.source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
-    webcam = args.source.isnumeric() or (is_url and not is_file)
-
-    # save_dir
-    args.save_dir = os.path.abspath(args.save_dir) + "/"
-    if not os.path.exists(args.save_dir):
-        os.mkdir(args.save_dir)
-
-    print(args.save_dir)
-    # todo
-    # pt model.stride
+    webcam = args.source.isnumeric() or args.source.endswith('.txt') or (is_url and not is_file)
 
     # init model
     model_path = args.model_path
@@ -250,7 +279,6 @@ def detect(args):
         model = Torch_model_container(args.model_path)
     elif model_path.endswith('.rknn'):
         platform = 'rknn'
-        # todo rknn_execute
         from common.framework_excuter.rknn_lite_excute import RKNN_model_container 
         model = RKNN_model_container(args.model_path)
     elif model_path.endswith('onnx'):
@@ -261,155 +289,166 @@ def detect(args):
         assert False, "{} is not rknn/pytorch/onnx model".format(model_path)
     print('Model-{} is {} model, starting val'.format(model_path, platform))
 
-
     # Dataloader
     if webcam:
-        # LoadWebcam
-        dataset = LoadWebcam(args.source, img_size=args.imgsz, save_dir=args.save_dir)
-        # LoadStreams    
-        # dataset = LoadStreams(args.source, img_size=args.imgsz, save_dir=args.save_dir)
+        dataset = LoadStreams(args.source, img_size=args.imgsz, save_dir=args.save_dir)
     else:
         dataset = LoadImages(args.source, img_size=args.imgsz, save_dir=args.save_dir)
 
     # Run inference
     seen = 0
-    dt = [0.0, 0.0]
-    has_detect_num = 0
-    # many dectect to ensure 
-    max_detect_num = 3
-    last_detect_time = time.time()
-    last_has_fire_time = 0
-    interval_detect_time = 1
-    has_fire = False
-    has_not_fire_time_num = 10
-    has_send_stop = True
-    output_seq = 0
+    dt = [0.0]
+    num = len(dataset) if len(dataset) else 1
+    has_detect_num_list = [0] * num
+    has_not_detect_num_list = [0] * num
+    max_detect_num_list = [3] * num
+
+    has_send_stop_list = [True] * num
+    output_seq_list = [0] * num
+
+    client = None
     try:
-        # server_address = "/userdata/liug/stream/uds_socket/192.168.172.104:8080"
-        server_address = "/tmp/uds_socket"
-        client = SocketClient(server_address=server_address)
-        client.connect_to_server()       
-        for path, img, im0s, vid_cap, s in dataset:
+        if args.send_event:
+            # server_address = "/userdata/liug/stream/uds_socket/192.168.172.104:8080"
+            # server_address = "/tmp/uds_socket"
+            client = SocketClient(server_address=args.uds_path)
+            client.connect_to_server()
 
-            if time.time() - last_detect_time < interval_detect_time:
-                continue
-            last_detect_time = time.time()
-            if isinstance(dataset, LoadStreams):
-                img = img[0]
-            t1 = time.time()
-            # todo
-            # im to half or float 
-            # im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
-            # im /= 255  # 0 - 255 to 0.0 - 1.0
-            t2 = time.time()
-            dt[0] += t2 - t1
-            # Inference
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-            # preprocee if not rknn model
-            if platform in ['pytorch', 'onnx']:
-                input_data = img.transpose((2,0,1))
-                input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
-                input_data = input_data/255
-            else:
-                input_data = img
-
-
-            # todo output
-            outputs = model.run([input_data])
-            t3 = time.time()
-            dt[1] += t3 - t2
-            # proprocess result
-            outputs = [output.reshape([3,-1]+list(output.shape[-2:])) for output in outputs]
-            outputs = [np.transpose(output, (2,3,0,1)) for output in outputs]
-
-            boxes, classes, scores = yolov5_post_process(outputs)
-            if scores is not None:
-                seen += scores.size
-
-            # detect 
-            if boxes is not None:
-                print("detect")
-                has_fire = True
-                last_has_fire_time = time.time()
-                has_detect_num += 1
-                if has_detect_num >= max_detect_num:
-                    # method 1 + uds socket
-                    if args.img_save is True:
-                        img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-                        img = draw(img_p, boxes, scores, classes)
-                        print(img.shape)
-                        print("{0}{1}{2}{3}".format(args.save_dir, "output", output_seq, ".jpg"))
-                        cv2.imwrite("{0}{1}{2}{3}".format(args.save_dir, "output", output_seq, ".jpg"), img)
-                        output_seq += 1
-                    has_detect_num = 0
-                    # has fire
-                    ip = get_rtsp_ip(args.source)
-                    data = {
-                        "CheckFire": True,
-                        "DeviceIp": ip
-                    }
-                    msg = json.dumps(data)
-
-                    # 间隔3秒发送三次，防止接收端应用挂了，接收不到
-                    client.send(msg, 1, 2)
-                    has_send_stop = False
-
-                # method 2
-                # img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-                # img = draw(img_p, boxes, scores, classes)
-                # write the BGR frame
-                # if isinstance(dataset, LoadImages) and dataset.mode == "image":
-                #     cv2.imwrite(args.save_dir + "output.jpg", img)
-                # else:
-                #     dataset.save_video.write(img)
-            else:
-                has_fire = False
-
-            if not has_fire and time.time() - last_has_fire_time > has_not_fire_time_num and not has_send_stop:
-                # send uds not fire                                     
-                ip = get_rtsp_ip(args.source)
-                data = {
-                    "CheckFire": False,
-                    "DeviceIp": ip
-                }
-                msg = json.dumps(data)
-                # 间隔3秒发送三次，防止接收端应用挂了，接收不到
-                client.send(msg, 1, 2)
-                has_send_stop = True
-
-        t = tuple(x / seen * 1E3 for x in dt)  # speeds per image per detecede box unit:ms
-        print("per image per detected box speend {0} ms".format(t[1]))
-    except BaseException as e:
-        if isinstance(e, KeyboardInterrupt):
+        def siginalHanler(signum, frame):
             if isinstance(dataset, LoadStreams):
                 for cap in dataset.caps:
-                    cap.release()
+                    if cap != None:
+                        cap.release()
             else:
                 if dataset.cap != None:
                     dataset.cap.release()
-            dataset.save_video.release()
-            print("exit")
+                if dataset.save_video != None:
+                    dataset.save_video.release()
+            if args.send_event:
+                if not client:
+                    client.close()
+            model.release()
+            exit()
+        signal.signal(signal.SIGINT, siginalHanler)  
+        
+        for path, img_list, vid_cap, s in dataset:
+            for i, img in enumerate(img_list):
+                t1 = time.time()
+                # Inference
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                
+                input_data = cv2.UMat.get(img)
+                # preprocee if not rknn model
+                if platform in ['pytorch', 'onnx']:
+                    input_data = input_data.transpose((2,0,1))
+                    input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
+                    input_data = input_data/255
+
+                outputs = model.run([input_data])
+                t2 = time.time()
+                dt[0] = t2 - t1
+                # proprocess result
+                outputs = [output.reshape([3,-1]+list(output.shape[-2:])) for output in outputs]
+                outputs = [np.transpose(output, (2,3,0,1)) for output in outputs]
+
+                boxes, classes, scores = yolov5_post_process(outputs)
+                if scores is not None:
+                    seen += scores.size
+
+                if webcam:
+                    # detect 
+                    if boxes is not None:
+                        has_detect_num_list[i] += 1
+                        has_not_detect_num_list[i] = 0
+                        print('{0}{1}'.format('detect:', has_detect_num_list[i]))
+                        if args.img_save is True:
+                            if has_detect_num_list[i] >= max_detect_num_list[i]: 
+                                has_detect_num_list[i] = 0             
+                                print("detect")
+                                # method 1 + uds socket
+                                img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+                                img = draw(img_p, boxes, scores, classes)
+                                # print(img.shape)
+                                print("{0}{1}{2}{3}{4}{5}".format(dataset.save_dir, "output_", str(i), "_", output_seq_list[i], ".jpg"))
+                                cv2.imwrite("{0}{1}{2}{3}{4}{5}".format(dataset.save_dir, "output_", str(i), "_", output_seq_list[i], ".jpg"), img)
+                                output_seq_list[i] += 1
+                                if args.send_event:
+                                    # has fire
+                                    ip = get_rtsp_ip(args.source)[i]
+                                    data = {
+                                        "CheckFire": True,
+                                        "DeviceIp": ip
+                                    }
+                                    msg = json.dumps(data)
+                                    # interval 1 second to send 3 times for avoiding receiver dump which make it can't receive msg
+                                    client.send(msg, 1, 3)
+                                    has_send_stop_list[i] = False                        
+                    else:
+                        has_not_detect_num_list[i] += 1
+                        has_detect_num_list[i] = 0
+                        print('{0}{1}'.format('not_detect:', has_not_detect_num_list[i]))
+                        if has_not_detect_num_list[i] >= max_detect_num_list[i]:
+                            has_not_detect_num_list[i] = 0                                   
+                            print("not detect")
+                            if args.send_event:
+                                if not has_send_stop_list[i]:
+                                    # send uds not fire                                     
+                                    ip = get_rtsp_ip(args.source)[i]
+                                    data = {
+                                        "CheckFire": False,
+                                        "DeviceIp": ip
+                                    }
+                                    msg = json.dumps(data)
+                                    # interval 1 second to send 3 times for avoiding receiver dump which make it can't receive msg
+                                    client.send(msg, 1, 3)
+                                    has_send_stop_list[i] = True                    
+                else:
+                    file_detect_process(args, dataset, boxes, scores, classes, client, i, img)
+            if webcam:
+                time.sleep(args.interval_time)
+
+        t = tuple(x / seen * 1E3 for x in dt)  # speeds per image per detecede box unit:ms
+        print("per image per detected box speend {0} ms".format(t[0]))
+    except BaseException as e:     
+        if isinstance(e, SystemExit):
+            pass
         else:
             print("except:" + str(e))
+        if isinstance(dataset, LoadStreams):
+            for cap in dataset.caps:
+                if cap != None:
+                    cap.release()
+        else:
+            if dataset.cap != None:
+                dataset.cap.release()
+            if dataset.save_video != None:
+                dataset.save_video.release()
+        if args.send_event:
+            if not client:
+                client.close()
+        model.release()
+        raise e
+        exit()   
+    
+
+    if isinstance(dataset, LoadStreams):
+        for cap in dataset.caps:
+            if cap != None:
+                cap.release()
+    else:
+        if dataset.cap != None:
+            dataset.cap.release()
+        if dataset.save_video != None:
+            dataset.save_video.release()
+    if args.send_event:
         if not client:
             client.close()
-
-
-    # print(model.eval_perf())
-    # print(model.eval_memory())
-    # release model
     model.release()
-
-
+    exit()        
 
 if __name__ == '__main__':
 
     args = parse_opt()
-    # args.model_path = "../RKNN_model_convert/model.rknn"
-    # args.source = "/mnt/hgfs/virtualmachineshare/rknn_model_zoo/datasets/fire/fire_00007.jpg"
-    # args.imgsz = 640
-    # args.img_save = True
     detect(args)
 
 

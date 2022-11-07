@@ -1,6 +1,7 @@
 # Datasets
 
 - [x] coco 2017
+- [x] fire
 
 
 
@@ -15,3 +16,7 @@
 - official web: https://cocodataset.org/#home
 - val dataset download script: [./COCO/download_eval_dataset.py](./COCO/download_eval_dataset.py) 
 
+### fire
+
+- The dataset in the fire folder is the quantized sample dataset, 100 images randomly sampled from the training dataset.
+- For the training dataset, please refer to the dataset section in the doc/YOLOv5_fire_and_smoke_detection.ipynb document.
