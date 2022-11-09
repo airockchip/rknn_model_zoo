@@ -291,7 +291,7 @@ def detect(args):
 
     # Dataloader
     if webcam:
-        dataset = LoadStreams(args.source, img_size=args.imgsz, save_dir=args.save_dir)
+        dataset = LoadStreams(args.source, img_size=args.imgsz, save_dir=args.save_dir, interval_time = args.interval_time)
     else:
         dataset = LoadImages(args.source, img_size=args.imgsz, save_dir=args.save_dir)
 

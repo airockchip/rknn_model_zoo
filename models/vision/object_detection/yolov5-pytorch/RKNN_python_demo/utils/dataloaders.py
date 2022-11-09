@@ -61,9 +61,10 @@ def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), scaleup=True):
 
 class LoadStreams:
     # YOLOv5 streamloader, i.e. `python detect.py --source 'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP streams`
-    def __init__(self, sources='streams.txt', img_size=640, save_dir="./detect_result/"):
+    def __init__(self, sources='streams.txt', img_size=640, save_dir="./detect_result/", interval_time=1):
         self.mode = 'stream'
         self.img_size = img_size
+        self.interval_time = interval_time
         # save_dir
         save_dir = os.path.abspath(save_dir) + "/"
         if not os.path.exists(save_dir):
@@ -111,7 +112,7 @@ class LoadStreams:
 
     def update(self, i, cap, stream):
         # Read stream `i` frames in daemon thread
-        n, f, read = 0, self.frames[i], 1 # frame number, frame array, inference every 'read' frame
+        n, f, read = 0, self.frames[i], self.interval_time * self.fps[i] # frame number, frame array, inference every 'read' frame
         while cap.isOpened() and n < f:
             # _, self.imgs[index] = cap.read()
             n += 1
