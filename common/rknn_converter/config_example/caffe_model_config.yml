@@ -1,10 +1,9 @@
-model_name: dpn68
 RK_device_platform: RK1808
 model_framework: caffe
 prototxt_file_path: ./deploy_dpn68-extra.prototxt
 caffemodel_file_path: ./dpn68-extra.caffemodel
 quantize: True
-pre_compile: online
+pre_compile: off
 dataset: ./dataset.txt
 
 graph:

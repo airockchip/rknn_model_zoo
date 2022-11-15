@@ -1,1 +1,0 @@
-python ../../../../../common/rknn_converter/rknn_convert.py --yml_path ./yolov5s_convert.yml --compute_convert_loss --eval_perf

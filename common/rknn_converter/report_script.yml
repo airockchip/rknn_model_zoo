@@ -1,0 +1,56 @@
+Board_info:
+  chipname: None
+  system: None
+  npu_driver_version: None
+  librknn_runtime_version: None
+  CPU_freq:
+    try_setting: None
+    querry: None
+  DDR_freq:
+    try_setting: None
+    querry: None
+  NPU_freq:
+    try_setting: None
+    querry: None
+
+Model_info:
+  framework: None
+  src_model: None
+  input_shape: None
+  output_shape: None
+  rknn_model: None
+  dtype: None
+
+  Memory_info(MiB):
+    weight: None
+    internal: None
+    total: None
+    model_file_size: None
+
+  Python_api:
+    time_cost(ms):
+      init: None
+      run(include data transmission): None
+      eval_performance(only model inference): None
+    accuracy(cos simularity):
+      output_0: None
+
+  RKNN_api(normal):
+    time_cost(ms):
+      init: None
+      input_set: None
+      run: None
+      output_get: None
+      total(except init): None
+    accuracy(cos simularity):
+      output_0: None
+
+  RKNN_api(zero_copy):
+    time_cost(ms):
+      init: None
+      input_io_set: None
+      run: None
+      output_io_set: None
+      total(except init): None
+    accuracy(cos simularity):
+      output_0: None

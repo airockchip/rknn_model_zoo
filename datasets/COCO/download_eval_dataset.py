@@ -73,3 +73,9 @@ if __name__ == '__main__':
     download(annotation_name, annotation_url)
     un_zip(annotation_name)
 
+    # gen path txt for Capi benchmark test
+    src_path = 'val2017'
+    store_path_on_board = '/userdata/val2017'
+    with open('./coco_dataset_path.txt', 'w') as f:
+        for file in os.listdir(src_path):
+            f.write(os.path.join(store_path_on_board, file)+'\n')

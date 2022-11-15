@@ -1,8 +1,8 @@
-model_name: mnasnet_1
 RK_device_platform: RK1808
 model_framework: tflite
 model_file_path: ./mnasnet_1.0_224.tflite
 quantize: True
+pre_compile: off
 dataset: ./dataset.txt
 
 graph:

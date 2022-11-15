@@ -1,8 +1,8 @@
-model_name: mnasnet1_0
 RK_device_platform: RK1808
 model_framework: pytorch
 model_file_path: ./mnasnet1_0.pt
 quantize: True
+pre_compile: off
 dataset: ./dataset.txt
 
 graph:

@@ -1,9 +1,9 @@
-model_name: resnet50_v2
 RK_device_platform: RK1808
 model_framework: mxnet
 json_file_path: ./resnet50_v2-symbol.json
 params_file_path: ./resnet50_v2-0000.params
 quantize: True
+pre_compile: off
 dataset: ./dataset.txt
 
 graph:

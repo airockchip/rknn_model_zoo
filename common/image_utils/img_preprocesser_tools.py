@@ -16,7 +16,8 @@ class Image_preprocessor():
         # loading img
         assert color_type in SUPPORT_COLOR_TYPE, "now only support color type as follow: {}".format(SUPPORT_COLOR_TYPE)
         if color_type == 'GRAY':
-            self.img = cv2.imread(img_path, 'GRAY')
+            self.img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+            self.img = self.img.reshape(*self.img.shape, 1)
         else:
             self.img = cv2.imread(img_path)
 
@@ -31,6 +32,9 @@ class Image_preprocessor():
         for i in range(len(mean_values)):
             _img[:,:,i] = (_img[:,:,i] - mean_values[i])/std_values[i]
         self.img = _img
+
+    def to_float(self):
+        self.img = self.img.astype(np.float32)
 
     def resize(self, target_size):
         _img = copy.deepcopy(self.img)
@@ -49,6 +53,8 @@ class Image_preprocessor():
                 output = self.img.transpose(2, 0, 1)
             else:
                 output = self.img
+            # if output.dtype == np.int64:
+            #     output = output.astype(np.int32)
             return output 
         
         def pytorch_type():

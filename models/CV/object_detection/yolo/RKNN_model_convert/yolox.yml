@@ -1,0 +1,20 @@
+model_name: yolox
+model_framework: pytorch
+model_file_path: ./yolox.torchscript.pt
+RK_device_platform: RV1126
+RK_device_id: simulator
+dataset: ../../../../../datasets/COCO/coco_dataset_1.txt
+quantize: True
+# pre_compile: online
+
+graph:
+  in_0:
+    shape: 3,640,640
+    mean_values: 0
+    std_values: 1
+    img_type: BGR
+
+configs:
+  quantized_dtype: asymmetric_quantized-8
+  quantized_algorithm: normal
+  optimization_level: 3

@@ -1,9 +1,9 @@
-model_name: yolov4
 RK_device_platform: RK1808
 model_framework: darknet
 cfg_file_path: ./yolov4.cfg
 weight_file_path: ./yolov4.weights
 quantize: True
+pre_compile: off
 dataset: ./dataset.txt
 
 graph:

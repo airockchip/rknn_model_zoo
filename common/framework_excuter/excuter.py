@@ -47,7 +47,7 @@ class Excuter:
 
         elif framework == 'pytorch':
             from pytorch_excute import Torch_model_container
-            model_container = Torch_model_container(_info['model'])
+            model_container = Torch_model_container(_info['model'], _info['qnnpack'])
 
         elif framework == 'keras':
             from keras_excute import Keras_model_container

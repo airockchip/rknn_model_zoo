@@ -1,8 +1,8 @@
-model_name: resnet50_v2
 RK_device_platform: RK1808
 model_framework: tensorflow
 model_file_path: ./frozen_resnet_v2_50.pb
 quantize: True
+pre_compile: off
 dataset: ./dataset.txt
 
 graph:

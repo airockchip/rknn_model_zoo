@@ -5,37 +5,81 @@ from collections import OrderedDict
 
 # devices_type
 NPU_VERSION_1_DEVICES = ['RK3399PRO', 'RK1808', 'RV1109', 'RV1126']
-NPU_VERSION_2_DEVICES = ['RK3566', 'RK3568', 'RK3588']
+NPU_VERSION_2_DEVICES = ['RK3566', 'RK3568', 'RK3588', 'RV1106', 'RV1103']
+
+QUANTIZE_DTYPE_MAP = {
+    'asymmetric_affine-u8': 'u8',
+    'dynamic_fixed_point-i8': 'i8', 
+    'dynamic_fixed_point-i16': 'i16',
+    'asymmetric_quantized-8': 'i8',             # For NPU-2: asymmetric_quantized-8
+}
+
+
+def _dict_to_str(tar_dict):
+    _ignore_key = ['img_size']
+    _supress_key = ['input_example']
+    _supress_lenth = 100
+    def _parse_dict(_d, _srt_list, _depth=0):
+        _blank = ' '*2
+        for _key, _value in _d.items():
+            # ignore some key
+            if _key in _ignore_key:
+                continue
+
+            if isinstance(_value, dict):
+                _str.append(_blank*_depth + _key + ':')
+                _parse_dict(_value, _srt_list, _depth+1)
+            elif _value is None:
+                continue
+            else:
+                _srt_list.append(_blank*_depth + _key + ': ' + str(_value))
+                if _key in _supress_key:
+                    _srt_list[-1] = _srt_list[-1][:_supress_lenth] + '  ...'
+
+    if not isinstance(tar_dict, dict):
+        print('{} is not a dict'.format(tar_dict))
+
+    _str = []
+    _parse_dict(tar_dict, _str)
+    return _str
+
 
 def get_example_img_from_dataset(dataset_path, quantize_status):
-    # TODO support multi example
     with open(dataset_path, 'r') as f:
-        single_input = f.readline()
-    single_input = single_input.rstrip('\n')
-    inputs_list = single_input.split(' ')
-    
+        contents = f.readlines()
+    examples = []
     dataset_dir = os.path.dirname(dataset_path)
-    # check exist
-    for i in range(len(inputs_list)):
-        _path = copy.deepcopy(inputs_list[i])
-        if not os.path.isabs(_path):
-            _path = os.path.join(dataset_dir, _path)
-            inputs_list[i] = _path
-        if not os.path.exists(_path):
-            if quantize_status is True:
-                assert False, '|| {} || input path in dataset.txt not exist'.format(_path)
-            elif quantize_status is False:
-                print("|| {} || input path in dataset.txt not exist, compute convert loss will be failed".format(_path))
-                return None
-    return inputs_list
+
+    for _path in contents:
+        _path = _path.rstrip('\n')
+        inputs_list = _path.split(' ')
+
+        # check exist
+        for i in range(len(inputs_list)):
+            _path = copy.deepcopy(inputs_list[i])
+            if not os.path.isabs(_path):
+                _path = os.path.join(dataset_dir, _path)
+                inputs_list[i] = _path
+            if not os.path.exists(_path):
+                if quantize_status is True:
+                    assert False, '|| {} || input path in dataset.txt not exist'.format(_path)
+                elif quantize_status is False:
+                    print("|| {} || input path in dataset.txt not exist, compute convert loss will be failed".format(_path))
+                    continue
+        examples.append(inputs_list)
+    return examples
 
 
 class RKNN_config_container:
-    def __init__(self, yml_path) -> None:
-        self.yml_file_path = yml_path
-        with open(yml_path, 'r') as f:
-            # project_config = yaml.load(f)
-            project_config = yaml.safe_load(f)
+    def __init__(self, config) -> None:
+        if isinstance(config, str):
+            self.yml_file_path = config
+            with open(config, 'r') as f:
+                # project_config = yaml.load(f)
+                project_config = yaml.safe_load(f)
+        else:
+            project_config = copy.deepcopy(config)
+
         self.project_config = project_config
         self.RK_device_platform = project_config.get('RK_device_platform', 'RK1808').upper()
 
@@ -55,6 +99,13 @@ class RKNN_config_container:
         self.convert_config_dict['RK_device_platform'] = RK_device_platform
         self.convert_config_dict['input_example'] = self.project_config.get('input_example', None)
         self.convert_config_dict['pre_compile'] = self.project_config.get('pre_compile', 'off')
+        
+        self.convert_config_dict['core_mask'] = self.project_config.get('core_mask', 1)       # For rk3588, defualt first core.
+        # 1 = 0,0,1
+        # 2 = 0,1,0
+        # 3 = 0,1,1
+        # 4 = 1,0,0
+        # 7 = 1,1,1
 
     def init_rknn_config(self):
         # defualt config
@@ -104,7 +155,10 @@ class RKNN_config_container:
             self.convert_config_dict['RK_device_id'] = str(self.convert_config_dict['RK_device_id'])
 
     def parse_build_config(self):
-        model_path_dir = os.path.dirname(self.yml_file_path)
+        if hasattr(self, 'yml_file_path'):
+            model_path_dir = os.path.dirname(self.yml_file_path)
+        else:
+            model_path_dir = ''
         self.convert_config_dict['dataset'] = self.project_config.get('dataset', None)
         if self.convert_config_dict['dataset'] is not None:
             self.convert_config_dict['dataset'] = os.path.join(model_path_dir, self.convert_config_dict['dataset'])
@@ -116,7 +170,10 @@ class RKNN_config_container:
         self.convert_config_dict['build'] = build_config
 
     def parse_model_load_config(self):
-        model_path_dir = os.path.dirname(self.yml_file_path)
+        if hasattr(self, 'yml_file_path'):
+            model_path_dir = os.path.dirname(self.yml_file_path)
+        else:
+            model_path_dir = ''
         project_config = self.project_config
         model_framework = project_config.get('model_framework', None)
         assert model_framework != None, 'platform shoule be define in config_file'
@@ -125,11 +182,14 @@ class RKNN_config_container:
         if 'model_file_path' in project_config:
             # for onnx/pytorch/tensorflow/tflite/keras
             model_load_dict['model'] = os.path.join(model_path_dir, project_config['model_file_path'])
+            if model_framework == 'pytorch':
+                self.convert_config_dict['qnnpack'] = project_config.get('qnnpack','False')
 
         if model_framework == 'caffe':
             model_load_dict['model'] = os.path.join(model_path_dir, project_config['prototxt_file_path'])
             model_load_dict['blobs'] = os.path.join(model_path_dir, project_config['caffemodel_file_path'])
-            model_load_dict['proto'] = 'caffe'
+            if self.NPU_VERSION == 1:
+                model_load_dict['proto'] = 'caffe'
         elif model_framework == 'darknet':
             model_load_dict['model'] = os.path.join(model_path_dir, project_config['cfg_file_path'])
             model_load_dict['weight'] = os.path.join(model_path_dir, project_config['weight_file_path'])
@@ -199,19 +259,23 @@ class RKNN_config_container:
         inputs_example = self.convert_config_dict.get('input_example', None)
         if inputs_example is None:
             if self.convert_config_dict['dataset'] is not None:
-                inputs_path_list = get_example_img_from_dataset(self.convert_config_dict['dataset'], self.convert_config_dict['build']['do_quantization'])
+                multi_examples = get_example_img_from_dataset(self.convert_config_dict['dataset'], self.convert_config_dict['build']['do_quantization'])
             else:
                 return 
         else:
-            inputs_path_list = inputs_example.split(' ')
-        self.convert_config_dict['input_example'] = inputs_path_list
+            multi_examples = inputs_example.split(' ')
         
-        if inputs_path_list is not None:
-            inputs_key = list(self.convert_config_dict['inputs'].keys())
+        inputs_path_list_with_port = []
+        inputs_key = list(self.convert_config_dict['inputs'].keys())
+        for single_example in multi_examples:
+            _temp_dict = {}
             for i in range(len(inputs_key)):
-                self.convert_config_dict['inputs'][inputs_key[i]]['input_example'] = inputs_path_list[i]
-        # hybrid
+                _temp_dict[inputs_key[i]] = single_example[i]
+            inputs_path_list_with_port.append(_temp_dict)
 
+        self.convert_config_dict['input_example'] = inputs_path_list_with_port
+
+        # hybrid
     '''
     def update_pre_compile(self):
         #! No more support offline precompile
@@ -228,6 +292,8 @@ class RKNN_config_container:
     '''
 
     def update_graph(self):
+        self.project_config['no_scale_values'] = True
+
         mean_values_list = []
         std_values_list = []
         input_size_list = []
@@ -246,16 +312,24 @@ class RKNN_config_container:
                 inputs_name.append(_input_name)
 
             # input_size_list
-            input_size_list.append([int(_v) for _v in sub_dict['shape'].split(',')])
+            input_size_list.append([int(_v) for _v in str(sub_dict['shape']).split(',')])
             if self.convert_config_dict['model_framework'] in ['tensorflow', 'tflite', 'keras']:
-                channel_dim_size = input_size_list[-1][-1]
+                if len(input_size_list[-1]) == 1:
+                    channel_dim_size = 1
+                else:
+                    channel_dim_size = input_size_list[-1][-1]
                 img_size = input_size_list[-1][0:-1]
             else:
-                channel_dim_size = input_size_list[-1][0]
+                if len(input_size_list[-1]) == 1:
+                    channel_dim_size = 1
+                else:
+                    channel_dim_size = input_size_list[-1][0]
                 img_size = input_size_list[-1][1:]
             
             # mean_values
             mean_values = sub_dict.get('mean_values', 0)
+            if mean_values!= 0:
+                self.project_config['no_scale_values'] = False
             if isinstance(mean_values, str):
                 mean_values_list.append([float(_v) for _v in mean_values.split(',')])
             else:
@@ -263,6 +337,8 @@ class RKNN_config_container:
 
             # std_values
             std_values = sub_dict.get('std_values', 1)
+            if std_values!= 1:
+                self.project_config['no_scale_values'] = False
             if isinstance(std_values, str):
                 std_values_list.append([float(_v) for _v in std_values.split(',')])
             else:
@@ -272,7 +348,11 @@ class RKNN_config_container:
             channel_type = sub_dict.get('img_type', None)
             if channel_type is None:
                 #! not allow some input with img_type and other without img_type
+                if len(input_size_list[-1]) == 2 or \
+                    (len(input_size_list[-1]) ==3 and input_size_list[-1][0] == 1):
+                    channel_type = 'GRAY' 
                 channel_type_list = False
+                # channel_type = 'RGB'
             else:
                 if channel_type == 'BGR':
                     channel_type_list.append(True)
@@ -301,13 +381,18 @@ class RKNN_config_container:
         self.convert_config_dict['config']['mean_values'] = mean_values_list
         self.convert_config_dict['config']['std_values'] = std_values_list
         if self.NPU_VERSION == 1:
-            self.convert_config_dict['config']['reorder_channel'] = '#'.join(reorder_list)
+            if len(reorder_list) == 0:
+                self.convert_config_dict['config']['reorder_channel'] = None
+            else:
+                self.convert_config_dict['config']['reorder_channel'] = '#'.join(reorder_list)
         elif self.NPU_VERSION == 2:
             self.convert_config_dict['config']['quant_img_RGB2BGR'] = channel_type_list
 
         # TODO if other model_framework support load subgraph, add here 
         if self.convert_config_dict['model_framework'] in ['tensorflow', 'onnx'] and \
             inputs_name != [] and outputs_name != []:
+            pass
+            # TODO support
             self.convert_config_dict['load']['inputs'] = inputs_name
             self.convert_config_dict['load']['outputs'] = outputs_name
 
@@ -320,9 +405,44 @@ class RKNN_config_container:
                 self.convert_config_dict['load']['input_size_list'] = _input_size_list
 
     def update_path(self, path_type, given_path):
-        if path_type == 'export_path':
-            self.convert_config_dict['export_rknn']['export_path'] = given_path
-            self.convert_config_dict['export_pre_compile_path'] = given_path.rstrip('.rknn') + '_precompile.rknn'
+        model_name = self.project_config.get('model_name', None)
+        merge_platform = {
+            'RK1808': 'RK1808_3399pro',
+            'RK3399PRO': 'RK1808_3399pro',
+            'RV1126': 'RV1109_1126',
+            'RV1109': 'RV1109_1126',
+            'RV1103': 'RV1103_1106',
+            'RV1106': 'RV1103_1106',
+            'RK3566': 'RK356X',
+            'RK3568': 'RK356X',
+            'RK3588': 'RK3588',
+        }
+        platform = merge_platform[self.project_config['RK_device_platform'].upper()]
+        
+        if model_name is None:
+            model_name = 'model'
+            src_model_name = self.convert_config_dict['load'].get('model', None)
+            if src_model_name is not None:
+                src_model_name = src_model_name.split(os.sep)[-1]
+                model_name = '.'.join(src_model_name.split('.')[0:-1])
+
+        dtype = QUANTIZE_DTYPE_MAP[self.convert_config_dict['config']['quantized_dtype']] if self.project_config['quantize'] else 'fp'
+        model_name = '_'.join([model_name, 
+                               platform,
+                               dtype,
+                              ])
+
+        sub_folder = './model_cvt'
+        if given_path == 'AUTO':
+            _ = os.mkdir(sub_folder) if os.path.exists(sub_folder) is not True else 0
+            device_folder = os.path.join(sub_folder, platform)
+            _ = os.mkdir(device_folder) if os.path.exists(device_folder) is not True else 0
+            given_path = os.path.join(device_folder, model_name)
+        elif not given_path.endswith('.rknn'):
+            given_path = os.path.join(given_path, model_name)
+
+        self.convert_config_dict['export_rknn']['export_path'] = given_path.rstrip('.rknn') + '.rknn'
+        self.convert_config_dict['export_pre_compile_path'] = given_path.rstrip('.rknn') + '_precompile.rknn'
 
     '''
     def set_quantize(self, quantize):
@@ -340,8 +460,9 @@ class RKNN_config_container:
     def print_config(self):
         # TODO optimize print logic
         print('='*10, 'parser_config', '='*10)
-        for key, value in self.convert_config_dict.items():
-            print('{}:{}'.format(key, value))
+        _str = _dict_to_str(self.convert_config_dict)
+        for _s in _str:
+            print(_s)
         print('='*35)
 
     def align_quantized_type(self):
@@ -351,6 +472,14 @@ class RKNN_config_container:
         elif self.NPU_VERSION == 2 and \
              self.convert_config_dict['config']['quantized_dtype'] == 'asymmetric_affine-u8':
              self.convert_config_dict['config']['quantized_dtype'] = 'asymmetric_quantized-8'
+
+    def remove_mean_std_if_neednt(self):
+        if self.project_config.get('no_scale_values', False):
+            self.convert_config_dict['config'].pop('mean_values')
+            self.convert_config_dict['config'].pop('std_values')
+            for key, info in self.convert_config_dict['inputs'].items():
+                info.pop('mean_values')
+                info.pop('std_values')
 
     def push_back(self):
         return self.convert_config_dict
@@ -368,6 +497,7 @@ class RKNN_config_container:
 
         self.update_graph()
         self.update_config()
-        self.update_dataset()           
+        self.update_dataset()
         self.align_quantized_type()     # align toolkit1,toolkit2 format
+        self.remove_mean_std_if_neednt()
 
