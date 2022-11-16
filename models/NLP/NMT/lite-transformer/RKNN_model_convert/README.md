@@ -11,6 +11,6 @@ python ../../../../../common/rknn_converter/rknn_convert.py --yml_path ./model_c
 
 #### onnx 模型有以下获取方式：
 
-- 参考[仓库](https://github.com/airockchip/lite-transformer/README_RK.md)训练得到
+- 参考[仓库](https://github.com/airockchip/lite-transformer/blob/master/README_RK.md)训练得到
 - 使用[网盘(密码rknn)](https://eyun.baidu.com/s/3humTUNq)提供的预训练模型，预训练权重路径为 models/NLP/NMT/lite-transformer/checkpoints/{dataset_name}
 

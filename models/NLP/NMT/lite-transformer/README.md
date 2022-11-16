@@ -2,7 +2,7 @@
 
 本工程用于展示如何在RKNPU平台上部署lite transformer模型。
 
-训练及导出onnx请参考：https://github.com/airockchip/lite-transformer/README_RK.md
+训练及导出onnx请参考：https://github.com/airockchip/lite-transformer/blob/master/README_RK.md
 
 
 

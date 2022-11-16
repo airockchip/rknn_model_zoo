@@ -6,11 +6,9 @@
 
 <br>
 
-
-
 相关模型权重请从[百度网盘](https://eyun.baidu.com/s/3humTUNq)获取，密码为 rknn
 
-(网盘提供 RKNN 模型如无特别说明，则基于最新 release 版本的 RKNN-Toolkit1/2 生成，使用 RKNN 模型时请先将设备的 NPU 驱动更新至最新的 release 版本；否则需要用户自行生成 RKNN 模型)
+(网盘提供的 RKNN 模型如无特别说明，则基于最新 release 版本的 RKNN-Toolkit1/2 生成，使用 RKNN 模型时请先将设备的 NPU 驱动更新至最新的 release 版本；如无法更新驱动，则需要使用旧版本 RKNN-Toolkit 生成与驱动匹配的 RKNN 模型)
 
 
 
@@ -20,11 +18,11 @@
 <summary>&#160&#160&#160 2022-11-15</summary>
 模型新增:<br/>
 &#160&#160&#160&#160 1.新增 yolov7,yolox 支持<br/>
+&#160&#160&#160&#160 2.新增 lite-transformer 支持。(beta版本)<br/>
 功能优化:<br/>
 &#160&#160&#160&#160 1.RKNN-convert新增 capi test 功能。(beta版本)<br/>
 &#160&#160&#160&#160 2.新增定频工具<br/>
 </details>
-
 
 
 
@@ -47,7 +45,7 @@
 
 |模型 |说明 |
 |-|-|
-|<b>[Lite transformer](models/NLP/NMT/lite-transformer)</b>|以英文转中文翻译作为示例，支持 RKNN-Toolkit2|
+|<b>[Lite transformer](models/NLP/NMT/lite-transformer)</b>|以英文转中文翻译作为示例，支持 RKNN-Toolkit1/2|
 
 
 

@@ -4,5 +4,5 @@
 
 
 
-需要使用 python demo 的，请参考 https://github.com/airockchip/lite-transformer/README_RK.md 里面的翻译demo，支持torch/onnx/RKNN 模型。
+需要使用 python demo 的，请参考 https://github.com/airockchip/lite-transformer/blob/master/README_RK.md 里面的翻译demo，支持torch/onnx/RKNN 模型。
 

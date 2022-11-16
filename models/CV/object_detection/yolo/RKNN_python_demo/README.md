@@ -32,4 +32,5 @@ python yolo_map_test_rknn.py --model yolox --model_path ./yolox.pt
 - 使用 rknn 模型作为测试模型时，需加上参数 `--target {platform} --device_id {device_id}`，以 rv1126(假设 device id 为 123456)，则参数为  `--target rv1126 --device_id 123456`
 - 默认使用 coco eval 作为测试数据集，如使用其他文件夹下图片作为测试，加上参数 `--img_folder {folder_path} ` ，如 `--img_folder ../test_data`
 - 想获取 COCO benchmark 测试结果时，加上参数  `--coco_map_test`
+- 想看到图片画框效果，加上参数 `--img_show`
 
