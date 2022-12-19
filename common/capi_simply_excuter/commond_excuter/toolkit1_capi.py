@@ -10,36 +10,22 @@ realpath = realpath.split(_sep)
 binary_dir = '/{}/capi_tools/toolkit1/rknn_capi_test/install'.format(_sep.join(realpath[: realpath.index('rknn_model_zoo')+1]))
 scaling_file = '/{}/utils/scaling_frequency.sh'.format(_sep.join(realpath[: realpath.index('common')+1]))
 
-
 require_map = {
-    'RV1126': os.path.join(binary_dir, 'RV1109_1126/rknn_capi_test'),
-    'RV1109': os.path.join(binary_dir, 'RV1109_1126/rknn_capi_test'),
-    'RK1808': os.path.join(binary_dir, 'RK1808/rknn_capi_test'),
+    'android':{
+        'RK3399PRO': os.path.join(binary_dir, 'RK3399PRO/Android/rknn_capi_test'),
+    },
+    'linux':{
+        'RV1126': os.path.join(binary_dir, 'RV1109_1126/Linux/rknn_capi_test'),
+        'RV1109': os.path.join(binary_dir, 'RV1109_1126/Linux/rknn_capi_test'),
+        'RK1808': os.path.join(binary_dir, 'RK1808/Linux/rknn_capi_test'),
+        'RK3399PRO': os.path.join(binary_dir, 'RK3399PRO/Linux/rknn_capi_test'),      
+    },
 }
 
 api_dict = {
     'normal': 'rknn_capi_test',
     'zero_copy': 'rknn_capi_test_zero_copy',
 }
-
-def get_device_system_type(device_id=None):
-    if device_id is None:
-        cmd = "adb shell cat /proc/version"
-    else:
-        cmd = "adb -s {} shell cat /proc/version".format(device_id)
-    
-    query = os.popen(cmd)
-    result = query.readlines()
-
-    if "android" in result[0] or \
-        "Android" in result[0] or \
-        "ANDROID" in result[0]:
-        system_type = 'android'
-    else:
-        system_type = 'linux'
-    # print('SYSTEM is {}'.format(system_type))
-    return system_type
-
 
 _debug = True
 def my_os_system(cmd):
@@ -76,19 +62,18 @@ class tk1_capi_excuter(object):
     #           5.cpu dequantize time
     #
     # --------------------------------------------------------------------------------------------------
-    def __init__(self, model_path, model_config_dict):
+    def __init__(self, model_path, model_config_dict, device_system):
         self.model_path = model_path
         self.model_config_dict = model_config_dict
+        self.device_system = device_system
 
-        self.remote_tmp_path = '/userdata/capi_test/'
         self.platform = model_config_dict.get('RK_device_platform', 'RK1808').upper()
-        if self.platform not in ['RV1126', 'RV1109', 'RK1808']:
+        if self.platform not in ['RV1126', 'RV1109', 'RK1808', 'RK3399PRO']:
             raise Exception('Unsupported platform: {}'.format(self.platform))
-        self.device_system = get_device_system_type(model_config_dict['RK_device_id'])
-        print("\b System: {}".format(self.device_system))
+
         if self.device_system == 'android':
             self.remote_tmp_path = '/data/capi_test/'
-        #     my_os_system("adb root & adb remount")
+            my_os_system("adb root & adb remount")
         else:
             self.remote_tmp_path = '/userdata/capi_test/'
 
@@ -143,7 +128,9 @@ class tk1_capi_excuter(object):
         # import subprocess
         # result = subprocess.getoutput("adb shell md5sum {xxx}")
         print('---> push require')
-        my_os_system("adb push {}/* {}".format(require_map[self.platform], self.remote_tmp_path))
+        my_os_system("adb shell mkdir {}".format(self.remote_tmp_path))
+        my_os_system("adb shell sync")
+        my_os_system("adb push {}/* {}".format(require_map[self.device_system][self.platform], self.remote_tmp_path))
 
 
     def _push_model(self):
@@ -157,6 +144,7 @@ class tk1_capi_excuter(object):
             command_in_shell = [
                 'cd {}'.format(self.remote_tmp_path),
                 'chmod 777 {}'.format(api_dict[api_type]),
+                'export LD_LIBRARY_PATH=./lib',
                 './{} {} {} {}'.format(api_dict[api_type], self.test_model_name, self.input_line, loop),
             ]
 
@@ -168,16 +156,18 @@ class tk1_capi_excuter(object):
     def _init_time_dict(self, api_type='normal'):
         if api_type == 'normal':
             self.time_dict = {
+                'model_init': 0,
                 'input_set': 0,
                 'run': 0,
                 'output_get': 0,
             }
         elif api_type == 'zero_copy':
             self.time_dict = {
-                'input_sync': 0,
+                'model_init': 0,
+                'input_io_init': 0,
+                'output_io_init': 0,
                 'run': 0,
-                'output_sync': 0,
-                'cpu_dequantize': 0,
+                # 'cpu_dequantize': 0,
             }
 
     def _pull_and_parse(self, api_type):
@@ -190,13 +180,11 @@ class tk1_capi_excuter(object):
         assert len(lines)>0, "{} is blank, run failed".format(self.capi_record_file_name)
         pattern = re.compile(r'\d+')
         output_number = int(pattern.findall(lines[1])[0])
-        if api_type == 'normal':
-            time_line = {'input_set': 4, 'run': 5, 'output_get': 6}
-        elif api_type == 'zero_copy':
-            time_line = {'run': 4, 'cvt_type_time': 5, 'total': 6}
 
-        for _key, _value in time_line.items():
-            self.time_dict[_key] = float('.'.join(pattern.findall(lines[_value])))
+        for _l in lines:
+            p_name = _l.split(':')[0]
+            if p_name in self.time_dict:
+                self.time_dict[p_name] = float('.'.join(pattern.findall(_l)))
 
         self._get_output_name(output_number)
         for i in range(len(self.output_name)):
@@ -214,9 +202,13 @@ class tk1_capi_excuter(object):
             my_os_system("rm -r {}".format(self.result_store_dir))
         os.makedirs(self.result_store_dir)
 
+    def _clear_remote(self):
+        print('---> clear remote record.txt')
+        my_os_system('adb shell rm {}'.format(os.path.join(self.remote_tmp_path, self.capi_record_file_name)))
 
     def excute(self, inputs, loop, api_type):
         self._clear()
+        self._clear_remote()
         self._push_input(inputs)
         self._run_commond(loop, api_type)
         capi_result, time_set = self._pull_and_parse(api_type)

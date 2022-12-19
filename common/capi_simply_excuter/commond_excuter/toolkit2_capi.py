@@ -29,30 +29,13 @@ api_dict = {
 }
 
 
-_debug = True
+_debug = False
 def my_os_system(cmd):
     if _debug:
         return os.system(cmd)
     else:
         return os.system(cmd + ' > /dev/null 2>&1')
 
-def get_device_system_type(device_id=None):
-    if device_id is None:
-        cmd = "adb shell cat /proc/version"
-    else:
-        cmd = "adb -s {} shell cat /proc/version".format(device_id)
-    
-    query = os.popen(cmd)
-    result = query.readlines()
-
-    if "android" in result[0] or \
-        "Android" in result[0] or \
-        "ANDROID" in result[0]:
-        system_type = 'android'
-    else:
-        system_type = 'linux'
-    # print('SYSTEM is {}'.format(system_type))
-    return system_type
 
 def root_adb():
     pass
@@ -86,17 +69,17 @@ class tk2_capi_excuter(object):
     #           5.cpu dequantize time
     #
     # --------------------------------------------------------------------------------------------------
-    def __init__(self, model_path, model_config_dict):
+    def __init__(self, model_path, model_config_dict, device_system):
         self.model_path = model_path
         self.model_config_dict = model_config_dict
+        self.device_system = device_system
 
         self.platform = model_config_dict.get('RK_device_platform', 'RK3566').upper()
         if self.platform not in ['RK3566', 'RK3568', 'RK3588']:
             raise Exception('Unsupported platform: {}'.format(self.platform))
         else:
             print("\n  Device: {}".format(self.platform))
-        self.device_system = get_device_system_type(model_config_dict['RK_device_id'])
-        print("\b System: {}".format(self.device_system))
+
         if self.device_system == 'android':
             self.remote_tmp_path = '/data/capi_test/'
         #     my_os_system("adb root & adb remount")
@@ -155,6 +138,7 @@ class tk2_capi_excuter(object):
         # result = subprocess.getoutput("adb shell md5sum {xxx}")
         print('---> push require')
         my_os_system("adb shell mkdir {}".format(self.remote_tmp_path))
+        my_os_system("adb shell sync")
         my_os_system("adb push {}/* {}".format(require_map[self.device_system.lower()][self.platform.upper()], self.remote_tmp_path))
 
 
@@ -185,13 +169,17 @@ class tk2_capi_excuter(object):
     def _init_time_dict(self, api_type='normal'):
         if api_type == 'normal':
             self.time_dict = {
+                'model_init': 0,
                 'input_set': 0,
                 'run': 0,
                 'output_get': 0,
             }
         elif api_type == 'zero_copy':
             self.time_dict = {
-                'run && output_get': 0,
+                'model_init': 0,
+                'input_io_init': 0,
+                'output_io_init': 0,
+                'run': 0,
             }
 
     def _pull_and_parse(self, api_type):
@@ -201,15 +189,14 @@ class tk2_capi_excuter(object):
         with open(os.path.join(self.result_store_dir, self.capi_record_file_name), 'r') as f:
             lines = f.readlines()
 
+        assert len(lines)>0, "{} is blank, run failed".format(self.capi_record_file_name)
         pattern = re.compile(r'\d+')
         output_number = int(pattern.findall(lines[1])[0])
-        if api_type == 'normal':
-            time_line = {'input_set': 4, 'run': 5, 'output_get': 6}
-        elif api_type == 'zero_copy':
-            time_line = {'run && output_get': 4}
 
-        for _key, _value in time_line.items():
-            self.time_dict[_key] = float('.'.join(pattern.findall(lines[_value])))
+        for _l in lines:
+            p_name = _l.split(':')[0]
+            if p_name in self.time_dict:
+                self.time_dict[p_name] = float('.'.join(pattern.findall(_l)))
 
         self._get_output_name(output_number)
         for i in range(len(self.output_name)):
@@ -227,9 +214,13 @@ class tk2_capi_excuter(object):
             my_os_system("rm -r {}".format(self.result_store_dir))
         os.makedirs(self.result_store_dir)
 
+    def _clear_remote(self):
+        print('---> clear remote record.txt')
+        my_os_system('adb shell rm {}'.format(os.path.join(self.remote_tmp_path, self.capi_record_file_name)))
 
     def excute(self, inputs, loop, api_type):
         self._clear()
+        self._clear_remote()
         self._push_input(inputs)
         self._run_commond(loop, api_type)
         capi_result, time_set = self._pull_and_parse(api_type)

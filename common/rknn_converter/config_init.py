@@ -46,7 +46,8 @@ NPU_2_DEVICE = ['rk3566', 'rk3568', 'rk3588', 'rv1106', 'rv1103']
 QUANTIZE_DTYPE = ['u8', 'i8', 'i16', 'fp']
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 2 or \
+        len(sys.argv)==2 and sys.argv[1] in ['--help', '-help', '-h', '--h']:
         print("usage: python config_init.py [source_framework] [device_platform] [quantized_dtype]")
         print("  available framework:\n    {}".format(list(framework_mapper.keys())))
         print("  available device_platform:\n    {}".format(NPU_1_DEVICE + NPU_2_DEVICE))

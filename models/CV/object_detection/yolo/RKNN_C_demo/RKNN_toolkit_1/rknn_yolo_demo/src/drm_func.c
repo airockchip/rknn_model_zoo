@@ -28,10 +28,12 @@ int drm_init(drm_context *drm_ctx)
         return -1;
     }
 
-    drm_ctx->drm_handle = dlopen("/usr/lib/libdrm.so", RTLD_LAZY);
+    drm_ctx->drm_handle = dlopen("libdrm.so", RTLD_LAZY);
+
     if (!drm_ctx->drm_handle)
     {
-        printf("failed to dlopen /usr/lib/libdrm.so\n");
+        printf("failed to dlopen libdrm.so\n");
+        printf("dlopen error: %s\n", dlerror());
         drm_deinit(drm_ctx, drm_fd);
         return -1;
     }

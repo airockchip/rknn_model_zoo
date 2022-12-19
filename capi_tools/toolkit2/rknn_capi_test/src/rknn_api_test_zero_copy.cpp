@@ -309,7 +309,10 @@ int main(int argc, char* argv[])
   }
 
   rknn_context ctx = 0;
-
+  int64_t start_us, elapse_us = 0;
+  double model_init_time, input_io_init_time, output_io_init_time = 0;
+  
+  start_us  = getCurrentTimeUs();
   // Load RKNN Model
 #ifdef LOAD_FROM_PATH
   // Init rknn from model path
@@ -329,6 +332,7 @@ int main(int argc, char* argv[])
     printf("rknn_init fail! ret=%d\n", ret);
     return -1;
   }
+  model_init_time = (getCurrentTimeUs() - start_us)/1000.f;
 
   // Get sdk and driver version
   rknn_sdk_version sdk_ver;
@@ -466,6 +470,7 @@ int main(int argc, char* argv[])
   }
 
   // Set input tensor memory
+  start_us = getCurrentTimeUs();
   for (int i = 0; i < io_num.n_input; i++) {
     ret = rknn_set_io_mem(ctx, input_mems[i], &input_attrs[i]);
     if (ret < 0) {
@@ -473,11 +478,13 @@ int main(int argc, char* argv[])
       return -1;
     }
   }
+  input_io_init_time = (getCurrentTimeUs() - start_us)/1000.f;
 
+  start_us = getCurrentTimeUs();
   // Set output tensor memory
   for (uint32_t i = 0; i < io_num.n_output; ++i) {
-    // default output type is depend on model, this require float32 to compute top5
-    output_attrs[i].type = RKNN_TENSOR_FLOAT32;
+    // default output type is depend on model
+    // output_attrs[i].type = RKNN_TENSOR_FLOAT32;
     output_attrs[i].fmt = RKNN_TENSOR_NCHW;
     // set output memory and attribute
     ret = rknn_set_io_mem(ctx, output_mems[i], &output_attrs[i]);
@@ -486,6 +493,7 @@ int main(int argc, char* argv[])
       return -1;
     }
   }
+  output_io_init_time = (getCurrentTimeUs() - start_us)/1000.f;
 
   rknn_set_core_mask(ctx, (rknn_core_mask)core_mask);
 
@@ -494,9 +502,9 @@ int main(int argc, char* argv[])
   printf("Begin perf ...\n");
   printf("Loop count: %d\n", loop_count);
   for (int i = 0; i < loop_count; ++i) {
-    int64_t start_us  = getCurrentTimeUs();
+    start_us  = getCurrentTimeUs();
     ret               = rknn_run(ctx, NULL);
-    int64_t elapse_us = getCurrentTimeUs() - start_us;
+    elapse_us = getCurrentTimeUs() - start_us;
     if (ret < 0) {
       printf("rknn run error %d\n", ret);
       return -1;
@@ -545,8 +553,11 @@ int main(int argc, char* argv[])
     fprintf(output_file, "output number: %d\n", io_num.n_output);
     fprintf(output_file, "loop_count: %d\n", loop_count);
     fprintf(output_file, "infer type: zero_copy\n");
-    fprintf(output_file, "run_time: %f ms\n", inference_time);
-
+    fprintf(output_file, "model_init: %f ms\ninput_io_init: %f ms\noutput_io_init: %f ms\nrun: %f ms\n", 
+            model_init_time,
+            input_io_init_time,
+            output_io_init_time,
+            inference_time);
 
   // Destroy rknn memory
   for (uint32_t i = 0; i < io_num.n_input; ++i) {

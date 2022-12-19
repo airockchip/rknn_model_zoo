@@ -42,6 +42,8 @@ class Image_preprocessor():
             target_size = tuple(target_size)
         _img = cv2.resize(self.img, (target_size[1],target_size[0])) # model got hwc info, but cv2 need wh
         self.img = _img
+        if self.color_type == 'GRAY':
+            self.img = self.img.reshape(*self.img.shape, 1)
 
     # TODO
     def letter_box(self, target_size):

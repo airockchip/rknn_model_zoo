@@ -17,10 +17,11 @@
 
 int RGA_init(rga_context *rga_ctx)
 {
-    rga_ctx->rga_handle = dlopen("/usr/lib/librga.so", RTLD_LAZY);
+    rga_ctx->rga_handle = dlopen("librga.so", RTLD_LAZY);
     if (!rga_ctx->rga_handle)
     {
-        printf("dlopen /usr/lib/librga.so failed\n");
+        printf("dlopen librga.so failed\n");
+        printf("dlopen error: %s\n", dlerror());
         return -1;
     }
     rga_ctx->init_func = (FUNC_RGA_INIT)dlsym(rga_ctx->rga_handle, "c_RkRgaInit");
@@ -74,7 +75,6 @@ void img_resize_slow(rga_context *rga_ctx, void *src_virt, int src_w, int src_h,
                      int w_offset, int h_offset, RgaSURF_FORMAT color, bool add_extra_sz_w, bool add_extra_sz_h)
 {
     // printf("rga use virtual, src(%dx%d) -> dst(%dx%d)\n", src_w, src_h, dst_w, dst_h);
-
     if (rga_ctx->rga_handle)
     {
         int ret = 0;

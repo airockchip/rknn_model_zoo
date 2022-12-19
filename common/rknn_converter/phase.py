@@ -20,6 +20,7 @@ from framework_excuter.excuter import Excuter
 from capi_simply_excuter.commond_excuter.toolkit1_capi import tk1_capi_excuter
 from capi_simply_excuter.commond_excuter.toolkit2_capi import tk2_capi_excuter
 from utils.dict_tools import _dict_to_str
+from utils.shell_utils import check_file
 
 
 class time_collecter:
@@ -222,6 +223,12 @@ class validate_phase:
         self._smart_record('Memory_info(MiB).weight', weight)
         self._smart_record('Memory_info(MiB).internal', internal)
         self._smart_record('Memory_info(MiB).total', total)
+        if self.model_config_dict.get('pre_compile', 'off') == 'online' and \
+            os.path.exists(self.model_config_dict['export_pre_compile_path']):
+            _m_path = self.model_config_dict['export_pre_compile_path']
+        else:
+            _m_path = self.model_config_dict['export_rknn']['export_path']
+        self._smart_record('Memory_info(MiB).model_file_size', check_file(_m_path, 'size'))
         return memory_info
 
 
@@ -236,7 +243,7 @@ class validate_phase:
                 self._smart_record("eval_performance(only model inference)", "%.2f"%(perf_info['total_time']/1000))
             elif self.NPU_VERSION == 2:
                 time = perf_info.split("Time(us): ")[-1].split('\n')[0]
-                self._smart_record("eval_performance(only model inference)", time)
+                self._smart_record("eval_performance(only model inference)", float(time)/1000)
         return perf_info
 
 
@@ -268,16 +275,16 @@ class validate_phase:
     def _get_rknn_result_via_Capi_npu1(self, inputs, looptime, api_type):
         if self.capi_excuter is None:
             if self.model_config_dict['pre_compile'] == 'online':
-                capi_excuter = tk1_capi_excuter(self.model_config_dict['export_pre_compile_path'], deepcopy(self.model_config_dict))
+                capi_excuter = tk1_capi_excuter(self.model_config_dict['export_pre_compile_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
             else:
-                capi_excuter = tk1_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict))
+                capi_excuter = tk1_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
             self.capi_excuter = capi_excuter
         result, time_info = self.capi_excuter.excute(inputs, looptime, api_type)
         return result, time_info
 
     def _get_rknn_result_via_Capi_npu2(self, inputs, looptime, api_type):
         if self.capi_excuter is None:
-            self.capi_excuter = tk2_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict))
+            self.capi_excuter = tk2_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
         result, time_info = self.capi_excuter.excute(inputs, looptime, api_type)
         return result, time_info
         # raise NotImplemented
@@ -349,6 +356,9 @@ class validate_phase:
 
     def Compare_convert_dist_via_Capi(self, looptime=5, api_type='normal', sample=1):
         print('\n\n', '='*30)
+        if self.RK_device_platform.upper() == 'RK3399PRO' and api_type == 'zero_copy':
+            print("RK3399PRO not support zero copy. Ignore zero copy test")
+            return
         print('Compare_convert_dist_via_Capi\n  looptime: {}\n  api_type: {}\n  sample: {}'.format(looptime, api_type, sample))
 
         model_config_dict = deepcopy(self.model_config_dict)
@@ -375,12 +385,17 @@ class validate_phase:
                 self.report_info['Model_info']['RKNN_api({})'.format(api_type)]['accuracy(cos simularity)']['output_{}'.format(i)] = cos_record[i]
             
             if api_type == 'normal':
+                self._smart_record('RKNN_api(normal).time_cost(ms).model_init', time_info['model_init'])
                 self._smart_record('RKNN_api(normal).time_cost(ms).input_set', time_info['input_set'])
                 self._smart_record('RKNN_api(normal).time_cost(ms).run', time_info['run'])
                 self._smart_record('RKNN_api(normal).time_cost(ms).output_get', time_info['output_get'])
+                self._smart_record('RKNN_api(normal).time_cost(ms).total(except init)', time_info['output_get']+time_info['run']+time_info['input_set'])
             elif api_type == 'zero_copy':
-                self._smart_record('RKNN_api(zero_copy).time_cost(ms).total(except init)', time_info['total'])
-
+                self._smart_record('RKNN_api(zero_copy).time_cost(ms).model_init', time_info['model_init'])
+                self._smart_record('RKNN_api(zero_copy).time_cost(ms).input_io_init', time_info['input_io_init'])
+                self._smart_record('RKNN_api(zero_copy).time_cost(ms).output_io_init', time_info['output_io_init'])
+                self._smart_record('RKNN_api(zero_copy).time_cost(ms).run', time_info['run'])
+                self._smart_record('RKNN_api(zero_copy).time_cost(ms).total(except init)', time_info['run'])
         return cos_record, time_info
 
 
@@ -453,8 +468,8 @@ class validate_phase:
                     framework_excute_info['output_nodes'].append(_value['name'])
                 for _index, input_info in model_config_dict['inputs'].items():
                     #! only support single input now
-                    framework_excute_info['mean_values'] = input_info['mean_values']
-                    framework_excute_info['std_values'] = input_info['std_values']
+                    framework_excute_info['mean_values'] = input_info.get('mean_values', None)
+                    framework_excute_info['std_values'] = input_info.get('std_values', None)
 
             elif model_config_dict['model_framework'] == 'mxnet':
                 framework_excute_info['params'] = model_config_dict['load']['params']
@@ -473,12 +488,6 @@ class validate_phase:
                 if model_config_dict['model_framework'] == 'pytorch':
                     framework_excute_info['qnnpack'] = model_config_dict['qnnpack']
             self.framework_excute_info = framework_excute_info
-
-
-    def _check_rknn_handel_state(self):
-        # if self.rknn is None:
-        #     print('WARNING: detect rknn object not exist, ')
-        pass
 
 
     def _compare_cos_simularity(self, x, y):
@@ -500,11 +509,28 @@ class validate_phase:
         self.init_state = None
 
     def check_board_info(self):
+        from utils.board_checker import Board_checker
+        if self.model_config_dict['RK_device_id'] == 'simulator':
+            return
+        bc = Board_checker(self.model_config_dict['RK_device_platform'], self.model_config_dict['RK_device_id'])
+        self._smart_record('chipname', self.model_config_dict['RK_device_platform'])
+        self._smart_record('system', bc.get_device_system_type())
+        setattr(self, 'device_system', bc.get_device_system_type())
+        self._smart_record('librknn_runtime_version', "{}".format(bc.get_librknn_version()))
+        if self.model_config_dict['RK_device_id'] is None:
+            self._smart_record('device_id', bc.get_device_id()[0])
+        else:
+            self._smart_record('device_id', self.model_config_dict['RK_device_id'])
+        freq_info = bc.scaling_freq()
+        for _k, _s in freq_info.items():
+            self._smart_record(_k, _s)
         return
 
     def _fill_the_report(self):
+        from utils.shell_utils import check_file
         self._smart_record('framework', self.model_config_dict['model_framework'])
         self._smart_record('src_model', self.model_config_dict['load'].get('model', 'query_failed'))
+        self._smart_record('src_model_md5', check_file(self.model_config_dict['load'].get('model', 'query_failed'), 'md5'))
 
         # input shape
         record_shape = {}
@@ -528,6 +554,7 @@ class validate_phase:
         else:
             _m_path = self.model_config_dict['export_rknn']['export_path']
         self._smart_record('rknn_model', _m_path)
+        self._smart_record('rknn_model_md5', check_file(_m_path, 'md5'))
 
         # dtype
         if self.model_config_dict['build']['do_quantization']:

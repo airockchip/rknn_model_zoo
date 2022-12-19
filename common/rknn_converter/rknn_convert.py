@@ -39,10 +39,10 @@ def convert(model_config_dict, args):
         vp.Compare_convert_dist_via_python()
 
     if args.capi_test:
-        vp.Compare_convert_dist_via_Capi(100)
+        vp.Compare_convert_dist_via_Capi(10)
 
     if args.capi_zero_copy_test:
-        vp.Compare_convert_dist_via_Capi(100, 'zero_copy')
+        vp.Compare_convert_dist_via_Capi(10, 'zero_copy')
 
     # vp.Compare_rknn_python_Capi_dist(1)
     if args.report:

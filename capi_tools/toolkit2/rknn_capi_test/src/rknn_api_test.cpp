@@ -307,6 +307,7 @@ int main(int argc, char* argv[])
   }
 
   char* model_path = argv[1];
+  int64_t start_us, elapse_us;
 
   std::vector<std::string> input_paths_split;
   if (argc > 2) {
@@ -331,7 +332,8 @@ int main(int argc, char* argv[])
   }
 
   rknn_context ctx = 0;
-
+  double model_init_time = 0;
+  start_us  = getCurrentTimeUs();
   // Load RKNN Model
 #ifdef LOAD_FROM_PATH
   // Init rknn from model path
@@ -351,6 +353,7 @@ int main(int argc, char* argv[])
     printf("rknn_init fail! ret=%d\n", ret);
     return -1;
   }
+  model_init_time = (getCurrentTimeUs() - start_us)/1000;
 
   // Get sdk and driver version
   rknn_sdk_version sdk_ver;
@@ -423,9 +426,15 @@ int main(int argc, char* argv[])
   int            input_size[io_num.n_input];
   for (int i = 0; i < io_num.n_input; i++) {
     input_data[i]   = NULL;
-    input_type[i]   = RKNN_TENSOR_UINT8;
+    if (input_attrs[i].type==RKNN_TENSOR_BOOL){
+      input_type[i]   = RKNN_TENSOR_BOOL;
+      input_size[i]   = input_attrs[i].n_elems * sizeof(bool);
+    }
+    else{
+      input_type[i]   = RKNN_TENSOR_UINT8;
+      input_size[i]   = input_attrs[i].n_elems * sizeof(uint8_t);
+    }
     input_layout[i] = RKNN_TENSOR_NHWC;
-    input_size[i]   = input_attrs[i].n_elems * sizeof(uint8_t);
   }
 
   if (input_paths_split.size() > 0) {
@@ -484,8 +493,6 @@ int main(int argc, char* argv[])
   double input_set_time = 0;
   double inference_time = 0;
   double output_get_time= 0;
-
-  int64_t start_us, elapse_us;
 
   for (int i = 0; i < loop_count; ++i) {
     // Set input
@@ -568,7 +575,9 @@ int main(int argc, char* argv[])
     fprintf(output_file, "output number: %d\n", io_num.n_output);
     fprintf(output_file, "loop_count: %d\n", loop_count);
     fprintf(output_file, "infer type: normal\n");
-    fprintf(output_file, "set_time: %f ms\nrun_time: %f ms\nget_time: %f ms\ntotal_time: %f ms\n", 
+
+    fprintf(output_file, "model_init: %f ms\ninput_set: %f ms\nrun: %f ms\noutput_get: %f ms\ntotal_time: %f ms\n",
+              model_init_time,
               input_set_time, 
               inference_time, 
               output_get_time, 

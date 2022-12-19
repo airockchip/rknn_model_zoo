@@ -279,10 +279,10 @@ static int process_i8(int8_t *input, int *anchor, int anchor_per_branch, int gri
                     float class_prob_f32 = deqnt_affine_to_f32(maxClassProbs, zp, scale);
                     float limit_score = 0;
                     if (yolo == YOLOX){
-                        limit_score = box_conf_f32* class_prob_f32;
+                        limit_score = class_prob_f32;
                     }
                     else{
-                        limit_score = class_prob_f32;
+                        limit_score = box_conf_f32* class_prob_f32;
                     }
                     //printf("limit score: %f\n", limit_score);
                     if (limit_score > CONF_THRESHOLD){

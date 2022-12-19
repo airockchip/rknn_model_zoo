@@ -4,7 +4,7 @@
 
 - 以配置yml文件的形式，方便用户将其他模型转为 RKNN 模型
 - 兼容 RKNN-Toolkit1/RKNN-Toolkit2(暂不支持rv1106,rv1103)
-- 包含 模型转换、模型预编译、RKNN模型与原模型结果比对、记录 rknn api 耗时
+- 包含 模型转换、模型预编译、RKNN模型与原模型结果比对、记录 rknn api 耗时、生成测试结果记录。
 
 
 
@@ -18,14 +18,14 @@ cd rknn-toolkit/examples/onnx/yolov5
 (regist_rkcvt.sh文件手动拖入cmd窗口即可，获取准确的文件路径)
 {path}/regist_rkcvt.sh
 
-(python $RKCVT_INIT	获取输入参数说明)
+(python $RKCVT_INIT	--help 可看到输入选项，这里以onnx模型、rv1126平台，u8量化为例)
 python $RKCVT_INIT onnx rv1126 u8
 
 vi model_config.yml
 (修改 model_file_path 指向模型路径)
 (根据模型修改输入 shape/mean/std/color_type)
 
-python $RKCVT --yml_path model_config.yml --eval_perf --eval_memory --python_api_test --capi_test --capi_zero_copy_test
+python $RKCVT --yml_path model_config.yml --eval_perf --eval_memory --python_api_test --capi_test --capi_zero_copy_test --report
 ```
 
 
@@ -40,14 +40,94 @@ python $RKCVT --yml_path model_config.yml --eval_perf --eval_memory --python_api
 | --python_api_test     | 测试 rknn-toolkit.run 与 framework.run 结果的余弦值          |
 | --capi_test           | 设定 CPU/DDR/NPU 频率，测试 capi 与 framework.run结果余弦值，记录 input_set, run, output_get 耗时 |
 | --capi_zero_copy_test | 设定 CPU/DDR/NPU 频率，测试 capi 与 framework.run结果余弦值，记录耗时（目前可能有bug） |
+| --report              | 生成报告                                                     |
+
+
+
+生成报告示例:
+
+```yaml
+Board_info:
+  chipname: RV1126
+  device_id: 1126
+  system: linux
+  librknn_runtime_version: 1.7.3 (2e55827 build: 2022-08-25 10:45:32 base: 1131)
+  CPU_freq:
+    try_set: 1512000
+    query: 1512000
+
+  DDR_freq:
+    try_set: not support setting
+    query: None
+
+  NPU_freq:
+    try_set: 934000000
+    query: 934000000
+
+Model_info:
+  framework: pytorch
+  src_model: ./yolov7-tiny_no_sigmoid.pt
+  src_model_md5: 211c19243ef534cc770096f3e21b4d47
+  rknn_model: ./model_cvt/RV1109_1126/yolov7-tiny_no_sigmoid_RV1109_1126_u8_precompile.rknn
+  rknn_model_md5: d5c6ca781434e7f5c485505d807c5d24
+  dtype: asymmetric_affine-u8
+  input_shape:
+    in_0: [3, 640, 640]
+
+  output_shape:
+    output_0: [1, 255, 80, 80]
+    output_1: [1, 255, 40, 40]
+    output_2: [1, 255, 20, 20]
+
+  Memory_info(MiB):
+    weight: 12.54
+    internal: 11.32
+    total: 23.86
+    model_file_size: 14.71
+
+  Python_api:
+    time_cost(ms):
+      init: 331.55
+      run(include adb/ntp data transmission): 181.22
+      eval_performance(only model inference): 39.42
+
+    accuracy(cos simularity):
+      output_0: 0.9982245
+      output_1: 0.998036
+      output_2: 0.9985863
+
+  RKNN_api(normal):
+    time_cost(ms):
+      model_init: 46.974998
+      input_set: 4.0603
+      run: 38.896599
+      output_get: 38.969299
+      total(except init): 81.926198
+
+    accuracy(cos simularity):
+      output_0: 0.9982245
+      output_1: 0.99803627
+      output_2: 0.9985863
+
+  RKNN_api(zero_copy):
+    time_cost(ms):
+      model_init: 47.450001
+      input_io_init: 0.587
+      output_io_init: 0.328
+      run: 39.200001
+      total(except init): 39.200001
+
+    accuracy(cos simularity):
+      output_0: 0.9982245
+      output_1: 0.998036
+      output_2: 0.9985863
+```
 
 
 
 
 
-## 附录
-
-### 3.yml配置参数说明
+## 附录 - yml可填配置参数说明
 
 | 参数名                                | 填写内容                                                     |
 | ------------------------------------- | ------------------------------------------------------------ |

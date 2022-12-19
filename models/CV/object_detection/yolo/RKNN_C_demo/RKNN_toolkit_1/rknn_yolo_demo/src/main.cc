@@ -467,12 +467,14 @@ int main(int argc, char **argv)
             return -1;
         }
 
-        printf("img_width: %d\nimg_height: %d\nimg_channel: %d\n", img_width, img_height,img_channel);
+        printf("img_width: %d\nimg_height: %d\nimg_channel: %d\n", img_width, img_height, img_channel);
         // DRM alloc buffer
         drm_buf = drm_buf_alloc(&drm_ctx, drm_fd, img_width, img_height, img_channel * 8,
                                 &buf_fd, &handle, &actual_size);
+        printf("create drm buffer finish\n");
         memcpy(drm_buf, input_data, img_width * img_height * img_channel);
         memset(resize_buf, 0, inputs[0].size);
+        printf("set resize buf finish\n");
 
         // Letter box resize
         letter_box.target_height = m_info.height;
@@ -481,12 +483,19 @@ int main(int argc, char **argv)
         letter_box.in_width = img_width;
         compute_letter_box(&letter_box);
 
-        // Init rga context
-        RGA_init(&rga_ctx);
-        img_resize_slow(&rga_ctx, drm_buf, img_width, img_height, resize_buf, letter_box.resize_width, letter_box.resize_height, 
-                            letter_box.w_pad, letter_box.h_pad, m_info.color_expect, 
-                            letter_box.add_extra_sz_w_pad, letter_box.add_extra_sz_h_pad);
-        inputs[0].buf = resize_buf;
+        if ((m_info.height!= img_height) || (m_info.width!= img_width)){
+            // Init rga context
+            printf("WARNING: img_size(w:%d h:%d) not match model input_size(w:%d h:%d)\n", img_width, img_height, m_info.width, m_info.height);
+            printf("Try resize img with rga. If any error occur, please using image with size(w:%d h:%d) or using newer firmware to update rga driver version\n", m_info.width, m_info.height);
+            RGA_init(&rga_ctx);
+            img_resize_slow(&rga_ctx, drm_buf, img_width, img_height, resize_buf, letter_box.resize_width, letter_box.resize_height, 
+                                letter_box.w_pad, letter_box.h_pad, m_info.color_expect, 
+                                letter_box.add_extra_sz_w_pad, letter_box.add_extra_sz_h_pad);
+            inputs[0].buf = resize_buf;
+        }
+        else{
+            inputs[0].buf = drm_buf;
+        }
 
 #if (DUMP_INPUT == 1)
         FILE* dump_file;
@@ -553,10 +562,7 @@ int main(int argc, char **argv)
         // loop test with postprocess
         gettimeofday(&start_time, NULL);
         for (int i = 0; i < test_count; ++i)
-        {
-            img_resize_slow(&rga_ctx, drm_buf, img_width, img_height, resize_buf, letter_box.resize_width, letter_box.resize_height, 
-                            letter_box.w_pad, letter_box.h_pad, m_info.color_expect, 
-                            letter_box.add_extra_sz_w_pad, letter_box.add_extra_sz_h_pad);            
+        {          
             rknn_inputs_set(ctx, m_info.in_nodes, inputs);
             ret = rknn_run(ctx, NULL);
             ret = rknn_outputs_get(ctx, m_info.out_nodes, outputs, NULL);

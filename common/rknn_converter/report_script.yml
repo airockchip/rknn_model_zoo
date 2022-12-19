@@ -1,25 +1,27 @@
 Board_info:
   chipname: None
+  device_id: None
   system: None
-  npu_driver_version: None
   librknn_runtime_version: None
   CPU_freq:
-    try_setting: None
-    querry: None
+    try_set: None
+    query: None
   DDR_freq:
-    try_setting: None
-    querry: None
+    try_set: None
+    query: None
   NPU_freq:
-    try_setting: None
-    querry: None
+    try_set: None
+    query: None
 
 Model_info:
   framework: None
   src_model: None
+  src_model_md5: None
+  rknn_model: None
+  rknn_model_md5: None
+  dtype: None
   input_shape: None
   output_shape: None
-  rknn_model: None
-  dtype: None
 
   Memory_info(MiB):
     weight: None
@@ -37,7 +39,7 @@ Model_info:
 
   RKNN_api(normal):
     time_cost(ms):
-      init: None
+      model_init: None
       input_set: None
       run: None
       output_get: None
@@ -47,10 +49,10 @@ Model_info:
 
   RKNN_api(zero_copy):
     time_cost(ms):
-      init: None
-      input_io_set: None
+      model_init: None
+      input_io_init: None
+      output_io_init: None
       run: None
-      output_io_set: None
       total(except init): None
     accuracy(cos simularity):
       output_0: None

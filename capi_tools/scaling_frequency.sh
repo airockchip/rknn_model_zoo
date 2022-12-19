@@ -42,7 +42,7 @@ print_not_support_adjust()
 {
     echo "Firmware seems not support seting $1 frequency"
     echo "    wanted "$2
-    echo "    query  "$3
+    echo "    check  "$3
 }
 
 
@@ -150,6 +150,7 @@ case $seting_strategy in
         cur_freq=$(cat /sys/class/devfreq/ffbc0000.npu/cur_freq)
         print_and_compare_result $NPU_freq $cur_freq
 
+        echo "DDR: seting frequency"
         print_not_support_adjust DDR $DDR_freq
         cat /sys/kernel/debug/clk/clk_summary | grep dpll
         ;;
@@ -202,8 +203,8 @@ case $seting_strategy in
         print_and_compare_result $CPU_freq $cur_freq
 
 
+        echo "NPU: seting frequency"
         if [ -e  /sys/class/devfreq/fdab0000.npu/governor ];then
-            echo "NPU: seting frequency"
             echo userspace > /sys/class/devfreq/fdab0000.npu/governor 
             echo $NPU_freq > /sys/class/devfreq/fdab0000.npu/userspace/set_freq 
             cur_freq=$(cat /sys/class/devfreq/fdab0000.npu/cur_freq)
@@ -213,8 +214,8 @@ case $seting_strategy in
             print_not_support_adjust NPU $NPU_freq $cur_freq
         fi
 
+        echo "DDR: seting frequency"
         if [ -e /sys/class/devfreq/dmc/governor ];then
-            echo "DDR: seting frequency"
             echo userspace > /sys/class/devfreq/dmc/governor
             echo $DDR_freq > /sys/class/devfreq/dmc/userspace/set_freq
             cur_freq=$(cat /sys/class/devfreq/dmc/cur_freq)
@@ -226,6 +227,7 @@ case $seting_strategy in
 
         ;;
 
+    # rv1106, rv1103
     5)
         echo "CPU: seting frequency"
         echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
@@ -233,9 +235,11 @@ case $seting_strategy in
         cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq)
         print_and_compare_result $CPU_freq $cur_freq
 
-        echo "no strategy to seting NPU frequency"
+        echo "NPU: seting frequency"
+        echo "  no strategy to seting NPU frequency"
 
-        echo "no strategy to seting DDR frequency"
+        echo "DDR: seting frequency"
+        echo "  no strategy to seting DDR frequency"
         ;;
     *)
         echo "seting strategy not implement now"

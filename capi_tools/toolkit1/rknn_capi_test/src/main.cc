@@ -330,9 +330,20 @@ int main(int argc, char **argv)
     int model_len = 0;
     unsigned char *model;
 
+
+    struct timeval start_time, stop_time;
+    float set_time, run_time_simple, run_time_full, get_time, cvt_type_time, init_time = 0;
+    float input_io_init_time, output_io_init_time = 0;
+    long oldTime, newTime;
+
+
     // Load RKNN Model
     model = load_model(model_path, &model_len);
+    gettimeofday(&start_time, NULL);
     ret = rknn_init(&ctx, model, model_len, 0);
+    gettimeofday(&stop_time, NULL);
+    init_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+
     if (ret < 0)
     {
         printf("rknn_init fail! ret=%d\n", ret);
@@ -432,11 +443,14 @@ int main(int argc, char **argv)
                                                     &(inputs_mem[i]->fd), 
                                                     (unsigned int*)&(inputs_mem[i]->handle), 
                                                     (size_t*)&(inputs_mem[i]->size));
+        gettimeofday(&start_time, NULL);
         rknn_set_io_mem(ctx, inputs_mem[i], &input_attrs[i]);
+        gettimeofday(&stop_time, NULL);
     }
+    input_io_init_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
 
     rknn_tensor_mem* outputs_mem[io_num.n_output];
-    for (int i = 0; i < io_num.n_input; i++){
+    for (int i = 0; i < io_num.n_output; i++){
         outputs_mem[i] = (rknn_tensor_mem*)malloc(sizeof(rknn_tensor_mem));
     }
 
@@ -451,8 +465,12 @@ int main(int argc, char **argv)
                                                     &(outputs_mem[i]->fd), 
                                                     (unsigned int*)&(outputs_mem[i]->handle), 
                                                     (size_t*)&(outputs_mem[i]->size));
+        gettimeofday(&start_time, NULL);
         rknn_set_io_mem(ctx, outputs_mem[i], &output_attrs[i]);
+        gettimeofday(&stop_time, NULL);
     }
+    output_io_init_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+
     printf("init drm mem success\n");
 #else
     printf("using rknn_create_mem to alloc mem\n");
@@ -497,10 +515,6 @@ int main(int argc, char **argv)
         outputs[i].want_float = 1;
     }
 #endif
-
-    struct timeval start_time, stop_time;
-    float set_time, run_time_simple, run_time_full, get_time, cvt_type_time = 0;
-    long oldTime, newTime;
 
 
 #if USE_ZERO_COPY
@@ -579,6 +593,7 @@ int main(int argc, char **argv)
 
         gettimeofday(&stop_time, NULL);
         run_time_simple += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+        printf("run_time = %f ms\n",(__get_us(stop_time) - __get_us(start_time)) / 1000);
 
         // output get
         gettimeofday(&start_time, NULL);
@@ -625,10 +640,10 @@ int main(int argc, char **argv)
 # if USE_ZERO_COPY
     fprintf(output_file, "infer type: zero_copy\n");
     // fprintf(output_file, "input_syn_time: %f ms\nrun_time: %f ms\noutput_syn_time: %f ms\ncvt_type_time: %f ms\ntotal_time: %f ms\n", set_time, run_time_simple, get_time, cvt_type_time, run_time_full);
-    fprintf(output_file, "run_time: %f ms\ncvt_type_time: %f ms\ntotal_time: %f ms\n", run_time_simple, cvt_type_time, run_time_full);
+    fprintf(output_file, "model_init: %f ms\nrun: %f ms\ncpu_dequantize: %f ms\ntotal_time: %f ms\ninput_io_init: %f ms\noutput_io_init: %f ms\n", init_time, run_time_full, cvt_type_time, run_time_full, input_io_init_time, output_io_init_time);
 # else
     fprintf(output_file, "infer type: normal\n");
-    fprintf(output_file, "set_time: %f ms\nrun_time: %f ms\nget_time: %f ms\ntotal_time: %f ms\n", set_time, run_time_simple, get_time, run_time_full);
+    fprintf(output_file, "model_init: %f ms\ninput_set: %f ms\nrun: %f ms\noutput_get: %f ms\ntotal_time: %f ms\n", init_time, set_time, run_time_simple, get_time, run_time_full);
 # endif
 
     // save npy
@@ -686,6 +701,11 @@ int main(int argc, char **argv)
         free(output_data_fp[i][0]);
     }
 #endif
+
+    // rknn_perf_detail perf_detail;
+    // ret = rknn_query(ctx, RKNN_QUERY_PERF_DETAIL, &perf_detail,
+    // sizeof(rknn_perf_detail));
+    // printf("%s", perf_detail.perf_data);
 
     // Release
     if (ctx >= 0)
