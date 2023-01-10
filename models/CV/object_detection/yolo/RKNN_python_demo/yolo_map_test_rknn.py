@@ -53,43 +53,6 @@ CLASSESCOCO = ('__background__', 'person', 'bicycle', 'car', 'motorbike', 'aerop
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-def xywh2xyxy(x):
-    # Convert [x, y, w, h] to [x1, y1, x2, y2]
-    y = np.copy(x)
-    y[:, 0] = x[:, 0] - x[:, 2] / 2  # top left x
-    y[:, 1] = x[:, 1] - x[:, 3] / 2  # top left y
-    y[:, 2] = x[:, 0] + x[:, 2] / 2  # bottom right x
-    y[:, 3] = x[:, 1] + x[:, 3] / 2  # bottom right y
-    return y
-
-def process(inputs, anchors, args):
-    # inputs = sigmoid(inputs)
-    grid_h, grid_w = map(int, inputs.shape[0:2])
-    col = np.tile(np.arange(0, grid_w), grid_h).reshape(-1, grid_w)
-    row = np.tile(np.arange(0, grid_h).reshape(-1, 1), grid_w)
-    col = col.reshape(grid_h, grid_w, 1, 1).repeat(len(anchors), axis=-2)
-    row = row.reshape(grid_h, grid_w, 1, 1).repeat(len(anchors), axis=-2)
-    grid = np.concatenate((col, row), axis=-1)
-
-    box_confidence = inputs[..., 4]
-    box_confidence = np.expand_dims(box_confidence, axis=-1)
-    box_class_probs = inputs[..., 5:]
-
-    if args.model == 'yolox':
-        box_xy = inputs[..., :2]
-        box_wh = np.exp(inputs[..., 2:4]) * (int(IMG_SIZE[1]/grid_h), int(IMG_SIZE[0]/grid_w))
-    else:
-        box_xy = inputs[..., :2]*2 - 0.5
-        box_wh = pow(inputs[..., 2:4]*2, 2)
-
-    box_xy += grid
-    box_xy *= (int(IMG_SIZE[1]/grid_h), int(IMG_SIZE[0]/grid_w))
-    box_wh = box_wh * anchors
-
-    box = np.concatenate((box_xy, box_wh), axis=-1)
-
-    return box, box_confidence, box_class_probs
-
 def filter_boxes(boxes, box_confidences, box_class_probs, args):
     """Filter boxes with object threshold.
 
@@ -106,7 +69,7 @@ def filter_boxes(boxes, box_confidences, box_class_probs, args):
     boxes = boxes.reshape(-1, 4)
     box_confidences = box_confidences.reshape(-1)
     box_class_probs = box_class_probs.reshape(-1, box_class_probs.shape[-1])
-    if args.model in ['yolov5', 'yolov7']:
+    if args.model in ['yolov5', 'yolov7', 'yolov6']:
         # filter box_confidences
         _box_pos = np.where(box_confidences >= OBJ_THRESH)
         boxes = boxes[_box_pos]
@@ -171,23 +134,78 @@ def nms_boxes(boxes, scores):
     keep = np.array(keep)
     return keep
 
+def box_process(position, anchors, args):
+    grid_h, grid_w = position.shape[2:4]
+    col = np.tile(np.arange(0, grid_w), grid_h).reshape(-1, grid_w)
+    row = np.tile(np.arange(0, grid_h).reshape(-1, 1), grid_w)
+    col = col.reshape(1, 1, grid_h, grid_w).repeat(len(anchors), axis=0)
+    row = row.reshape(1, 1, grid_h, grid_w).repeat(len(anchors), axis=0)
+    grid = np.concatenate((col, row), axis=1)
+    stride = np.array([int(IMG_SIZE[1]/grid_h), int(IMG_SIZE[0]/grid_w)]).reshape(1,2,1,1)
+    anchors = np.array(anchors)
+    anchors = anchors.reshape(*anchors.shape, 1, 1)
 
-def yolov5_post_process(input_data, anchors, args):
-    boxes, classes, scores = [], [], []
-    for _input,_an in zip(input_data, anchors):
-        b, c, s = process(_input, _an, args)
-        b, c, s = filter_boxes(b, c, s, args)
-        boxes.append(b)
-        classes.append(c)
-        scores.append(s)
+    if args.model in ['yolov5', 'yolov7', 'yolox']:
+        # output format: xywh -> xyxy
+        if args.model == 'yolox':
+            box_xy = position[:,:2,:,:]
+            box_wh = np.exp(position[:,2:4,:,:]) * stride
+        elif args.model in ['yolov5', 'yolov7']:
+            box_xy = position[:,:2,:,:]*2 - 0.5
+            box_wh = pow(position[:,2:4,:,:]*2, 2) * anchors
+
+        box_xy += grid
+        box_xy *= stride
+        box = np.concatenate((box_xy, box_wh), axis=1)
+
+        # Convert [c_x, c_y, w, h] to [x1, y1, x2, y2]
+        xyxy = np.copy(box)
+        xyxy[:, 0, :, :] = box[:, 0, :, :] - box[:, 2, :, :]/ 2  # top left x
+        xyxy[:, 1, :, :] = box[:, 1, :, :] - box[:, 3, :, :]/ 2  # top left y
+        xyxy[:, 2, :, :] = box[:, 0, :, :] + box[:, 2, :, :]/ 2  # bottom right x
+        xyxy[:, 3, :, :] = box[:, 1, :, :] + box[:, 3, :, :]/ 2  # bottom right y
+
+    elif args.model == 'yolov6':
+        box_xy = grid +0.5 -position[:,0:2,:,:]
+        box_xy2 = grid +0.5+position[:,2:4,:,:]
+        xyxy = np.concatenate((box_xy*stride, box_xy2*stride), axis=1)
+
+    return xyxy
+
+def post_process(input_data, anchors, args):
+    boxes, scores, classes_conf = [], [], []
+    if args.model in ['yolov5', 'yolov7', 'yolox']:
+        # 1*255*h*w -> 3*85*h*w
+        input_data = [_in.reshape([len(anchors[0]),-1]+list(_in.shape[-2:])) for _in in input_data]
+        for i in range(len(input_data)):
+            boxes.append(box_process(input_data[i][:,:4,:,:], anchors[i], args))
+            scores.append(input_data[i][:,4:5,:,:])
+            classes_conf.append(input_data[i][:,5:,:,:])
+    elif args.model in ['yolov6']:
+        defualt_branch=3
+        for i in range(defualt_branch):
+            boxes.append(box_process(input_data[i+defualt_branch], anchors[i], args))
+            classes_conf.append(input_data[i])
+            scores.append(np.ones_like(input_data[i][:,:1,:,:], dtype=np.float32))
+
+    def sp_flatten(_in):
+        ch = _in.shape[1]
+        _in = _in.transpose(0,2,3,1)
+        return _in.reshape(-1, ch)
+
+    boxes = [sp_flatten(_v) for _v in boxes]
+    classes_conf = [sp_flatten(_v) for _v in classes_conf]
+    scores = [sp_flatten(_v) for _v in scores]
 
     boxes = np.concatenate(boxes)
-    boxes = xywh2xyxy(boxes)
-    classes = np.concatenate(classes)
+    classes_conf = np.concatenate(classes_conf)
     scores = np.concatenate(scores)
 
-    nboxes, nclasses, nscores = [], [], []
+    # filter according to threshold
+    boxes, classes, scores = filter_boxes(boxes, scores, classes_conf, args)
 
+    # nms
+    nboxes, nclasses, nscores = [], [], []
     if args.class_agnostic:
         keep = nms_boxes(boxes, scores)
         if len(keep) != 0:
@@ -263,14 +281,15 @@ if __name__ == '__main__':
     parser.add_argument('--color', type=str, default='RGB', help='model input color')
 
     # determine model type
-    parser.add_argument('--model', type=str, default='yolov5', help='model input color')
+    parser.add_argument('--model', type=str, default='yolov5', help='model type')
 
     args = parser.parse_args()
 
-    if args.model not in ['yolov5', 'yolov7', 'yolox']:
+    if args.model not in ['yolov5', 'yolov7', 'yolov6', 'yolox']:
         print('ERROR: {} model type is not support.'.format(args.model))
         exit()
 
+    # seting for different hyperparam
     if args.model == 'yolox':
         args.anchors = None
         args.std = 1
@@ -279,6 +298,8 @@ if __name__ == '__main__':
             args.color = 'RGB'
         else:
             args.color = 'BGR'
+    elif args.model == 'yolov6':
+        args.anchors = None
 
     if args.anchors is None or args.anchors =='None':
         print("None anchors file determine, free anchors for use")
@@ -351,11 +372,7 @@ if __name__ == '__main__':
             input_data = img
 
         outputs = model.run([input_data])
-        # proprocess result
-        outputs = [output.reshape([len(anchors[0]),-1]+list(output.shape[-2:])) for output in outputs]
-        outputs = [np.transpose(output, (2,3,0,1)) for output in outputs]
-
-        boxes, classes, scores = yolov5_post_process(outputs, anchors, args)
+        boxes, classes, scores = post_process(outputs, anchors, args)
 
         if args.img_show is True:
             print('\n\nIMG: {}'.format(img_name))

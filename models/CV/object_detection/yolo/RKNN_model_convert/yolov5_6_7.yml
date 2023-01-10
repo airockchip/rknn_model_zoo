@@ -1,4 +1,3 @@
-model_name: yolov5_yolov7
 model_framework: pytorch
 model_file_path: yolov5s.torchscript.pt
 RK_device_platform: RV1126

@@ -2,7 +2,7 @@
 
 - 支持YOLO模型单图测试、coco数据集的 benchmark 测试
 - 支持 pytorch/rknn/onnx 格式的模型
-- 支持 Yolov5, Yolov7, YOLOX 模型
+- 支持 Yolov5, Yolov6, Yolov7, YOLOX 模型
 - 注意: 由于 **RKNN 模型不支持动态输入**，该 demo 会对输入图片进行 letter_box 处理。与原始仓库使用动态输入(例如yolov5仓库)的预测结果作为对比，同一张图片的预测结果可能略有差异。
 - 请注意，该版本使用的 yolo 模型包含尾部的sigmoid op，旧版本不包含sigmoid，使用请勿混用，混用会导致结果异常。
 
@@ -21,6 +21,9 @@
 ```
 Yolov5:
 python yolo_map_test_rknn.py --model yolov5 --model_path ./yolov5.pt --anchors anchors_yolov5.txt
+
+Yolov6:
+python yolo_map_test_rknn.py --model yolov6 --model_path ./yolov6.pt
 
 Yolov7:
 python yolo_map_test_rknn.py --model yolov7 --model_path ./yolov7.pt --anchors anchors_yolov7.txt

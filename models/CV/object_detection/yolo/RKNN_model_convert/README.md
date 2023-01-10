@@ -1,6 +1,6 @@
 # 模型转换
 
-​	模型支持: Yolov5, Yolov7, Yolox
+​	模型支持: Yolov5, Yolov6, Yolov7, Yolox
 
 ​	平台支持: [RKNN-Toolkit1](https://github.com/rockchip-linux/rknn-toolkit), [RKNN-Toolki2](https://github.com/rockchip-linux/rknn-toolkit2)
 
@@ -28,23 +28,23 @@
 
 
 
-#### Yolov5, Yolov7 模型转换指令
+#### Yolov5, Yolov6, Yolov7 模型转换指令
 
 ```python
-python ../../../../../common/rknn_converter/rknn_convert.py --yml_path ./yolov5_yolov7.yml --python_api_test --capi_test
+python ../../../../../common/rknn_converter/rknn_convert.py --yml_path ./yolov5_6_7.yml --python_api_test --capi_test
 ```
 
 或
 
 ```
-./convert_yolov5_yolov7.sh
+./convert_yolov5_6_7.sh
 ```
 
 或
 
 ```
 export rknn_convert=$(pwd | sed 's/\(rknn_model_zoo\).*/\1/g')/common/rknn_converter/rknn_convert.py
-python $rknn_convert --yml_path ./yolov5_yolov7.yml --python_api_test --capi_test
+python $rknn_convert --yml_path ./yolov5_6_7.yml --python_api_test --capi_test
 ```
 
 
