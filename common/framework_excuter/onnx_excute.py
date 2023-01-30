@@ -25,7 +25,11 @@ def ignore_dim_with_zero(_shape, _shape_target):
 
 class ONNX_model_container_py:
     def __init__(self, model_path) -> None:
-        self.sess = rt.InferenceSession(model_path)
+        # sess_options=
+        sp_options = rt.SessionOptions()
+        sp_options.log_severity_level = 3
+        # [1 for info, 2 for warning, 3 for error, 4 for fatal] 
+        self.sess = rt.InferenceSession(model_path, sess_options=sp_options)
         self.model_path = model_path
 
     def run(self, input_datas):

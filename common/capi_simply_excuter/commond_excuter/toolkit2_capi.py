@@ -19,13 +19,20 @@ require_map = {
     'linux':{
         'RK3566': os.path.join(binary_dir, 'rk356x/Linux/rknn_capi_test'),
         'RK3568': os.path.join(binary_dir, 'rk356x/Linux/rknn_capi_test'),
-        'RK3588': os.path.join(binary_dir, 'rk3588/Linux/rknn_capi_test'),        
+        'RK3588': os.path.join(binary_dir, 'rk3588/Linux/rknn_capi_test'), 
+        'RV1106': os.path.join(binary_dir, 'rv110x/Linux/rknn_capi_test'),
+        'RV1103': os.path.join(binary_dir, 'rv110x/Linux/rknn_capi_test'), 
     },
 }
 
-api_dict = {
+rk35xx_api_dict = {
     'normal': 'rknn_capi_test',
     'zero_copy': 'rknn_capi_test_zero_copy',
+}
+
+rv110x_api_dict = {
+    # 'zero_copy': 'rknn_capi_test_zero_copy_NC1HWC2',
+    'zero_copy': 'rknn_capi_test_zero_copy_NCHW',
 }
 
 
@@ -75,16 +82,27 @@ class tk2_capi_excuter(object):
         self.device_system = device_system
 
         self.platform = model_config_dict.get('RK_device_platform', 'RK3566').upper()
-        if self.platform not in ['RK3566', 'RK3568', 'RK3588']:
+        if self.platform not in ['RK3566', 'RK3568', 'RK3588', 'RV1106', 'RV1103']:
             raise Exception('Unsupported platform: {}'.format(self.platform))
         else:
             print("\n  Device: {}".format(self.platform))
+
+        # setting api map
+        if self.platform.upper() in ['RK3566', 'RK3568', 'RK3588']:
+            self.api_dict = rk35xx_api_dict
+        elif self.platform.upper() in ['RV1106', 'RV1103']:
+            self.api_dict = rv110x_api_dict
 
         if self.device_system == 'android':
             self.remote_tmp_path = '/data/capi_test/'
         #     my_os_system("adb root & adb remount")
         else:
-            self.remote_tmp_path = '/userdata/capi_test/'
+            if self.platform.upper() in ['RV1106', 'RV1103']:
+                self.remote_tmp_path = '/tmp/capi_test'
+                # clear remote path
+                my_os_system("adb shell rm -r {}".format(self.remote_tmp_path))
+            else:
+                self.remote_tmp_path = '/userdata/capi_test/'
 
         self.test_model_name = 'test.rknn'
 
@@ -148,19 +166,20 @@ class tk2_capi_excuter(object):
         self.test_model_name = os.path.basename(self.model_path)
 
     def _run_commond(self, loop, api_type):
-        if api_type in api_dict:
+        if api_type in self.api_dict:
             # TODO record ddr
             command_in_shell = [
                 'cd {}'.format(self.remote_tmp_path),
-                'chmod 777 {}'.format(api_dict[api_type]),
-                'export LD_LIBRARY_PATH=./lib',
-                './{} {} {} {} {}'.format(api_dict[api_type], 
+                'chmod 777 {}'.format(self.api_dict[api_type]),
+                'export LD_LIBRARY_PATH={}/lib'.format(self.remote_tmp_path),
+                './{} {} {} {} {}'.format(self.api_dict[api_type], 
                                           self.test_model_name, 
                                           self.input_line, 
                                           loop, 
                                           self.model_config_dict['core_mask']),
             ]
-
+            if self.platform.upper() in ['RV1106', 'RV1103']:
+                command_in_shell = ['RkLunch-stop.sh'] + command_in_shell
             running_command = ' adb shell "\n {}"'.format("\n ".join(command_in_shell))                
             my_os_system(running_command)
         else:

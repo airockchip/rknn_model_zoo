@@ -45,6 +45,15 @@ class time_collecter:
     def flash(self):
         self.times = []
 
+def _device_limit(func):
+    def wrapper(*args, **kwars):
+        phase_object = args[0]
+        if phase_object.RK_device_platform in ['RV1106','RV1103']:
+            print("WARNING: {} not support run model with python.api. Ignore {}".format(phase_object.RK_device_platform, func.__name__))
+            return
+        return func(*args, **kwars)
+    return wrapper
+
 class convert_phase:
     # --------------------
     # Only doing convert here.
@@ -182,7 +191,7 @@ class validate_phase:
         # init and get board info
         self.check_board_info()
 
-
+    @_device_limit
     def Init_rknn_runtime(self, perf_debug=False, eval_mem=False):
         # do not change model_config_dict here.
         model_config_dict = deepcopy(self.model_config_dict)
@@ -208,6 +217,7 @@ class validate_phase:
             if ret != 0:
                 assert False, 'Init_rknn_runtime failed!'
 
+    @_device_limit
     def Eval_memory(self):
         print('\n\n', '='*30)
         print('Eval memory\n')
@@ -231,7 +241,7 @@ class validate_phase:
         self._smart_record('Memory_info(MiB).model_file_size', check_file(_m_path, 'size'))
         return memory_info
 
-
+    @_device_limit
     def Eval_perf(self, looptime=5, perf_debug=False):
         print('\n\n', '='*30)
         print('Eval perf\n  looptime: {}\n  perf_debug: {}'.format(looptime, perf_debug))
@@ -246,7 +256,7 @@ class validate_phase:
                 self._smart_record("eval_performance(only model inference)", float(time)/1000)
         return perf_info
 
-
+    @_device_limit
     def Get_rknn_result_via_python(self, inputs):
         self.Init_rknn_runtime(perf_debug=False, eval_mem=False)
         self.tc.tik()
@@ -263,7 +273,6 @@ class validate_phase:
         if self.NPU_VERSION == 1:
             result, time_info = self._get_rknn_result_via_Capi_npu1(inputs, looptime, api_type)
         elif self.NPU_VERSION == 2:
-            # raise NotImplementedError
             result, time_info = self._get_rknn_result_via_Capi_npu2(inputs, looptime, api_type)
 
         print('---> time_info:')
@@ -284,7 +293,7 @@ class validate_phase:
 
     def _get_rknn_result_via_Capi_npu2(self, inputs, looptime, api_type):
         if self.capi_excuter is None:
-            self.capi_excuter = tk2_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
+            self.capi_excuter = tk2_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system', 'android'))
         result, time_info = self.capi_excuter.excute(inputs, looptime, api_type)
         return result, time_info
         # raise NotImplemented
@@ -323,7 +332,7 @@ class validate_phase:
         self.model_config_dict['output_shape_by_run'] = [list(_v.shape) for _v in framework_result]
         return framework_result
 
-
+    @_device_limit
     def Compare_convert_dist_via_python(self, sample=1):
         print('\n\n', '='*30)
         print('Compare_convert_dist_via_python\n  sample: {}'.format(sample))
@@ -335,7 +344,7 @@ class validate_phase:
             print('sample-{} excced example in dataset, reset to upper bound-{}'.format(sample, len(self.model_config_dict['input_example'])))
             sample = len(self.model_config_dict['input_example'])
 
-        cos_record = []
+        result_info = []
         for i in range(sample):
             rk_inputs = self._get_input('rknn', i)
             rknn_result = self.Get_rknn_result_via_python(rk_inputs)
@@ -344,21 +353,26 @@ class validate_phase:
             framework_result = self.Get_default_framework_result(framework_inputs)
 
             print('     For example iter {}/{} rknn({}) VS {} cos_similarity:'.format(i+1, sample, self.model_type, framework))
-            cos_record.extend(self._parse_result(rknn_result, framework_result))
+            result_info.extend(self._parse_result(rknn_result, framework_result))
 
         if self._report_available:
             # TODO support custom output name
-            for i in range(len(cos_record)):
-                self.report_info['Model_info']['Python_api']['accuracy(cos simularity)']['output_{}'.format(i)] = cos_record[i]
+            for i in range(len(result_info)):
+                self.report_info['Model_info']['Python_api']['accuracy(cos simularity)']['output_{}'.format(i)] = result_info[i]
 
-        return cos_record
+        return result_info
 
 
     def Compare_convert_dist_via_Capi(self, looptime=5, api_type='normal', sample=1):
         print('\n\n', '='*30)
         if self.RK_device_platform.upper() == 'RK3399PRO' and api_type == 'zero_copy':
-            print("RK3399PRO not support zero copy. Ignore zero copy test")
+            print("WARNING: RK3399PRO not support zero copy. Ignore zero copy test")
             return
+
+        if self.RK_device_platform.upper() in ['RV1106', 'RV1103'] and api_type == 'normal':
+            print("WARNING: {} only support capi zero copy, Ignore {} test".format(self.RK_device_platform.upper(), api_type))
+            return
+
         print('Compare_convert_dist_via_Capi\n  looptime: {}\n  api_type: {}\n  sample: {}'.format(looptime, api_type, sample))
 
         model_config_dict = deepcopy(self.model_config_dict)
@@ -368,7 +382,7 @@ class validate_phase:
             print('sample-{} excced example in dataset, reset to upper bound-{}'.format(sample, len(self.model_config_dict['input_example'])))
             sample = len(self.model_config_dict['input_example'])
 
-        cos_record = []
+        result_info = []
         for i in range(sample):
             rk_inputs = self._get_input('rknn', i)
             rknn_result, time_info = self.Get_rknn_result_via_Capi(rk_inputs, looptime, api_type)
@@ -377,12 +391,12 @@ class validate_phase:
             framework_result = self.Get_default_framework_result(framework_inputs)
 
             print('     For example iter {}/{} rknn({}) VS {} cos_similarity:'.format(i+1, sample, self.model_type, framework))
-            cos_record.extend(self._parse_result(rknn_result, framework_result))
+            result_info.extend(self._parse_result(rknn_result, framework_result))
 
         if self._report_available:
             # TODO support custom output name
-            for i in range(len(cos_record)):
-                self.report_info['Model_info']['RKNN_api({})'.format(api_type)]['accuracy(cos simularity)']['output_{}'.format(i)] = cos_record[i]
+            for i in range(len(result_info)):
+                self.report_info['Model_info']['RKNN_api({})'.format(api_type)]['accuracy(cos simularity)']['output_{}'.format(i)] = result_info[i]
             
             if api_type == 'normal':
                 self._smart_record('RKNN_api(normal).time_cost(ms).model_init', time_info['model_init'])
@@ -396,7 +410,7 @@ class validate_phase:
                 self._smart_record('RKNN_api(zero_copy).time_cost(ms).output_io_init', time_info['output_io_init'])
                 self._smart_record('RKNN_api(zero_copy).time_cost(ms).run', time_info['run'])
                 self._smart_record('RKNN_api(zero_copy).time_cost(ms).total(except init)', time_info['run'])
-        return cos_record, time_info
+        return result_info, time_info
 
 
     def Compare_rknn_python_Capi_dist(self, sample):
@@ -409,7 +423,7 @@ class validate_phase:
             print('sample-{} excced example in dataset, reset to upper bound-{}'.format(sample, len(self.model_config_dict['input_example'])))
             sample = len(self.model_config_dict['input_example'])
 
-        cos_record = []
+        result_info = []
         for i in range(sample):
             rk_inputs = self._get_input('rknn', i)
             rknn_result_python = self.Get_rknn_result_via_python(rk_inputs)
@@ -417,7 +431,7 @@ class validate_phase:
             # rknn_result_Capi_zcp, time_info = self.Get_rknn_result_via_Capi(rk_inputs, looptime=1, api_type='zero_copy')
 
             print('     For example iter {}/{} rknn({})(python) VS rknn({})(Capi) cos_similarity:'.format(i+1, sample, self.model_type, self.model_type))
-            cos_record.extend(self._parse_result(rknn_result_python, rknn_result_Capi_normal))
+            result_info.extend(self._parse_result(rknn_result_python, rknn_result_Capi_normal))
 
 
     def _get_input(self, framework='origin_framework', example_index=0):
@@ -432,7 +446,7 @@ class validate_phase:
         input_list = []
         for _index, input_info in model_config_dict['inputs'].items():
             #! when input RGB/BGR not match, probobly the this code get wrong type
-            _img_type = 'RGB' if (framework.upper() == 'RKNN' and self.NPU_VERSION==1) else input_info['img_type'] # rknn_toolkit_1 always get RGB in.
+            _img_type = 'RGB' if (framework.upper() == 'RKNN' and self.NPU_VERSION==1 and input_info['img_type'] in ['RGB','BGR']) else input_info['img_type'] # rknn_toolkit_1 always get RGB in.
 
             if single_example[_index].endswith('.npy'):
                 imp = numpy_preprocessor(single_example[_index])
@@ -497,11 +511,13 @@ class validate_phase:
         return cos_dist.sum()
 
     def _parse_result(self, x, y, indent=8):
-        cos_list = []
+        msg_list = []
         for i in range(len(x)):
-            cos_list.append(self._compare_cos_simularity(x[i], y[i]))
-            print(" "*indent + "output-{} : {}".format(i, cos_list[-1]))
-        return cos_list
+            msg_list.append(self._compare_cos_simularity(x[i], y[i]))
+            if x[i].size == 1:
+                msg_list[-1]="single value has no meaning in cos. Got {} vs {}".format(x[i], y[i])
+            print(" "*indent + "output-{} : {}".format(i, msg_list[-1]))
+        return msg_list
 
     def release(self):
         if self.init_state is not None:

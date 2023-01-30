@@ -18,6 +18,7 @@ NPU_VERSION_MAP = {
 
 SK_FILE = os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('common')]) + '/capi_tools/scaling_frequency.sh'
 
+RV1106_LIB_PATH = os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('common')], 'capi_tools/toolkit2/rknn_capi_test/install/rv110x/Linux/rknn_capi_test/lib/librknnmrt.so')
 
 class Board_checker:
     def __init__(self, platform, device_id=None) -> None:
@@ -70,6 +71,9 @@ class Board_checker:
                 result = _result if len(_result)>0 else result
 
         elif self.npu_version == 2:
+            if self.platform.upper() in ['RV1106', 'RV1103']:
+                result = run_shell_command(["strings {} | grep 'librknnmrt version'".format(RV1106_LIB_PATH)])
+                return result[0].rstrip('\n').split('version: ')[1]
             if self.system_type == 'linux':
                 result = self._d_run_shell_command(["strings /usr/lib/librknnrt.so | grep 'librknnrt version'"])
             else:

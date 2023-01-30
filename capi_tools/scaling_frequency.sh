@@ -236,10 +236,15 @@ case $seting_strategy in
         print_and_compare_result $CPU_freq $cur_freq
 
         echo "NPU: seting frequency"
-        echo "  no strategy to seting NPU frequency"
+        echo "  no strategy to seting DDR frequency"
+        cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep aclk_npu_root | awk '{split($0,a," "); print a[5]}')
+        print_and_compare_result $NPU_freq $cur_freq
 
         echo "DDR: seting frequency"
         echo "  no strategy to seting DDR frequency"
+        cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep clk_core_ddrc_src | awk '{split($0,a," "); print a[5]}')
+        cur_freq="`expr $cur_freq \* 2`"
+        print_and_compare_result $DDR_freq $cur_freq
         ;;
     *)
         echo "seting strategy not implement now"

@@ -19,7 +19,7 @@ if [[ ! -d "${BUILD_DIR}" ]]; then
 fi
 
 cd ${BUILD_DIR}
-cmake ../.. -DCMAKE_SYSTEM_NAME=Linux -DTARGET_SOC=${TARGET_SOC} -DMZ_ROOT=${MZ_ROOT}
+cmake ../../full_driver -DCMAKE_SYSTEM_NAME=Linux -DTARGET_SOC=${TARGET_SOC} -DMZ_ROOT=${MZ_ROOT}
 make -j4
 make install
 cd -

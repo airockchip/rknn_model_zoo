@@ -22,7 +22,7 @@ if [[ ! -d "${BUILD_DIR}" ]]; then
 fi
 
 cd ${BUILD_DIR}
-cmake ../.. \
+cmake ../../full_driver \
         -DANDROID_TOOLCHAIN=clang \
         -DTARGET_SOC=${TARGET_SOC} \
        	-DCMAKE_SYSTEM_NAME=Android \

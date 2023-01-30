@@ -2,9 +2,9 @@
 
 - 支持YOLO模型单图测试、coco数据集的 benchmark 测试
 - 支持 pytorch/rknn/onnx 格式的模型
-- 支持 Yolov5, Yolov6, Yolov7, YOLOX 模型
+- 支持 Yolo[v5, v6, v7, v8], ppyoloe_plus, YoloX 模型
 - 注意: 由于 **RKNN 模型不支持动态输入**，该 demo 会对输入图片进行 letter_box 处理。与原始仓库使用动态输入(例如yolov5仓库)的预测结果作为对比，同一张图片的预测结果可能略有差异。
-- 请注意，该版本使用的 yolo 模型包含尾部的sigmoid op，旧版本不包含sigmoid，使用请勿混用，混用会导致结果异常。
+- 请注意，该版本使用的 yolo 模型包含尾部的sigmoid op，其他版本可能不包含sigmoid op，请勿混用，混用会导致结果异常。
 
 
 
@@ -28,8 +28,14 @@ python yolo_map_test_rknn.py --model yolov6 --model_path ./yolov6.pt
 Yolov7:
 python yolo_map_test_rknn.py --model yolov7 --model_path ./yolov7.pt --anchors anchors_yolov7.txt
 
+Yolov8:
+python yolo_map_test_rknn.py --model yolov6 --model_path ./yolov8.pt
+
 YOLOX:
 python yolo_map_test_rknn.py --model yolox --model_path ./yolox.pt
+
+ppyoloe_plus:
+python yolo_map_test_rknn.py --model ppyoloe_plus --model_path ./yolox.pt
 ```
 
 - 使用 rknn 模型作为测试模型时，需加上参数 `--target {platform} --device_id {device_id}`，以 rv1126(假设 device id 为 123456)，则参数为  `--target rv1126 --device_id 123456`
