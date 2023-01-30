@@ -29,8 +29,9 @@ int drm_init(drm_context *drm_ctx)
     }
 
     //drm_ctx->drm_handle = dlopen("/usr/lib/libdrm.so", RTLD_LAZY);
-    drm_ctx->drm_handle = dlopen("libdrm.so", RTLD_LAZY);
-    if (!drm_ctx->drm_handle)
+    // drm_ctx->drm_handle = dlopen("libdrm.so", RTLD_LAZY);
+    drm_ctx->drm_handle = dlopen("/usr/lib/aarch64-linux-gnu/libdrm.so", RTLD_LAZY);
+    if (!drm_ctx->drm_handle)·
     {
         printf("failed to dlopen libdrm.so\n");
         drm_deinit(drm_ctx, drm_fd);
