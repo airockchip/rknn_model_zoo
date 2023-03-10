@@ -1,0 +1,12 @@
+[submodule "libs/rklibs/rknpu"]
+  path = libs/rklibs/rknpu
+  url = https://github.com/rockchip-linux/rknpu
+[submodule "libs/rklibs/RK3399Pro_npu"]
+  path = libs/rklibs/RK3399Pro_npu
+  url = https://github.com/airockchip/RK3399Pro_npu
+[submodule "libs/rklibs/rknpu2"]
+  path = libs/rklibs/rknpu2
+  url = https://github.com/rockchip-linux/rknpu2
+[submodule "libs/rklibs/librga"]
+  path = libs/rklibs/librga
+  url = https://github.com/airockchip/librga
