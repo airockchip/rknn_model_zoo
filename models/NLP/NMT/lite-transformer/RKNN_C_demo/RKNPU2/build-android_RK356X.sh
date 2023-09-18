@@ -4,7 +4,7 @@ set -e
 
 if [ -z ${ANDROID_NDK_PATH} ]
 then
-  ANDROID_NDK_PATH=~/opt/android-ndk-r16b
+  ANDROID_NDK_PATH=~/opt/android-ndk-r17
 fi
 
 BUILD_TYPE=Release
@@ -12,6 +12,7 @@ BUILD_TYPE=Release
 TARGET_SOC="rk356x"
 
 ROOT_PWD=$( cd "$( dirname $0 )" && cd -P "$( dirname "$SOURCE" )" && pwd )
+MZ_ROOT=$(pwd | sed 's/\(rknn_model_zoo\).*/\1/g')
 
 BUILD_DIR=${ROOT_PWD}/build/build_android_v8a
 
@@ -28,8 +29,10 @@ cmake ../.. \
         -DANDROID_ABI="arm64-v8a" \
         -DANDROID_STL=c++_static \
         -DANDROID_PLATFORM=android-24 \
-        -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+        -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+        -DMZ_ROOT=${MZ_ROOT} \
+        -DCMAKE_C_FLAGS_DEBUG="-g -O1" \
+        -DCMAKE_CXX_FLAGS_DEBUG="-g -O1"
 make -j4
 make install
 cd ..
-

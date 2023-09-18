@@ -20,18 +20,50 @@
 #include <vector>
 #include "yolo.h"
 #include <stdint.h>
+#include "rknn_demo_utils.h"
+
 #define LABEL_NALE_TXT_PATH "./model/coco_80_labels_list.txt"
 
 static char *labels[OBJ_CLASS_NUM];
 
-const int anchor0[6] = {10, 13, 16, 30, 33, 23};
-const int anchor1[6] = {30, 61, 62, 45, 59, 119};
-const int anchor2[6] = {116, 90, 156, 198, 373, 326};
+double __get_us(struct timeval t) { return (t.tv_sec * 1000000 + t.tv_usec); }
 
 inline static int clamp(float val, int min, int max)
 {
     return val > min ? (val < max ? val : max) : min;
 }
+
+
+int model_type_cmp(MODEL_TYPE *t, char* input_str, const char* type_str, MODEL_TYPE asign_type){
+    if (strcmp(input_str, type_str)==0){
+        *t = asign_type;
+        return 1;
+    }
+    return 0;
+}
+
+
+MODEL_TYPE string_to_model_type(char* model_type_str){
+    int ret = 0;
+    MODEL_TYPE _t = MODEL_TYPE_ERROR;
+    ret = model_type_cmp(&_t, model_type_str, "yolov5", YOLOV5);
+    ret = model_type_cmp(&_t, model_type_str, "v5", YOLOV5);
+    ret = model_type_cmp(&_t, model_type_str, "yolov6", YOLOV6);
+    ret = model_type_cmp(&_t, model_type_str, "v6", YOLOV6);
+    ret = model_type_cmp(&_t, model_type_str, "yolov7", YOLOV7);
+    ret = model_type_cmp(&_t, model_type_str, "v7", YOLOV7);
+    ret = model_type_cmp(&_t, model_type_str, "yolov8", YOLOV8);
+    ret = model_type_cmp(&_t, model_type_str, "v8", YOLOV8);
+    ret = model_type_cmp(&_t, model_type_str, "yolox", YOLOX);
+    ret = model_type_cmp(&_t, model_type_str, "ppyoloe_plus", PPYOLOE_PLUS);
+    ret = model_type_cmp(&_t, model_type_str, "ppyoloe", PPYOLOE_PLUS);
+    
+    if (_t == MODEL_TYPE_ERROR){
+        printf("ERROR: Only support yolov5/yolov6/yolov7/yolov8/yolox/ppyoloe_plus model, but got %s\n", model_type_str);
+    }
+    return _t;
+}
+
 
 char *readLine(FILE *fp, char *buffer, int *len)
 {
@@ -203,16 +235,6 @@ static int quick_sort_indice_inverse(
     return low;
 }
 
-static float sigmoid(float x)
-{
-    return 1.0 / (1.0 + expf(-x));
-}
-
-static float unsigmoid(float y)
-{
-    return -1.0 * logf((1.0 / y) - 1.0);
-}
-
 inline static int32_t __clip(float val, float min, float max)
 {
     float f = val <= min ? min : (val >= max ? max : val);
@@ -231,7 +253,10 @@ static float deqnt_affine_to_f32(uint8_t qnt, uint8_t zp, float scale)
     return ((float)qnt - (float)zp) * scale;
 }
 
-static int process_u8(uint8_t *input, int *anchor, int anchor_per_branch, int grid_h, int grid_w, int height, int width, int stride,
+/* 
+    Post process v1 for yolov5, yolov7, yolox
+*/
+static int process_v1_u8(uint8_t *input, int *anchor, int anchor_per_branch, int grid_h, int grid_w, int stride,
                    std::vector<float> &boxes, std::vector<float> &boxScores, std::vector<int> &classId,
                    float threshold, uint8_t zp, float scale, MODEL_TYPE yolo)
 {
@@ -239,10 +264,6 @@ static int process_u8(uint8_t *input, int *anchor, int anchor_per_branch, int gr
     int grid_len = grid_h * grid_w;
     float thres = threshold;
     uint8_t thres_u8 = qnt_f32_to_affine(thres, zp, scale);
-    // printf("threash %f\n", thres);
-    // printf("thres_u8 %u\n", thres_u8);
-    // printf("scale %f\n", scale);
-    // printf("zp %u\n", zp);
 
     for (int a = 0; a < anchor_per_branch; a++)
     {
@@ -253,7 +274,6 @@ static int process_u8(uint8_t *input, int *anchor, int anchor_per_branch, int gr
                 uint8_t box_confidence = input[(PROP_BOX_SIZE * a + 4) * grid_len + i * grid_w + j];
                 if (box_confidence >= thres_u8)
                 {
-                    // printf("box_conf %u, thres_u8 %u\n", box_confidence, thres_u8);
                     int offset = (PROP_BOX_SIZE * a) * grid_len + i * grid_w + j;
                     uint8_t *in_ptr = input + offset;
 
@@ -293,10 +313,14 @@ static int process_u8(uint8_t *input, int *anchor, int anchor_per_branch, int gr
                             box_w = box_w * box_w;
                             box_h = box_h * box_h;
                         }
+
                         box_x = (box_x + j) * (float)stride;
                         box_y = (box_y + i) * (float)stride;
-                        box_w *= (float)anchor[a * 2];
-                        box_h *= (float)anchor[a * 2 + 1];
+                        if (yolo != YOLOX){
+                            box_w *= (float)anchor[a * 2];
+                            box_h *= (float)anchor[a * 2 + 1];
+                        }
+
                         box_x -= (box_w / 2.0);
                         box_y -= (box_h / 2.0);
 
@@ -316,19 +340,12 @@ static int process_u8(uint8_t *input, int *anchor, int anchor_per_branch, int gr
 }
 
 
-
-static int process_fp(float *input, int *anchor, int anchor_per_branch,int grid_h, int grid_w, int height, int width, int stride,
+static int process_v1_fp(float *input, int *anchor, int anchor_per_branch,int grid_h, int grid_w, int stride,
                    std::vector<float> &boxes, std::vector<float> &boxScores, std::vector<int> &classId,
                    float threshold, MODEL_TYPE yolo)
 {
-    // printf("anchor :");
-    // for (int i=0; i<anchor_per_branch*2; i++){
-    //     printf("%d ", anchor[i]);
-    // }
-
     int validCount = 0;
     int grid_len = grid_h * grid_w;
-    // float thres_sigmoid = threshold;
     for (int a = 0; a < anchor_per_branch; a++)
     {
         for (int i = 0; i < grid_h; i++)
@@ -378,10 +395,13 @@ static int process_fp(float *input, int *anchor, int anchor_per_branch,int grid_
                             box_w *= box_w;
                             box_h *= box_h;
                         }
+
                         box_x = (box_x + j) * (float)stride;
                         box_y = (box_y + i) * (float)stride;
-                        box_w *= (float)anchor[a * 2];
-                        box_h *= (float)anchor[a * 2 + 1];
+                        if (yolo != YOLOX){
+                            box_w *= (float)anchor[a * 2];
+                            box_h *= (float)anchor[a * 2 + 1];
+                        }
                         box_x -= (box_w / 2.0);
                         box_y -= (box_h / 2.0);
                         
@@ -400,9 +420,206 @@ static int process_fp(float *input, int *anchor, int anchor_per_branch,int grid_
     return validCount;
 }
 
+/*
+    Post process v2 for yolov6, yolov8, ppyoloe_plus
+    Feature:
+        score,box in diffenrent tensor
+        Anchor free
+*/
+void compute_dfl(float* tensor, int dfl_len, float* box){
+    for (int b=0; b<4; b++){
+        float exp_t[dfl_len];
+        float exp_sum=0;
+        float acc_sum=0;
+        for (int i=0; i< dfl_len; i++){
+            exp_t[i] = exp(tensor[i+b*dfl_len]);
+            exp_sum += exp_t[i];
+        }
+        
+        for (int i=0; i< dfl_len; i++){
+            acc_sum += exp_t[i]/exp_sum *i;
+        }
+        box[b] = acc_sum;
+    }
+}
 
-int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_result_group_t* group){
-    // printf("post process\n");
+static int process_v2_u8(
+                   uint8_t *t_box, uint8_t box_zp, float box_scale,
+                   uint8_t *t_score, uint8_t score_zp, float score_scale,
+                   uint8_t* t_score_sum, uint8_t sum_zp, float sum_scale,
+                   int dfl_len, int grid_h, int grid_w, int stride,
+                   std::vector<float> &boxes, std::vector<float> &boxScores, std::vector<int> &classId,
+                   float threshold, MODEL_TYPE yolo, bool score_sum_available)
+{
+    int validCount = 0;
+    int grid_len = grid_h * grid_w;
+    uint8_t score_thres_u8 = qnt_f32_to_affine(threshold, score_zp, score_scale);
+
+    float sum_noise = OBJ_CLASS_NUM* 1./256;
+    uint8_t sum_noise_u8   = qnt_f32_to_affine(sum_noise, sum_zp, sum_scale);
+    // struct timeval start_time, stop_time;
+    // float cc_time=0, box_time=0;
+
+    for (int i= 0; i< grid_h; i++)
+    {
+        for (int j= 0; j< grid_w; j++)
+        {
+            float sum = 0;
+            int max_class_id = -1;
+            int offset = i* grid_w + j;
+
+            if (score_sum_available){
+                if (t_score_sum[offset] < sum_noise_u8){
+                    continue;
+                }
+            }
+
+            uint8_t max_score = 0;
+            // gettimeofday(&start_time, NULL);
+            for (int c= 0; c< OBJ_CLASS_NUM; c++){
+                if ((t_score[offset] > score_thres_u8) && (t_score[offset] > max_score))
+                {
+                    max_score = t_score[offset];
+                    max_class_id = c;
+                }
+                offset += grid_len;
+            }
+            // gettimeofday(&stop_time, NULL);
+            // cc_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+
+            // gettimeofday(&start_time, NULL);
+            if (max_score> score_thres_u8){
+                float box[4];
+                offset = i* grid_w + j;
+                if ((yolo == YOLOV8 || yolo == PPYOLOE_PLUS || yolo == YOLOV6) && (dfl_len>1)){
+                    /// dfl
+                    float before_dfl[dfl_len*4];
+                    for (int k=0; k< dfl_len*4; k++){
+                        before_dfl[k] = deqnt_affine_to_f32(t_box[offset], box_zp, box_scale);
+                        offset += grid_len;
+                    }
+                    compute_dfl(before_dfl, dfl_len, box);
+                }
+                else if ((yolo == YOLOV6) && (dfl_len < 1)){
+                    for (int k=0; k< 4; k++){
+                        box[k] = deqnt_affine_to_f32(t_box[offset], box_zp, box_scale);
+                        offset += grid_len;
+                    }
+                }
+
+                float x1,y1,x2,y2,w,h;
+                x1 = (-box[0] + j + 0.5)*stride;
+                y1 = (-box[1] + i + 0.5)*stride;
+                x2 = (box[2] + j + 0.5)*stride;
+                y2 = (box[3] + i + 0.5)*stride;
+                w = x2 - x1;
+                h = y2 - y1;
+                boxes.push_back(x1);
+                boxes.push_back(y1);
+                boxes.push_back(w);
+                boxes.push_back(h);
+                boxScores.push_back(deqnt_affine_to_f32(max_score, score_zp, score_scale));
+                classId.push_back(max_class_id);
+                validCount ++;
+
+            }
+            // gettimeofday(&stop_time, NULL);
+            // box_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+        }
+    }
+    // printf("CC_time: %f,    BOX_time: %f\n", cc_time, box_time);
+    return validCount;
+}
+
+
+static int process_v2_fp(
+                   float *t_box, float *t_score, float* t_score_sum,
+                   int dfl_len, int grid_h, int grid_w, int stride,
+                   std::vector<float> &boxes, std::vector<float> &boxScores, std::vector<int> &classId,
+                   float threshold, MODEL_TYPE yolo, bool score_sum_available)
+{
+    int validCount = 0;
+    int grid_len = grid_h * grid_w;
+    float sum_noise = OBJ_CLASS_NUM* 1./256;
+
+    // struct timeval start_time, stop_time;
+    // float cc_time=0, box_time=0;
+
+    for (int i= 0; i< grid_h; i++)
+    {
+        for (int j= 0; j< grid_w; j++)
+        {
+            float sum = 0;
+            int max_class_id = -1;
+            int offset = i* grid_w + j;
+
+            if (score_sum_available){
+                if (t_score_sum[offset] < sum_noise){
+                    continue;
+                }
+            }
+
+            float max_score = 0;
+            // gettimeofday(&start_time, NULL);
+            for (int c= 0; c< OBJ_CLASS_NUM; c++){
+                if ((t_score[offset] > threshold) && (t_score[offset] > max_score))
+                {
+                    max_score = t_score[offset];
+                    max_class_id = c;
+                }
+                offset += grid_len;
+            }
+            // gettimeofday(&stop_time, NULL);
+            // cc_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+
+
+            // gettimeofday(&start_time, NULL);
+            if (max_score> threshold){
+                float box[4];
+                offset = i* grid_w + j;
+                if ((yolo == YOLOV8 || yolo == PPYOLOE_PLUS || yolo == YOLOV6) && (dfl_len>1)){
+                    /// dfl
+                    float before_dfl[dfl_len*4];
+                    for (int k=0; k< dfl_len*4; k++){
+                        before_dfl[k] = t_box[offset];
+                        offset += grid_len;
+                    }
+                    compute_dfl(before_dfl, dfl_len, box);
+                }
+                else if ((yolo == YOLOV6) && (dfl_len < 1)){
+                    for (int k=0; k< 4; k++){
+                        box[k] = t_box[offset];
+                        offset += grid_len;
+                    }
+                }
+
+                float x1,y1,x2,y2,w,h;
+                x1 = (-box[0] + j + 0.5)*stride;
+                y1 = (-box[1] + i + 0.5)*stride;
+                x2 = (box[2] + j + 0.5)*stride;
+                y2 = (box[3] + i + 0.5)*stride;
+                w = x2 - x1;
+                h = y2 - y1;
+                boxes.push_back(x1);
+                boxes.push_back(y1);
+                boxes.push_back(w);
+                boxes.push_back(h);
+                boxScores.push_back(max_score);
+                classId.push_back(max_class_id);
+                validCount ++;
+
+            }
+            // gettimeofday(&stop_time, NULL);
+            // box_time += (__get_us(stop_time) - __get_us(start_time)) / 1000;
+        }
+    }
+    // printf("CC_time: %f,    BOX_time: %f\n", cc_time, box_time);
+    return validCount;
+}
+
+
+int post_process(void** rk_outputs, MODEL_INFO* m_info, YOLO_INFO* y_info, detect_result_group_t* group)
+{
     static int init = -1;
     if (init == -1)
     {
@@ -410,10 +627,12 @@ int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_
         ret = loadLabelName(LABEL_NALE_TXT_PATH, labels);
         if (ret < 0)
         {
+            printf("Failed in loading label\n");
             return -1;
         }
 
         init = 0;
+        printf("post_process load lable finish\n");
     }
     memset(group, 0, sizeof(detect_result_group_t));
 
@@ -425,19 +644,58 @@ int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_
     int grid_h = 0;
     int grid_w = 0;
     int* anchors;
-    for (int i=0; i<m->out_nodes; i++){
-        stride = m->strides[i];
-        grid_h = m->height/ stride;
-        grid_w = m->width/ stride;
-        anchors = &(m->anchors[i*2*m->anchor_per_branch]);
-        // printf("post process parse\n");
-        if (m->post_type == U8){
-            validCount = validCount + process_u8((uint8_t*)rk_outputs[i].buf, anchors, m->anchor_per_branch, grid_h, grid_w, m->height, m->width, stride, 
-                                                filterBoxes, boxesScore, classId, CONF_THRESHOLD, m->out_attr[i].zp, m->out_attr[i].scale, m->m_type);
+
+    for (int i=0; i< 3; i++){
+        
+        if ((y_info->m_type == YOLOV5) || (y_info->m_type == YOLOV7) || (y_info->m_type == YOLOX)){
+
+            grid_h = m_info->out_attr[i].dims[1];
+            grid_w = m_info->out_attr[i].dims[0];
+            stride = m_info->in_attr[0].dims[1] / grid_h;
+
+            anchors = &(y_info->anchors[i*2*y_info->anchor_per_branch]);
+            if (y_info->post_type == Q8){
+                validCount = validCount + process_v1_u8((uint8_t*)rk_outputs[i], anchors, y_info->anchor_per_branch, grid_h, grid_w, stride, 
+                                                    filterBoxes, boxesScore, classId, CONF_THRESHOLD, m_info->out_attr[i].zp, m_info->out_attr[i].scale, y_info->m_type);
+            }
+            else {
+                validCount = validCount + process_v1_fp((float*)rk_outputs[i], anchors, y_info->anchor_per_branch, grid_h, grid_w, stride, 
+                                                    filterBoxes, boxesScore, classId, CONF_THRESHOLD, y_info->m_type);
+            }
         }
-        else {
-            validCount = validCount + process_fp((float*)rk_outputs[i].buf, anchors, m->anchor_per_branch, grid_h, grid_w, m->height, m->width, stride, 
-                                                filterBoxes, boxesScore, classId, CONF_THRESHOLD, m->m_type);
+        else if ((y_info->m_type == YOLOV6) || (y_info->m_type == YOLOV8) || (y_info->m_type == PPYOLOE_PLUS)){
+            void* score_sum = nullptr;
+            uint8_t sum_zp = 0;
+            float sum_scale = 0.;
+
+            int nt_per_pair = 2;
+            if (y_info->score_sum_available){
+                nt_per_pair = 3;
+                score_sum = (void*)rk_outputs[i*nt_per_pair+2];
+                sum_zp = m_info->out_attr[i*nt_per_pair+2].zp;
+                sum_scale = m_info->out_attr[i*nt_per_pair+2].scale;
+            }
+
+            grid_h = m_info->out_attr[i*nt_per_pair].dims[1];
+            grid_w = m_info->out_attr[i*nt_per_pair].dims[0];
+            stride = m_info->in_attr[0].dims[1] / grid_h;
+
+            if (y_info->post_type == Q8){
+                validCount = validCount + process_v2_u8(
+                                                (uint8_t*)rk_outputs[i*nt_per_pair], m_info->out_attr[i*nt_per_pair].zp, m_info->out_attr[i*nt_per_pair].scale,
+                                                (uint8_t*)rk_outputs[i*nt_per_pair+1], m_info->out_attr[i*nt_per_pair+1].zp, m_info->out_attr[i*nt_per_pair+1].scale,
+                                                (uint8_t*)score_sum, sum_zp, sum_scale,
+                                                y_info->dfl_len, grid_h, grid_w, stride, 
+                                                filterBoxes, boxesScore, classId, CONF_THRESHOLD, y_info->m_type, y_info->score_sum_available);
+            }
+            else {
+                validCount = validCount + process_v2_fp(
+                                                (float*)rk_outputs[i*nt_per_pair], 
+                                                (float*)rk_outputs[i*nt_per_pair+1], 
+                                                (float*)score_sum, 
+                                                y_info->dfl_len, grid_h, grid_w, stride, 
+                                                filterBoxes, boxesScore, classId, CONF_THRESHOLD, y_info->m_type, y_info->score_sum_available);
+            }
         }
     }
 
@@ -455,21 +713,19 @@ int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_
 
     quick_sort_indice_inverse(boxesScore, 0, validCount - 1, indexArray);
 
-    if (m->m_type == YOLOV5 || m->m_type == YOLOV7){
-        nms(validCount, filterBoxes, classId, indexArray, NMS_THRESHOLD, false);
-    }
-    else if (m->m_type == YOLOX)
-    {
+    if (y_info->m_type == YOLOX){
         nms(validCount, filterBoxes, classId, indexArray, NMS_THRESHOLD, true);
     }
+    else
+    {
+        nms(validCount, filterBoxes, classId, indexArray, NMS_THRESHOLD, false);
+    }
     
-
     int last_count = 0;
     group->count = 0;
     /* box valid detect target */
     for (int i = 0; i < validCount; ++i)
     {
-
         if (indexArray[i] == -1 || boxesScore[i] < CONF_THRESHOLD || last_count >= OBJ_NUMB_MAX_SIZE)
         {
             continue;
@@ -482,10 +738,10 @@ int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_
         float y2 = y1 + filterBoxes[n * 4 + 3];
         int id = classId[n];
 
-        group->results[last_count].box.left = (int)((clamp(x1, 0, lb->target_width) - lb->w_pad) / lb->resize_scale);
-        group->results[last_count].box.top = (int)((clamp(y1, 0, lb->target_height) - lb->h_pad) / lb->resize_scale);
-        group->results[last_count].box.right = (int)((clamp(x2, 0, lb->target_width) - lb->w_pad) / lb->resize_scale);
-        group->results[last_count].box.bottom = (int)((clamp(y2, 0, lb->target_height)  - lb->h_pad) / lb->resize_scale);
+        group->results[last_count].box.left = x1;
+        group->results[last_count].box.top = y1;
+        group->results[last_count].box.right = x2;
+        group->results[last_count].box.bottom = y2;
         group->results[last_count].prop = boxesScore[i];
         group->results[last_count].class_index = id;
         char *label = labels[id];
@@ -497,29 +753,5 @@ int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_
     }
     group->count = last_count;
 
-    return 0;
-}
-
-
-int compute_letter_box(LETTER_BOX* lb){
-    lb->img_wh_ratio = (float)lb->in_width/ (float)lb->in_height;
-    lb->target_wh_ratio = (float)lb->target_width/ (float)lb->target_height;
-
-    if (lb->img_wh_ratio >= lb->target_wh_ratio){
-        //pad height dim
-        lb->resize_scale = (float)lb->target_width / (float)lb->in_width;
-        lb->resize_width = lb->target_width;
-        lb->resize_height = (int)((float)lb->in_height * lb->resize_scale);
-        lb->w_pad = 0;
-        lb->h_pad = (lb->target_height - lb->resize_height) / 2;
-    }
-    else{
-        //pad width dim
-        lb->resize_scale = (float)lb->target_height / (float)lb->in_height;
-        lb->resize_width = (int)((float)lb->in_width * lb->resize_scale);
-        lb->resize_height = lb->target_height;
-        lb->w_pad = (lb->target_width - lb->resize_width) / 2;
-        lb->h_pad = 0;
-    }
     return 0;
 }

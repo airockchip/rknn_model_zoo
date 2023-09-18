@@ -1,0 +1,101 @@
+diff --git a/ppdet/engine/trainer.py b/ppdet/engine/trainer.py
+index 53d7296a0..9f8a7c12f 100644
+--- a/ppdet/engine/trainer.py
++++ b/ppdet/engine/trainer.py
+@@ -1044,7 +1044,7 @@ class Trainer(object):
+ 
+         return static_model, pruned_input_spec
+ 
+-    def export(self, output_dir='output_inference'):
++    def export(self, output_dir='output_inference', rknn_optimize=False):
+         self.model.eval()
+ 
+         if hasattr(self.cfg, 'export') and 'fuse_conv_bn' in self.cfg[
+@@ -1056,6 +1056,11 @@ class Trainer(object):
+         if not os.path.exists(save_dir):
+             os.makedirs(save_dir)
+ 
++        if rknn_optimize == True:
++            print('export model optimized for RKNN')
++            self.model.rknn_optimize = True
++            self.model.yolo_head.rknn_optimize = True
++
+         static_model, pruned_input_spec = self._get_infer_cfg_and_input_spec(
+             save_dir)
+ 
+diff --git a/ppdet/modeling/architectures/yolo.py b/ppdet/modeling/architectures/yolo.py
+index ce5be21cd..e274224e3 100644
+--- a/ppdet/modeling/architectures/yolo.py
++++ b/ppdet/modeling/architectures/yolo.py
+@@ -94,6 +94,8 @@ class YOLOv3(BaseArch):
+ 
+         else:
+             yolo_head_outs = self.yolo_head(neck_feats)
++            if getattr(self, 'rknn_optimize', False):
++                return yolo_head_outs
+ 
+             if self.for_mot:
+                 boxes_idx, bbox, bbox_num, nms_keep_idx = self.post_process(
+diff --git a/ppdet/modeling/heads/ppyoloe_head.py b/ppdet/modeling/heads/ppyoloe_head.py
+index 279412066..f997e2434 100644
+--- a/ppdet/modeling/heads/ppyoloe_head.py
++++ b/ppdet/modeling/heads/ppyoloe_head.py
+@@ -186,6 +186,9 @@ class PPYOLOEHead(nn.Layer):
+         return anchor_points, stride_tensor
+ 
+     def forward_eval(self, feats):
++        if getattr(self, 'rknn_optimize', False):
++            rk_out_list = []
++
+         if self.eval_size:
+             anchor_points, stride_tensor = self.anchor_points, self.stride_tensor
+         else:
+@@ -198,6 +201,13 @@ class PPYOLOEHead(nn.Layer):
+             cls_logit = self.pred_cls[i](self.stem_cls[i](feat, avg_feat) +
+                                          feat)
+             reg_dist = self.pred_reg[i](self.stem_reg[i](feat, avg_feat))
++
++            if getattr(self, 'rknn_optimize', False):
++                rk_out_list.append(reg_dist)
++                rk_out_list.append(F.sigmoid(cls_logit))
++                rk_out_list.append(paddle.clip(rk_out_list[-1].sum(1, keepdim=True), 0, 1))
++                continue
++
+             reg_dist = reg_dist.reshape([-1, 4, self.reg_max + 1, l]).transpose(
+                 [0, 2, 3, 1])
+             reg_dist = self.proj_conv(F.softmax(reg_dist, axis=1)).squeeze(1)
+@@ -205,6 +215,9 @@ class PPYOLOEHead(nn.Layer):
+             cls_score = F.sigmoid(cls_logit)
+             cls_score_list.append(cls_score.reshape([-1, self.num_classes, l]))
+             reg_dist_list.append(reg_dist)
++        
++        if getattr(self, 'rknn_optimize', False):
++            return rk_out_list
+ 
+         cls_score_list = paddle.concat(cls_score_list, axis=-1)
+         reg_dist_list = paddle.concat(reg_dist_list, axis=1)
+diff --git a/tools/export_model.py b/tools/export_model.py
+index 1eaac7a76..216eb51e3 100644
+--- a/tools/export_model.py
++++ b/tools/export_model.py
+@@ -55,6 +55,11 @@ def parse_args():
+         default=None,
+         type=str,
+         help="Configuration file of slim method.")
++    parser.add_argument(
++        "--rknn",
++        action='store_true',
++        default=False,
++        help="Export model optimized for rknn.")
+     args = parser.parse_args()
+     return args
+ 
+@@ -70,7 +75,7 @@ def run(FLAGS, cfg):
+         trainer.load_weights(cfg.weights)
+ 
+     # export model
+-    trainer.export(FLAGS.output_dir)
++    trainer.export(FLAGS.output_dir, FLAGS.rknn)
+ 
+     if FLAGS.export_serving_model:
+         from paddle_serving_client.io import inference_model_to_serving

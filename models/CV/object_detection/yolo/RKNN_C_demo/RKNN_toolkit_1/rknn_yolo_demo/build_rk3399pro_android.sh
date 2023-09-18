@@ -2,8 +2,15 @@
 
 set -e
 
-# same as rk1808
-ANDROID_NDK_PATH="/home/xz/Documents/git_rk/compile_tools/3568/android/android-ndk-r17"
+if [ -z ${ANDROID_NDK_PATH} ]
+then
+  echo "Please set the ANDROID_NDK_PATH environment variable!"
+  echo "example:"
+  echo "  export ANDROID_NDK_PATH=<path-to-your-dir/android-ndk-r17>"
+  exit
+fi
+
+# ANDROID_NDK_PATH="/home/xz/Documents/git_rk/compile_tools/3568/android/android-ndk-r17"
 
 ROOT_PWD=$( cd "$( dirname $0 )" && cd -P "$( dirname "$SOURCE" )" && pwd )
 

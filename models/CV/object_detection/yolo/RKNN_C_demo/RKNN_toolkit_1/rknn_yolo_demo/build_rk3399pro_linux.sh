@@ -2,8 +2,14 @@
 
 set -e
 
+if [ -z $RK3399PRO_TOOL_CHAIN ]; then
+  echo "Please set the RK3399PRO_TOOL_CHAIN environment variable!"
+  echo "example:"
+  echo "  export RK3399PRO_TOOL_CHAIN=<path-to-your-dir/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu>"
+  exit
+fi
 # same as rk1808
-RK3399PRO_TOOL_CHAIN=/home/xz/Documents/git_rk/compile_tools/1808/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu
+# RK3399PRO_TOOL_CHAIN=/home/xz/Documents/git_rk/compile_tools/1808/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu
 
 GCC_COMPILER=${RK3399PRO_TOOL_CHAIN}/bin/aarch64-linux-gnu
 

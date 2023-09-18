@@ -1,0 +1,86 @@
+hyper_config:
+    NPU_V1_0: &NPU_V1_0 ['RK3399PRO', 'RK1808']
+    NPU_V1_1: &NPU_V1_1 ['RV1109', 'RV1126']
+    NPU_1_ALL: &NPU_1_ALL
+      - *NPU_V1_0
+      - *NPU_V1_1
+
+    NPU_V2_0: &NPU_V2_0 ['RK3566', 'RK3568']
+    NPU_V2_1: &NPU_V2_1 ['RK3588']
+    NPU_V2_2: &NPU_V2_2 ['RV1106', 'RV1103']
+    NPU_V2_3: &NPU_V2_3 ['RK3562']
+    NPU_2_ALL: &NPU_2_ALL
+      - *NPU_V2_0
+      - *NPU_V2_1
+      - *NPU_V2_2
+      - *NPU_V2_3
+
+    NPU_ALL:  &NPU_ALL
+      - *NPU_1_ALL
+      - *NPU_2_ALL
+
+    WEIGHT_ZOOM_PATH: &WEIGHT_ZOOM_PATH "/home/xz/Documents/gitlab_model_zoo/weight_zoom/models/CV/object_detection/yolo/"
+
+
+yolov5:
+    exec_path: !str_join
+      - *WEIGHT_ZOOM_PATH
+      - "yolov5/deploy_models"
+    yml_path: "./yolov5.yml"
+    model:
+        - "./yolov5m.pt"
+        - "./yolov5s.pt"
+        - "./yolov5s_relu.pt"
+    platform: *NPU_ALL
+
+    capi_test:
+      normal_capi:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo', 'v5', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+      zero_copy:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo_zero_copy', 'v5', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+
+
+yolov7:
+    exec_path: !str_join
+      - *WEIGHT_ZOOM_PATH
+      - "yolov7/deploy_models"
+    yml_path: "./yolov7.yml"
+    model:
+        - "./yolov7.pt"
+        - "./yolov7-tiny.pt"
+    platform: *NPU_ALL
+
+    capi_test:
+      normal_capi:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo', 'v7', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+      zero_copy:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo_zero_copy', 'v7', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+
+
+yolox:
+    exec_path: !str_join
+      - *WEIGHT_ZOOM_PATH
+      - "YOLOX/deploy_models"
+    yml_path: "./yolox.yml"
+    model:
+        - "./yoloxm.pt"
+        - "./yoloxs.pt"
+    platform: *NPU_ALL
+
+    capi_test:
+      normal_capi:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo', 'yolox', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+      zero_copy:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo_zero_copy', 'yolox', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']

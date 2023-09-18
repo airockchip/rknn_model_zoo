@@ -1,1 +1,0 @@
-/home/xz/Documents/git_rk/rknn-toolkit/examples/onnx/yolov5/bus.jpg

@@ -1,0 +1,21 @@
+#support yolo[v5,v6,v7,v8], ppyoloe_plus
+model_framework: pytorch
+model_file_path: yolov5s.torchscript.pt
+RK_device_platform: RK3566
+# RK_device_id: simulator
+dataset: ../../../../../datasets/COCO/coco_subset_10.txt
+quantize: True
+pre_compile: online
+
+graph:
+  in_0:
+    shape: 1,3,640,640
+    mean_values: 0
+    std_values: 255
+    img_type: RGB
+
+configs:
+  quantized_dtype: asymmetric_quantized-8
+  quantized_algorithm: normal
+  optimization_level: 3
+  # force_builtin_perm: True

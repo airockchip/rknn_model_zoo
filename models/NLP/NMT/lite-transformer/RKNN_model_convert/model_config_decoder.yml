@@ -1,4 +1,5 @@
-RK_device_platform: rk1808
+RK_device_platform: RK3562
+# RK_device_id: simulator
 model_framework: onnx
 model_file_path: ./model_file/lite-transformer-decoder-16.onnx
 quantize: False
@@ -6,7 +7,7 @@ dataset: ./decoder_dataset.txt
 
 graph:
   in_0:
-    shape: 1,256
+    shape: 1,1,256
   in_1:
     shape: 1,16,256
   in_2:
@@ -14,17 +15,17 @@ graph:
   in_3:
     shape: 16
   in_4:
-    shape: 4,15,64
+    shape: 1,4,15,64
   in_5:
-    shape: 4,15,64
+    shape: 1,4,15,64
   in_6:
-    shape: 4,15,64
+    shape: 1,4,15,64
   in_7:
-    shape: 4,15,64
+    shape: 1,4,15,64
   in_8:
-    shape: 4,15,64
+    shape: 1,4,15,64
   in_9:
-    shape: 4,15,64
+    shape: 1,4,15,64
 
 
 configs:
@@ -32,3 +33,4 @@ configs:
   quantized_algorithm: normal
   optimization_level: 3
   do_sparse_network: True
+  # remove_weight: True

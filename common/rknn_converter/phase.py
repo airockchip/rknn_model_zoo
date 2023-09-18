@@ -16,11 +16,12 @@ sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('commo
 
 from image_utils.img_preprocesser_tools import Image_preprocessor
 from image_utils.numpy_preprocesser_tools import numpy_preprocessor
-from framework_excuter.excuter import Excuter
-from capi_simply_excuter.commond_excuter.toolkit1_capi import tk1_capi_excuter
-from capi_simply_excuter.commond_excuter.toolkit2_capi import tk2_capi_excuter
+from framework_executor.executor import Excuter
+from capi_simply_executor.commond_executor.toolkit1_capi import tk1_capi_executor
+from capi_simply_executor.commond_executor.toolkit2_capi import tk2_capi_executor
 from utils.dict_tools import _dict_to_str
-from utils.shell_utils import check_file
+from utils.shell_utils import check_file, check_devices_available
+from macro_define.rknpu import *
 
 
 class time_collecter:
@@ -45,11 +46,29 @@ class time_collecter:
     def flash(self):
         self.times = []
 
+def _device_require(func):
+    def wrapper(*args, **kwars):
+        phase_object = args[0]
+        if phase_object.device_connected is False and phase_object.RK_device_id!= 'simulator':
+            print("WARNING: no adb devices. Ignore {}".format(func.__name__))
+            return
+        return func(*args, **kwars)
+    return wrapper
+
 def _device_limit(func):
     def wrapper(*args, **kwars):
         phase_object = args[0]
-        if phase_object.RK_device_platform in ['RV1106','RV1103']:
+        if phase_object.RK_device_platform in NPU_V2_2 and phase_object.RK_device_id != 'simulator':
             print("WARNING: {} not support run model with python.api. Ignore {}".format(phase_object.RK_device_platform, func.__name__))
+            return
+        return func(*args, **kwars)
+    return wrapper
+
+def _simulator_limit(func):
+    def wrapper(*args, **kwars):
+        phase_object = args[0]
+        if phase_object.RK_device_id == 'simulator':
+            print("WARNING: simulator not support run model with c.api. Ignore {}".format(func.__name__))
             return
         return func(*args, **kwars)
     return wrapper
@@ -75,7 +94,7 @@ class convert_phase:
         if self.args.overwrite.lower() == 'yes':
             pass
         elif self.args.overwrite.lower() == 'no':
-            if os.path.exists(model_config_dict['export_rknn']['export_path']):
+            if os.path.exists(model_config_dict['export_rknn']['export_path']) or os.path.exists(model_config_dict['export_pre_compile_path']):
                 overwrite = False
         elif self.args.overwrite == 'check':
             if os.path.exists(model_config_dict['export_rknn']['export_path']):
@@ -96,25 +115,20 @@ class convert_phase:
             rknn = RKNN(verbose=model_config_dict['verbose'], verbose_file=model_config_dict['verbose_file'])
 
             print('---> Seting RKNN config')
-            # model_config_dict['config'].pop('mean_values')
-            # model_config_dict['config'].pop('std_values')
             rknn.config(**model_config_dict['config'])
 
             print('---> Loading {} model'.format(model_config_dict['model_framework']))
             load_function = getattr(rknn, 'load_{}'.format(model_config_dict['model_framework']))
-            # model_config_dict['load'].pop('inputs')
-            # model_config_dict['load'].pop('outputs')
             load_function(**model_config_dict['load'])
 
             print('---> Building')
-            # model_config_dict['build']['pre_compile'] = True
             rknn.build(**model_config_dict['build'])
 
             print('---> Export RKNN model')
             rknn.export_rknn(**model_config_dict['export_rknn'])
 
 
-            if model_config_dict['NPU_VERSION'] != 1:
+            if model_config_dict['TOOLKIT_MAIN_VERSION'] != 1:
                 print("  WARNING: {} model needn't pre_compile. Ignore!".format(model_config_dict['RK_device_platform']))
             elif model_config_dict['RK_device_id'] == 'simulator':
                 print("  WARNING: simulator does not support exporting pre_compiled model. Ignore!")
@@ -163,10 +177,13 @@ class validate_phase:
     def __init__(self, rknn, model_config_dict, args) -> None:
         assert isinstance(rknn, RKNN)
 
+        self.device_connected = check_devices_available()
+
         self.rknn = rknn
         self.model_config_dict = model_config_dict
-        self.NPU_VERSION = model_config_dict.get('NPU_VERSION', '1')
+        self.TOOLKIT_MAIN_VERSION = model_config_dict.get('TOOLKIT_MAIN_VERSION', '1')
         self.RK_device_platform = model_config_dict.get('RK_device_platform', 'RK1808')
+        self.RK_device_id = model_config_dict.get('RK_device_id', 'simulator')
 
         self.init_level_order = ['normal', 'eval_mem', 'perf_debug']
         self.init_state = None
@@ -174,7 +191,7 @@ class validate_phase:
         self.framework_excute_info = None
         self.framework_runner = None
 
-        self.capi_excuter = None
+        self.capi_executor = None
 
         self.model_type = 'fp'
         if model_config_dict['build']['do_quantization']:
@@ -189,10 +206,14 @@ class validate_phase:
         self.tc = time_collecter()
 
         # init and get board info
-        self.check_board_info()
+        test_api = ['capi_test', 'capi_zero_copy_test', 'eval_perf', 'eval_memory', 'python_api_test']
+        test_api_status = [getattr(args, _a) for _a in test_api]
+        if len(set(test_api_status))>1 or test_api_status[0]!= False:
+            self.check_board_info()
 
+    @_device_require
     @_device_limit
-    def Init_rknn_runtime(self, perf_debug=False, eval_mem=False):
+    def init_rknn_runtime(self, perf_debug=False, eval_mem=False):
         # do not change model_config_dict here.
         model_config_dict = deepcopy(self.model_config_dict)
         assert not perf_debug&eval_mem , 'perf_debug and eval_mem must not be True at the same time.'
@@ -204,7 +225,7 @@ class validate_phase:
             want_state = 'normal'
 
         if self.init_state != want_state:
-            print('---> Init_rknn_runtime')
+            print('---> init_rknn_runtime')
             if model_config_dict['RK_device_id'] != 'simulator':
                 self.tc.tik()
                 ret = self.rknn.init_runtime(target=model_config_dict['RK_device_platform'], device_id = model_config_dict['RK_device_id'], perf_debug=perf_debug, eval_mem=eval_mem)
@@ -215,64 +236,78 @@ class validate_phase:
                 ret = self.rknn.init_runtime()
             self.init_state = want_state
             if ret != 0:
-                assert False, 'Init_rknn_runtime failed!'
+                assert False, 'init_rknn_runtime failed!'
 
+    @_device_require
     @_device_limit
-    def Eval_memory(self):
+    @_simulator_limit
+    def eval_memory(self):
         print('\n\n', '='*30)
         print('Eval memory\n')
-        self.Init_rknn_runtime(perf_debug=False, eval_mem=True)
+        self.init_rknn_runtime(perf_debug=False, eval_mem=True)
         memory_info = self.rknn.eval_memory()
         # TODO parse memory_info format
         if self._report_available is True:
-            if self.NPU_VERSION == 1:
+            if self.TOOLKIT_MAIN_VERSION == 1:
                 weight = "%.2f" % (memory_info['system_memory']['maximum_allocation']/1024/1024)
                 internal = "%.2f" % (memory_info['npu_memory']['maximum_allocation']/1024/1024)
                 total = "%.2f" % (memory_info['total_memory']['maximum_allocation']/1024/1024)
+            if self.TOOLKIT_MAIN_VERSION == 2:
+                weight = "%.2f" % (memory_info['total_weight_allocation']/1024/1024)
+                internal = "%.2f" % (memory_info['total_internal_allocation']/1024/1024)
+                total = "%.2f" % (memory_info['total_model_allocation']/1024/1024)
 
-        self._smart_record('Memory_info(MiB).weight', weight)
-        self._smart_record('Memory_info(MiB).internal', internal)
-        self._smart_record('Memory_info(MiB).total', total)
-        if self.model_config_dict.get('pre_compile', 'off') == 'online' and \
-            os.path.exists(self.model_config_dict['export_pre_compile_path']):
-            _m_path = self.model_config_dict['export_pre_compile_path']
-        else:
-            _m_path = self.model_config_dict['export_rknn']['export_path']
-        self._smart_record('Memory_info(MiB).model_file_size', check_file(_m_path, 'size'))
+            self._smart_record('Memory_info(MiB).weight', weight)
+            self._smart_record('Memory_info(MiB).internal', internal)
+            self._smart_record('Memory_info(MiB).total', total)
+            if self.model_config_dict.get('pre_compile', 'off') == 'online' and \
+                os.path.exists(self.model_config_dict['export_pre_compile_path']):
+                _m_path = self.model_config_dict['export_pre_compile_path']
+            else:
+                _m_path = self.model_config_dict['export_rknn']['export_path']
+            self._smart_record('Memory_info(MiB).model_file_size', check_file(_m_path, 'size'))
         return memory_info
 
+    @_device_require
     @_device_limit
-    def Eval_perf(self, looptime=5, perf_debug=False):
+    @_simulator_limit
+    def eval_perf(self, looptime=5, perf_debug=False):
         print('\n\n', '='*30)
         print('Eval perf\n  looptime: {}\n  perf_debug: {}'.format(looptime, perf_debug))
-        self.Init_rknn_runtime(perf_debug=perf_debug, eval_mem=False)
+        self.init_rknn_runtime(perf_debug=perf_debug, eval_mem=False)
         perf_info = self.rknn.eval_perf(looptime)
         # TODO parse memory_info format
         if self._report_available is True:
-            if self.NPU_VERSION == 1:
+            if self.TOOLKIT_MAIN_VERSION == 1:
                 self._smart_record("eval_performance(only model inference)", "%.2f"%(perf_info['total_time']/1000))
-            elif self.NPU_VERSION == 2:
+            elif self.TOOLKIT_MAIN_VERSION == 2:
                 time = perf_info.split("Time(us): ")[-1].split('\n')[0]
                 self._smart_record("eval_performance(only model inference)", float(time)/1000)
         return perf_info
 
+    @_device_require
     @_device_limit
-    def Get_rknn_result_via_python(self, inputs):
-        self.Init_rknn_runtime(perf_debug=False, eval_mem=False)
+    def get_rknn_result_via_python(self, inputs):
+        self.init_rknn_runtime(perf_debug=False, eval_mem=False)
         self.tc.tik()
+        # for i, _in in enumerate(inputs):
+        #     if (len(_in.shape) in [3, 4]) and _in.shape[-1] != 3:
+        #         # nchw 2 nhwc
+        #         _perm = (0, 2, 3, 1) if len(_in.shape) == 4 else (1, 2, 0)
+        #         inputs[i] = np.transpose(_in, _perm)
         rknn_result = self.rknn.inference(inputs)
         self.tc.tik()
         if self._report_available:
             self._smart_record('run(include data transmission)', self.tc.last_time())
         return rknn_result
 
-
-    def Get_rknn_result_via_Capi(self, inputs, looptime=5, api_type='normal'):
+    @_device_require
+    @_simulator_limit
+    def get_rknn_result_via_Capi(self, inputs, looptime=5, api_type='normal'):
         self.release()
-        inputs = self._input_for_Capi(inputs, api_type)
-        if self.NPU_VERSION == 1:
+        if self.TOOLKIT_MAIN_VERSION == 1:
             result, time_info = self._get_rknn_result_via_Capi_npu1(inputs, looptime, api_type)
-        elif self.NPU_VERSION == 2:
+        elif self.TOOLKIT_MAIN_VERSION == 2:
             result, time_info = self._get_rknn_result_via_Capi_npu2(inputs, looptime, api_type)
 
         print('---> time_info:')
@@ -280,45 +315,26 @@ class validate_phase:
             print('  {}: {} ms'.format(key, value))
         return result, time_info
 
-
+    @_device_require
     def _get_rknn_result_via_Capi_npu1(self, inputs, looptime, api_type):
-        if self.capi_excuter is None:
+        if self.capi_executor is None:
             if self.model_config_dict['pre_compile'] == 'online':
-                capi_excuter = tk1_capi_excuter(self.model_config_dict['export_pre_compile_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
+                capi_executor = tk1_capi_executor(self.model_config_dict['export_pre_compile_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
             else:
-                capi_excuter = tk1_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
-            self.capi_excuter = capi_excuter
-        result, time_info = self.capi_excuter.excute(inputs, looptime, api_type)
+                capi_executor = tk1_capi_executor(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system'))
+            self.capi_executor = capi_executor
+        result, time_info = self.capi_executor.execute(inputs, looptime, api_type)
         return result, time_info
 
+    @_device_require
     def _get_rknn_result_via_Capi_npu2(self, inputs, looptime, api_type):
-        if self.capi_excuter is None:
-            self.capi_excuter = tk2_capi_excuter(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system', 'android'))
-        result, time_info = self.capi_excuter.excute(inputs, looptime, api_type)
+        if self.capi_executor is None:
+            self.capi_executor = tk2_capi_executor(self.model_config_dict['export_rknn']['export_path'], deepcopy(self.model_config_dict), getattr(self, 'device_system', 'android'))
+        result, time_info = self.capi_executor.execute(inputs, looptime, api_type)
         return result, time_info
-        # raise NotImplemented
-
-    def _input_for_Capi(self, inputs, api_type):
-        for i, _value in enumerate(self.model_config_dict['inputs'].items()):
-            _in_name, _input_info = _value
-            # _input_info aways ignore batch dim
-            if len(inputs[i].shape) < len(_input_info['shape']):
-                inputs[i] = inputs[i].reshape(_input_info['shape'])
-                # raise ValueError('inputs shape is not match with model config.')
-            elif len(inputs[i].shape) == len(_input_info['shape']):
-                # add batch
-                inputs[i] = np.ascontiguousarray(inputs[i].reshape(1, *inputs[i].shape))
-            # hack
-            elif len(inputs[i].shape) > len(_input_info['shape']) + 1:
-                inputs[i] = inputs[i].reshape(1, *_input_info['shape'])
-            
-            if len(inputs[i].shape) == 4 and api_type == 'zero_copy' and self.NPU_VERSION == 1:
-                inputs[i] = inputs[i].transpose(0, 3, 1, 2) # nhwc to nchw
-            inputs[i] = np.ascontiguousarray(inputs[i])
-        return inputs
 
 
-    def Get_default_framework_result(self, inputs):
+    def get_default_framework_result(self, inputs):
         model_config_dict = deepcopy(self.model_config_dict)
         if self.framework_excute_info is None:
             self.framework_excute_info = self._get_framework_info()
@@ -332,10 +348,11 @@ class validate_phase:
         self.model_config_dict['output_shape_by_run'] = [list(_v.shape) for _v in framework_result]
         return framework_result
 
+    @_device_require
     @_device_limit
-    def Compare_convert_dist_via_python(self, sample=1):
+    def compare_convert_dist_via_python(self, sample=1):
         print('\n\n', '='*30)
-        print('Compare_convert_dist_via_python\n  sample: {}'.format(sample))
+        print('compare_convert_dist_via_python\n  sample: {}'.format(sample))
 
         model_config_dict = deepcopy(self.model_config_dict)
         framework = model_config_dict['model_framework']
@@ -347,10 +364,10 @@ class validate_phase:
         result_info = []
         for i in range(sample):
             rk_inputs = self._get_input('rknn', i)
-            rknn_result = self.Get_rknn_result_via_python(rk_inputs)
+            rknn_result = self.get_rknn_result_via_python(rk_inputs)
 
             framework_inputs = self._get_input('origin_framework', i)
-            framework_result = self.Get_default_framework_result(framework_inputs)
+            framework_result = self.get_default_framework_result(framework_inputs)
 
             print('     For example iter {}/{} rknn({}) VS {} cos_similarity:'.format(i+1, sample, self.model_type, framework))
             result_info.extend(self._parse_result(rknn_result, framework_result))
@@ -362,8 +379,9 @@ class validate_phase:
 
         return result_info
 
-
-    def Compare_convert_dist_via_Capi(self, looptime=5, api_type='normal', sample=1):
+    @_device_require
+    @_simulator_limit
+    def compare_convert_dist_via_Capi(self, looptime=5, api_type='normal', sample=1):
         print('\n\n', '='*30)
         if self.RK_device_platform.upper() == 'RK3399PRO' and api_type == 'zero_copy':
             print("WARNING: RK3399PRO not support zero copy. Ignore zero copy test")
@@ -373,7 +391,7 @@ class validate_phase:
             print("WARNING: {} only support capi zero copy, Ignore {} test".format(self.RK_device_platform.upper(), api_type))
             return
 
-        print('Compare_convert_dist_via_Capi\n  looptime: {}\n  api_type: {}\n  sample: {}'.format(looptime, api_type, sample))
+        print('compare_convert_dist_via_Capi\n  looptime: {}\n  api_type: {}\n  sample: {}'.format(looptime, api_type, sample))
 
         model_config_dict = deepcopy(self.model_config_dict)
         framework = model_config_dict['model_framework']
@@ -385,10 +403,10 @@ class validate_phase:
         result_info = []
         for i in range(sample):
             rk_inputs = self._get_input('rknn', i)
-            rknn_result, time_info = self.Get_rknn_result_via_Capi(rk_inputs, looptime, api_type)
+            rknn_result, time_info = self.get_rknn_result_via_Capi(rk_inputs, looptime, api_type)
 
             framework_inputs = self._get_input('origin_framework', i)
-            framework_result = self.Get_default_framework_result(framework_inputs)
+            framework_result = self.get_default_framework_result(framework_inputs)
 
             print('     For example iter {}/{} rknn({}) VS {} cos_similarity:'.format(i+1, sample, self.model_type, framework))
             result_info.extend(self._parse_result(rknn_result, framework_result))
@@ -412,10 +430,11 @@ class validate_phase:
                 self._smart_record('RKNN_api(zero_copy).time_cost(ms).total(except init)', time_info['run'])
         return result_info, time_info
 
-
-    def Compare_rknn_python_Capi_dist(self, sample):
+    @_device_require
+    @_simulator_limit
+    def compare_rknn_python_Capi_dist(self, sample):
         print('\n\n', '='*30)
-        print('Compare_rknn_python_Capi_dist\n  sample: {}'.format(sample))
+        print('compare_rknn_python_Capi_dist\n  sample: {}'.format(sample))
         model_config_dict = deepcopy(self.model_config_dict)
 
 
@@ -426,9 +445,9 @@ class validate_phase:
         result_info = []
         for i in range(sample):
             rk_inputs = self._get_input('rknn', i)
-            rknn_result_python = self.Get_rknn_result_via_python(rk_inputs)
-            rknn_result_Capi_normal, time_info = self.Get_rknn_result_via_Capi(rk_inputs, looptime=1, api_type='normal')
-            # rknn_result_Capi_zcp, time_info = self.Get_rknn_result_via_Capi(rk_inputs, looptime=1, api_type='zero_copy')
+            rknn_result_python = self.get_rknn_result_via_python(rk_inputs)
+            rknn_result_Capi_normal, time_info = self.get_rknn_result_via_Capi(rk_inputs, looptime=1, api_type='normal')
+            # rknn_result_Capi_zcp, time_info = self.get_rknn_result_via_Capi(rk_inputs, looptime=1, api_type='zero_copy')
 
             print('     For example iter {}/{} rknn({})(python) VS rknn({})(Capi) cos_similarity:'.format(i+1, sample, self.model_type, self.model_type))
             result_info.extend(self._parse_result(rknn_result_python, rknn_result_Capi_normal))
@@ -446,7 +465,7 @@ class validate_phase:
         input_list = []
         for _index, input_info in model_config_dict['inputs'].items():
             #! when input RGB/BGR not match, probobly the this code get wrong type
-            _img_type = 'RGB' if (framework.upper() == 'RKNN' and self.NPU_VERSION==1 and input_info['img_type'] in ['RGB','BGR']) else input_info['img_type'] # rknn_toolkit_1 always get RGB in.
+            _img_type = 'RGB' if (framework.upper() == 'RKNN' and self.TOOLKIT_MAIN_VERSION==1 and input_info['img_type'] in ['RGB','BGR']) else input_info['img_type'] # rknn_toolkit_1 always get RGB in.
 
             if single_example[_index].endswith('.npy'):
                 imp = numpy_preprocessor(single_example[_index])
@@ -524,9 +543,11 @@ class validate_phase:
             self.rknn.release()
         self.init_state = None
 
+    @_device_require
+    @_simulator_limit
     def check_board_info(self):
         from utils.board_checker import Board_checker
-        if self.model_config_dict['RK_device_id'] == 'simulator':
+        if self.model_config_dict['RK_device_id'] == 'simulator' or check_devices_available() is False:
             return
         bc = Board_checker(self.model_config_dict['RK_device_platform'], self.model_config_dict['RK_device_id'])
         self._smart_record('chipname', self.model_config_dict['RK_device_platform'])
@@ -576,7 +597,7 @@ class validate_phase:
         if self.model_config_dict['build']['do_quantization']:
             self._smart_record('dtype', self.model_config_dict['config']['quantized_dtype'])
         else:
-             self._smart_record('dtype', {1:'bfloat16', 2:'float16'}[self.model_config_dict['NPU_VERSION']])
+             self._smart_record('dtype', {1:'bfloat16', 2:'float16'}[self.model_config_dict['TOOLKIT_MAIN_VERSION']])
         return
 
     def _init_convinient_key_map(self):
@@ -608,7 +629,7 @@ class validate_phase:
             _command = "self.report_info{} = {}".format(self._report_key_map[key], value)
         exec(_command)
 
-    def extract_report(self, path):
+    def extract_report(self, path, save_to_model_dir=False):
         self._fill_the_report()
 
         indent = 2
@@ -616,3 +637,11 @@ class validate_phase:
         with open(path, 'w') as f:
             for _l in _str:
                 f.write(_l)
+
+        if save_to_model_dir:
+            model_path = self.model_config_dict['export_rknn']['export_path']
+            assert model_path.endswith('.rknn'), "ERROR: model path should end with .rknn"
+            save_path = model_path[:-5] + '_@{}'.format(self.model_config_dict['RK_device_platform']) + '.yml'
+            with open(save_path, 'w') as f:
+                for _l in _str:
+                    f.write(_l)

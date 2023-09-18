@@ -4,7 +4,8 @@ set -e
 
 if [ -z ${ANDROID_NDK_PATH} ]
 then
-  ANDROID_NDK_PATH=/home/lc/ndk/android-ndk-r23b
+  # ANDROID_NDK_PATH=/home/lc/ndk/android-ndk-r23b
+  ANDROID_NDK_PATH=/home/xz/Documents/git_rk/compile_tools/3568/android/android-ndk-r25b-linux/android-ndk-r25b
 fi
 
 BUILD_TYPE=Release
@@ -29,7 +30,6 @@ cmake ../.. \
        	-DCMAKE_SYSTEM_NAME=Android \
         -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_PATH/build/cmake/android.toolchain.cmake \
         -DANDROID_ABI="arm64-v8a" \
-        -DANDROID_STL=c++_static \
         -DANDROID_PLATFORM=android-24 \
         -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
 make -j4

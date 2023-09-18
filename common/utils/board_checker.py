@@ -8,12 +8,12 @@ realpath = realpath.split(_sep)
 sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:-1]))
 sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('common')+1]))
 
-from utils.shell_utils import run_shell_command, check_file
+from utils.shell_utils import run_shell_command, check_file, check_devices_available
 
 # devices_type
 NPU_VERSION_MAP = {
     1:  ['RK3399PRO', 'RK1808', 'RV1109', 'RV1126'],
-    2:  ['RK3566', 'RK3568', 'RK3588', 'RV1106', 'RV1103'],
+    2:  ['RK3566', 'RK3568', 'RK3588', 'RV1106', 'RV1103', 'RK3562'],
 }
 
 SK_FILE = os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('common')]) + '/capi_tools/scaling_frequency.sh'
@@ -30,7 +30,7 @@ class Board_checker:
 
         self.device_id = device_id
         self.get_device_system_type()
-        if self.system_type == 'android':
+        if check_devices_available() and self.system_type == 'android':
             run_shell_command(['adb root && adb remount'], remote=False)
 
     def _d_run_shell_command(self, cmd):
@@ -38,14 +38,14 @@ class Board_checker:
 
 
     def _get_device_system_type_for_rk3399pro_hack(self):
-        result = self._d_run_shell_command(['ls vendor'])
-        if len(result) == 0:
+        result = self._d_run_shell_command(['ls vendor/lib64'])
+        if len(result) == 0 or "No such file" in result[0]:
             return 'linux'
         else:
             return 'android'
 
     def get_device_system_type(self):
-        if self.platform.upper() in ['RK3399PRO', 'RK3566', 'RK3568', 'RK3588']:
+        if self.platform.upper() in ['RK3399PRO', 'RK3566', 'RK3568', 'RK3588', 'RK3562']:
             self.system_type = self._get_device_system_type_for_rk3399pro_hack()
             return self.system_type
 
@@ -67,7 +67,7 @@ class Board_checker:
                 result = 'not support currently, please check with rknn.init_runtime api'
             else: 
                 result = self._d_run_shell_command(["strings /usr/lib/librknn_runtime.so | grep 'librknn_runtime version'"])
-                _result = result[0].rstrip('\n').split('version ')[1]
+                _result = result[0].rstrip('\n').split('version ')[1].replace(':', '-')
                 result = _result if len(_result)>0 else result
 
         elif self.npu_version == 2:
@@ -78,8 +78,11 @@ class Board_checker:
                 result = self._d_run_shell_command(["strings /usr/lib/librknnrt.so | grep 'librknnrt version'"])
             else:
                 result = self._d_run_shell_command(["strings /vendor/lib/librknnrt.so | grep 'librknnrt version'"])
-            _result = result[0].rstrip('\n').split('version: ')[1]
-            result = _result if len(_result)>0 else result
+            try:
+                _result = result[0].rstrip('\n').split('version: ')[1]
+                result = _result if len(_result)>0 else result
+            except:
+                result = "query failed"
         return result
 
     def get_device_id(self):
@@ -97,7 +100,7 @@ class Board_checker:
 
     def scaling_freq(self):
         remote_sk = {'linux': '/userdata/scaling_frequency.sh', 'android': '/data/scaling_frequency.sh'}[self.system_type]
-        if not check_file(remote_sk, 'exits', self.device_id, remote=True):
+        if not check_file(remote_sk, 'exists', self.device_id, remote=True):
             os.system('adb push {} {}'.format(SK_FILE, remote_sk))
         
         result = self._d_run_shell_command([

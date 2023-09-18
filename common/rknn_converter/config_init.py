@@ -6,9 +6,10 @@ realpath = os.path.abspath(__file__)
 _sep = os.path.sep
 realpath = realpath.split(_sep)
 # sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:-1]))
-# sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('rknn_converter')+1]))
+sys.path.append(os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('common')]))
 config_folder = os.path.join(realpath[0]+_sep, *realpath[1:realpath.index('rknn_converter')+1], 'config_example')
 
+from common.macro_define.rknpu import *
 
 def _dict_to_str(tar_dict):
     def _parse_dict(_d, _srt_list, _depth=0):
@@ -41,17 +42,13 @@ framework_mapper = {
     'mxnet': 'mxnet_model_config.yml',
 }
 
-NPU_1_DEVICE = ['rk1808', 'rv1126', 'rv1109', 'rk3399pro']
-NPU_2_DEVICE = ['rk3566', 'rk3568', 'rk3588', 'rv1106', 'rv1103']
-QUANTIZE_DTYPE = ['u8', 'i8', 'i16', 'fp']
-
 if __name__ == '__main__':
     if len(sys.argv) < 2 or \
         len(sys.argv)==2 and sys.argv[1] in ['--help', '-help', '-h', '--h']:
         print("usage: python config_init.py [source_framework] [device_platform] [quantized_dtype]")
         print("  available framework:\n    {}".format(list(framework_mapper.keys())))
-        print("  available device_platform:\n    {}".format(NPU_1_DEVICE + NPU_2_DEVICE))
-        print("  available quantize_type:\n    {}".format(QUANTIZE_DTYPE))
+        print("  available device_platform:\n    {}".format(RKNN_DEVICES_ALL))
+        print("  available quantize_type:\n    {}".format(QUANTIZE_DTYPE_SIM))
         exit()
 
     source_framework = sys.argv[1]
@@ -62,14 +59,14 @@ if __name__ == '__main__':
     quantized_dtype = 'u8' if len(sys.argv) < 4 else sys.argv[3]
 
     NPU_version = None
-    if device_platform.lower() in NPU_1_DEVICE:
+    if device_platform.upper() in NPU_VERSION_1_DEVICES:
         NPU_version = 1
-    elif device_platform.lower() in NPU_2_DEVICE:
+    elif device_platform.upper() in NPU_VERSION_2_DEVICES:
         NPU_version = 2
     else:
         assert False,"{} not support".format(device_platform)
 
-    assert quantized_dtype in QUANTIZE_DTYPE, "quantized_dtype: {} not support".format(quantized_dtype)
+    assert quantized_dtype in QUANTIZE_DTYPE_SIM, "quantized_dtype: {} not support".format(quantized_dtype)
 
     src_config = framework_mapper[source_framework]
     src_config = os.path.join(config_folder, src_config)
@@ -82,16 +79,8 @@ if __name__ == '__main__':
         conf_dict['quantize'] = False
     else:
         conf_dict['quantize'] = True
-        if NPU_version == 1:
-            if quantized_dtype == 'u8':
-                qtype = 'asymmetric_affine-u8'
-            elif quantized_dtype == 'i8':
-                qtype = 'dynamic_fixed_point-i8'
-            elif quantized_dtype == 'i16':
-                qtype = 'dynamic_fixed_point-i16'
-        elif NPU_version == 2:
-            if quantized_dtype in ['u8', 'i8']:
-                qtype = 'asymmetric_quantized-8'
+        qtype = MACRO_qtype_sim_2_toolkit(quantized_dtype, device_platform.upper())
+
         conf_dict['configs']['quantized_dtype'] = qtype
 
     conf_txt = _dict_to_str(conf_dict)

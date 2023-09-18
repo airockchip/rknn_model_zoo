@@ -1,0 +1,8028 @@
+a 1 15
+an 1 97
+ad 1 4901
+am 1 2899
+as 1 37
+at 1 114
+ax 1 31269
+ace 1 13726
+act 1 2131
+add 1 3778
+age 1 1972
+ago 1 1312
+aid 1 2004
+ail 1 25486
+aim 1 4114
+air 1 2864
+ale 1 10005
+all 1 222
+and 1 12
+ant 1 4678
+any 1 617
+apt 1 16867
+ape 1 27041
+app 1 11822
+apt 1 16867
+arc 1 19224
+arm 1 8882
+art 1 5994
+ash 1 12198
+ask 1 3903
+ass 1 9832
+awe 1 21369
+axe 2 15573 2578
+able 1 1336
+ache 1 24081
+acid 1 24082
+acre 1 28701
+aged 1 7368
+aide 1 24086
+aids 2 10750 4958
+akin 1 10071
+ally 1 3491
+also 1 289
+amid 1 6511
+anew 1 20444
+arch 1 20004
+area 1 2825
+army 1 3650
+atom 2 4333 12033
+atop 1 21867
+aunt 2 3306 18417
+auto 1 10694
+away 1 1950
+axis 1 10245
+abide 1 13473
+abort 2 4265 13644
+about 1 310
+above 1 2201
+abuse 1 5309
+actor 1 8554
+acute 1 6367
+adapt 1 5609
+admit 1 7607
+adopt 1 4233
+adore 2 4497 9007
+adult 1 9135
+affix 3 10365 3595 4974
+after 1 514
+again 1 1503
+aging 1 4322
+agent 1 9901
+agony 1 20438
+agree 1 2971
+ahead 1 2582
+aisle 2 16859 3773
+alarm 1 10502
+album 3 3827 5968 3655
+alert 1 14299
+alien 1 19600
+align 1 9261
+alike 1 4800
+alive 1 7540
+alley 1 22394
+allot 2 3827 3292
+allow 1 2158
+alloy 2 32434 2791
+aloft 3 3827 12679 2435
+alone 1 1855
+along 1 2319
+aloud 1 -1234
+alter 1 8518
+amass 2 3700 9832
+amaze 2 -1234 5410
+amend 1 15752
+among 1 953
+ample 1 7660
+amuse 2 3700 932
+angel 1 -1234
+angle 1 28722
+angry 1 7662
+anger 1 5686
+ankle 2 3264 29676
+annex 1 23489
+annoy 2 20447 2791
+apart 1 5148
+appal 2 17104 2733
+apple 2 4924 15059
+apply 1 4603
+april 3 4924 3992 3803
+apron 2 4924 14557
+aptly 1 -1234
+arena 1 12400
+argue 1 2672
+arise 1 6368
+armor 2 11736 120
+array 1 8792
+arrow 1 14301
+aside 1 4834
+asset 1 2527
+atlas 2 4333 16234
+attic 2 4333 6438
+audio 2 28744 2141
+audit 1 19608
+avail 1 23503
+avert 1 9262
+avoid 1 2123
+await 1 16873
+awake 2 18231 6018
+award 1 15940
+aware 1 5470
+awful 1 24773
+aboard 1 22383
+abroad 1 3084
+abrupt 1 11731
+absent 1 7219
+absorb 1 6975
+absurd 1 10501
+accent 2 12624 4996
+accept 1 2553
+access 1 1411
+accord 1 6787
+accuse 1 15559
+across 1 1568
+action 1 1536
+acting 1 4887
+active 1 3756
+actual 1 4833
+addict 2 29542 2435
+adhere 1 9436
+adjust 1 6271
+admire 1 19594
+advent 1 12111
+adverb 2 34705 4528
+advice 1 5284
+advise 1 18530
+aerial 1 19995
+affair 1 10244
+affect 1 3826
+affirm 1 23482
+afford 1 3665
+afloat 1 19597
+afraid 1 11025
+ageing 2 4347 32490
+agenda 1 2083
+agency 1 5800
+allege 2 12112 6015
+allude 2 3827 27364
+allure 1 19997
+almost 1 1223
+always 1 1646
+amidst 1 24755
+amount 1 2615
+anchor 1 10627
+animal 1 6730
+annual 1 1817
+answer 1 2622
+anyone 1 3101
+anyhow 2 14804 590
+anyway 1 9830
+appall 2 17104 222
+appeal 1 4715
+appear 1 3343
+ardent 1 21858
+armour 2 11736 610
+around 1 1027
+arouse 2 3922 17448
+arrest 1 7254
+arrive 1 9439
+artist 1 20450
+artery 2 3922 18094
+ascend 2 18893 906
+ashore 2 12870 9007
+asleep 2 4592 29052
+aspect 1 7939
+aspire 1 13585
+assert 1 9042
+assess 1 6146
+assign 1 21366
+assist 1 10008
+assume 1 4076
+assure 1 14807
+astray 1 26249
+asylum 1 6750
+atomic 1 12628
+attach 1 24112
+attack 1 2642
+attain 1 15939
+attend 1 7101
+august 2 21368 15287
+auntie 3 3306 1406 10279
+author 1 9043
+autumn 1 12115
+avenge 1 -1234
+avenue 1 26263
+abandon 1 5239
+ability 1 1829
+abolish 1 14009
+abreast 3 4265 1372 10568
+absence 1 3419
+abusive 1 19590
+academy 1 -1234
+acclaim 1 26214
+account 1 2171
+achieve 1 1947
+acidity 2 5019 14517
+acquire 1 6813
+actress 2 5019 28442
+address 1 1644
+advance 1 3585
+adverse 1 5261
+advisor 2 29545 120
+adviser 1 8359
+against 1 645
+agitate 2 4347 19719
+ailment 2 12625 6609
+airline 1 19213
+airport 1 14012
+alcohol 1 11359
+algebra 4 3827 5690 8794 15
+alleged 1 6914
+allergy 2 24748 10709
+already 1 868
+amateur 2 27873 9807
+amazing 1 17920
+amiable 3 3700 3595 1336
+amongst 3 3700 9655 4738
+amplify 1 18220
+amusing 2 3700 1975
+analogy 1 11115
+analyze 1 11992
+analyse 2 21851 4273
+analyst 1 16862
+ancient 1 6336
+anguish 1 24759
+animate 2 13343 2589
+another 1 866
+antenna 3 3264 7166 19024
+antique 2 8471 7485
+antonym 3 3264 25948 21665
+anxious 1 10565
+anxiety 1 6241
+anybody 1 17343
+apology 1 15936
+appease 1 17924
+applaud 1 24761
+appoint 1 10433
+approve 1 10503
+archive 2 19225 5594
+arousal 3 3922 20609 2733
+arrange 1 25501
+arrival 1 10567
+article 1 6932
+ascribe 2 23498 42
+ashamed 2 4592 32111
+assault 1 7608
+athlete 1 25505
+attempt 1 3339
+attract 1 4815
+auction 1 21871
+auditor 2 17348 18317
+augment 1 14809
+average 1 1754
+awesome 2 9550 32505
+awkward 1 17350
+abnormal 1 17913
+abortion 1 9041
+absolute 1 6095
+abstract 1 13337
+abundant 1 8879
+academic 1 5045
+accident 1 7969
+accurate 1 6510
+accuracy 1 14010
+accustom 3 12624 16072 12033
+acquaint 2 17915 28712
+activate 1 24083
+activity 1 3272
+activist 1 9079
+actually 1 2091
+adaptive 1 19593
+addition 1 3446
+adequate 1 4436
+adequacy 1 18877
+adjacent 1 23478
+adoption 1 6181
+adorable 2 4497 32584
+advanced 1 1782
+advisory 1 17099
+advocate 1 6882
+advocacy 1 11819
+affluent 1 10366
+airborne 1 -1234
+aircraft 1 7424
+airplane 1 20440
+alienate 1 19215
+allergic 1 -1234
+allocate 1 10367
+allusion 2 3827 21526
+alliance 1 3645
+almighty 2 3827 16949
+alphabet 1 27033
+although 1 1896
+altitude 2 3827 18409
+aluminum 1 10563
+ambition 1 7073
+analogue 2 3264 24751
+analysis 1 3654
+analytic 2 21851 6438
+ancestor 1 -1234
+ancestry 1 26233
+anecdote 2 28721 2578
+animated 1 19218
+announce 1 11197
+anything 1 3007
+anywhere 1 5967
+apparent 1 4105
+appendix 4 4924 8373 3303 4974
+appetite 1 9228
+applause 1 24762
+appraise 2 17104 2456
+approach 1 1092
+approval 1 5006
+aptitude 2 4924 18409
+argument 1 3034
+arguable 2 27044 1336
+armament 1 29552
+arrogant 1 16870
+artistic 1 22948
+artifact 2 20007 949
+assassin 3 9137 9137 13
+assemble 1 17622
+assembly 1 8836
+assorted 2 9137 29787
+astonish 3 9833 3660 8402
+athletic 2 28742 6438
+atrocity 1 24111
+attitude 1 6890
+attorney 1 22954
+audience 1 8837
+auditing 2 17348 8853
+automate 1 28746
+autonomy 1 6024
+aversion 1 11278
+aviation 1 18894
+abolition 1 16151
+absurdity 1 26211
+abundance 1 12498
+accessory 3 12624 9360 10774
+accompany 1 13725
+according to 2 1412 10
+addiction 1 13339
+addictive 1 19209
+adherence 1 13340
+adjective 3 4497 18318 6599
+admirable 1 20437
+admission 1 11274
+adulthood 1 19994
+advantage 1 2532
+adventure 1 17098
+adversary 1 14644
+advertise 2 34705 34308
+adversity 1 23480
+advisable 1 27018
+aesthetic 2 19210 22728
+affection 1 24743
+affiliate 2 23481 2589
+affluence 1 27019
+aftermath 1 5321
+afternoon 1 27020
+afterward 1 -1234
+aggravate 1 16158
+aggregate 1 3949
+agitation 2 4347 17702
+agreement 1 1311
+agreeable 1 25485
+aeroplane 4 3306 3547 5525 22025
+alcoholic 2 26226 5852
+alignment 1 13090
+allegedly 1 9080
+alleviate 1 11821
+allotment 2 32434 28433
+allowance 2 23485 5610
+alongside 1 6182
+alternate 1 24752
+aluminium 3 18885 21534 6154
+amazement 2 32026 9780
+ambiguous 1 12866
+ambiguity 1 13342
+ambitious 1 4307
+ambulance 3 3700 10185 5610
+amendment 1 11445
+amusement 2 3700 29373
+analogous 1 14015
+anchorage 3 20888 3972 1972
+anecdotal 1 26234
+animation 2 13343 2962
+annoyance 3 20447 2930 5610
+anonymous 1 14646
+anonymity 1 19220
+apartment 1 17923
+apologize 1 19222
+apologise 2 30899 4273
+appalling 1 14016
+apparatus 1 11026
+appealing 1 7297
+appliance 2 32900 5610
+applicant 1 24103
+appraisal 1 26238
+arbitrary 1 8936
+arbitrate 2 28732 857
+architect 1 14477
+arrogance 1 14479
+artillery 1 20008
+ascertain 2 4592 2463
+assertion 1 12401
+assertive 1 10181
+assistant 1 27047
+associate 1 15938
+assurance 1 15376
+astronaut 3 26250 5469 2435
+astronomy 2 26250 21546
+atrocious 2 21868 30571
+attendant 1 26255
+attention 1 2194
+attentive 1 26257
+attribute 1 13221
+authentic 1 18540
+authority 1 2850
+authorize 1 22955
+authorise 3 32912 11312 4273
+automatic 1 8192
+auxiliary 4 5469 6186 9235 6526
+available 1 2541
+avoidance 1 10886
+awareness 1 5861
+aesthetic 2 19210 22728
+absorption 1 16618
+accelerate 1 5369
+acceptance 1 6832
+accessible 1 8553
+acceptable 1 6180
+accidental 1 18875
+accomplish 1 9184
+accordance 1 12285
+accounting 1 4602
+accountant 2 21836 14396
+accumulate 1 10126
+accusation 1 21837
+accustomed 1 10300
+adaptation 1 8358
+additional 1 2526
+adequately 1 8190
+adjustment 1 3716
+administer 1 16857
+admiration 1 15933
+admittance 3 4497 27391 27589
+admittedly 1 11358
+adolescent 1 19993
+adventurer 2 31247 11781
+aesthetics 3 19210 6802 9111
+affixation 3 10365 3595 30745
+affordable 1 5952
+afterwards 1 15562
+aggressive 1 4454
+aggression 1 7338
+alienation 1 14158
+allegation 2 25490 2962
+allocation 1 7153
+allurement 2 24750 21575
+alphabetic 4 3827 28266 3904 6438
+alteration 2 20884 2962
+altogether 1 6682
+ambassador 1 9438
+ammunition 1 14979
+analytical 1 11196
+annexation 1 8881
+antagonism 1 14802
+antagonist 2 16865 6738
+antibiotic 1 14647
+anticipate 1 10180
+apologetic 2 20002 31734
+apparently 1 5005
+appearance 1 9186
+applicable 1 15755
+appreciate 1 6956
+apprentice 2 30552 31856
+aristocrat 2 28735 114
+arithmetic 1 16869
+articulate 1 13864
+artificial 1 5671
+ascendance 2 30232 5610
+aspiration 1 16161
+assessment 1 5342
+assignment 2 26247 6609
+assimilate 1 28738
+assistance 1 3095
+assortment 3 9137 3972 28433
+assumption 1 5787
+astronomer 2 24110 2100
+atmosphere 1 5524
+attachment 1 14985
+attainment 1 12629
+attendance 1 14986
+attraction 1 9959
+attractive 1 4732
+auctioneer 3 30236 10281 27209
+auditorium 3 17348 3659 33599
+automobile 1 11277
+autonomous 1 9044
+automation 1 6788
+aesthetics 3 19210 6802 9111
+academician 3 32892 5541 7949
+accommodate 1 9593
+accordingly 1 6509
+accountancy 2 21836 32657
+accountable 1 6143
+achievement 1 6055
+acknowledge 1 5851
+acquisition 1 12757
+acupuncture 1 19208
+adolescence 2 31639 6370
+advancement 1 12286
+adventurous 1 28704
+advertising 1 8934
+affiliation 1 22390
+affirmation 1 25483
+affirmative 1 17613
+aggravation 3 4347 8015 19464
+agriculture 1 3635
+alleviation 1 24749
+alternation 2 20884 3797
+alternately 3 20884 3441 13587
+alternative 1 2461
+anniversary 1 5586
+appeasement 1 16626
+application 1 7904
+appointment 1 9958
+appropriate 1 3867
+approximate 1 -1234
+arbitrarily 1 27043
+arbitration 1 16387
+aristocracy 1 -1234
+arrangement 1 6465
+assassinate 2 24107 2589
+association 1 7864
+atmospheric 1 15377
+attributive 2 -1234 6599
+abbreviation 4 4265 13350 5558 2962
+acceleration 1 11732
+accumulation 1 7126
+accumulative 2 28699 6399
+acquaintance 2 21346 27589
+administrate 2 31246 2589
+advantageous 1 16379
+affectionate 4 10365 5969 10281 2589
+agricultural 1 3361
+alphabetical 4 3827 28266 3904 11498
+announcement 1 6324
+antagonistic 1 24096
+anticipation 1 14803
+appreciation 1 4784
+appreciative 2 26239 6399
+architecture 1 7580
+aristocratic 2 22398 31025
+artistically 2 20007 31839
+articulation 2 25503 2962
+assimilation 1 21862
+astonishment 2 32444 19816
+astronomical 1 28740
+attributable 1 13220
+augmentation 2 21368 21530
+authenticity 1 26262
+availability 1 7425
+accommodation 1 11444
+advertisement 1 27017
+affordability 1 21843
+amplification 2 9352 24299
+appropriation 1 -1234
+approximately 1 8028
+approximation 2 18890 2962
+argumentation 3 30553 9213 31717
+argumentative 3 30553 26746 6399
+assassination 1 10007
+authoritative 1 21873
+authorization 1 20901
+authorisation 3 29558 4759 2962
+autobiography 2 17623 27072
+automatically 1 8750
+accomplishment 1 24079
+accountability 1 4908
+administration 1 1377
+administrative 1 7253
+autobiographic 3 17623 9508 15617
+acknowledgement 1 18528
+air-conditioner 4 16159 21901 10281 2100
+air-conditioning 2 16159 17941
+antagonistically 2 16865 22020
+autobiographical 3 17623 26272 7398
+be 1 42
+by 1 57
+bad 1 2044
+bag 1 17110
+ban 1 5298
+bar 1 9139
+bbq 3 2523 2523 12333
+bat 2 2523 114
+bay 1 16395
+bed 1 8117
+bee 2 3904 2578
+beg 1 27065
+bet 1 7582
+bid 1 6652
+big 1 1789
+bin 1 6816
+bit 1 6127
+bow 1 19235
+box 1 8059
+boy 1 11545
+bud 2 5968 3296
+bug 1 27922
+bus 1 12980
+but 1 58
+buy 1 3369
+baby 1 9297
+back 1 1118
+bail 1 8710
+bait 1 -1234
+bake 2 2523 14296
+bald 2 9402 3296
+ball 1 10368
+band 1 11361
+bang 1 16392
+bank 1 1545
+bare 1 15178
+bark 1 22407
+barn 2 7867 3280
+base 1 3279
+bass 2 9633 1024
+bath 1 32914
+bead 2 3904 4901
+beak 2 3904 7296
+beam 2 3904 2899
+bean 1 27063
+bear 1 4158
+beat 1 8361
+beef 1 12630
+beer 1 27900
+bell 1 24782
+belt 1 12116
+bend 1 17627
+best 1 1361
+bias 1 7155
+bike 2 5881 6018
+bill 1 4411
+bind 1 13866
+bird 1 18895
+bite 1 13348
+bloc 1 6627
+blog 1 18236
+blow 1 6512
+blue 1 14481
+blur 2 21377 4666
+boat 1 13223
+body 1 3696
+boil 1 20019
+bold 1 4839
+bolt 2 12977 2435
+bomb 1 6466
+bond 1 3822
+bone 1 20020
+bony 2 13097 2791
+book 1 2974
+boom 1 3492
+boot 1 25529
+bore 1 22973
+born 1 4404
+boss 1 13224
+both 1 618
+bout 1 15380
+bowl 1 22413
+brag 2 8885 4407
+brew 1 28763
+brow 2 8939 6104
+buck 1 19615
+bulb 2 10185 4528
+bulk 1 8118
+bull 1 17632
+bump 1 -1234
+burn 1 12295
+bury 1 14816
+bush 2 5968 10044
+bust 1 9357
+busy 1 11116
+butt 2 15947 2435
+buzz 2 5968 21667
+bacon 2 16164 49
+badge 2 20903 6015
+badly 1 5297
+barge 2 7867 6015
+basic 1 2448
+basin 1 20013
+basis 1 2590
+batch 2 15378 5552
+bathe 2 9138 6
+beach 1 24115
+beard 2 3904 6288
+beast 1 25517
+begin 1 2956
+being 1 825
+belly 1 -1234
+below 1 2538
+bench 1 -1234
+berry 2 6564 6299
+beset 1 14812
+bible 2 5881 6492
+birth 1 5551
+bitch 2 14163 5552
+black 1 5355
+blade 2 10011 9185
+blame 1 3872
+blank 1 26274
+blast 2 2523 657
+blaze 2 22967 5410
+bleak 1 10012
+bleed 2 12504 2740
+blend 1 -1234
+bless 2 2523 666
+blind 1 7870
+blink 2 2523 4712
+block 1 5079
+blond 2 10011 19764
+blood 1 5709
+bloom 2 14991 3655
+bluff 1 23516
+blunt 1 13095
+blush 2 10011 13293
+board 1 4485
+boast 1 15760
+bonus 1 17630
+boost 1 2151
+booth 2 5070 19034
+bound 1 4143
+bowel 3 2523 10983 5553
+brace 1 -1234
+brain 1 5481
+brake 1 16880
+brand 1 7759
+brass 2 8885 9471
+brave 1 10887
+bread 1 15577
+break 1 3745
+breed 1 16881
+bribe 1 24127
+brick 1 24794
+bride 2 9356 2273
+brief 1 8472
+bring 1 1945
+brink 1 8473
+brisk 2 2523 970
+broad 1 3463
+broke 1 7426
+brood 2 8939 10321
+broom 2 8939 12033
+brown 1 27921
+brush 1 21379
+buddy 2 17115 8562
+build 1 2104
+bulky 2 10185 10316
+bully 1 15762
+bunch 1 26288
+burst 1 8318
+bushy 2 5968 12815
+buyer 1 21381
+backup 2 6483 530
+baffle 2 23505 3773
+bakery 3 2523 6748 7838
+ballet 2 9402 2403
+ballot 1 8393
+bamboo 4 2523 3700 5070 2141
+banana 2 6626 7661
+banker 1 11826
+banner 1 14988
+barber 2 7867 9229
+barely 1 4869
+barrel 1 8248
+barren 1 26266
+basket 1 8394
+batter 2 15378 5601
+battle 1 4549
+beauty 1 14162
+beckon 2 28751 49
+become 1 719
+beetle 3 3904 2779 29334
+before 1 983
+beggar 2 18544 22513
+behalf 1 8084
+behave 1 7834
+behind 1 2075
+belief 1 3742
+belong 1 10628
+benign 1 8838
+beside 1 18545
+betray 1 21881
+better 1 952
+beware 1 26270
+beyond 1 1583
+bishop 2 5881 12340
+bitter 1 8938
+bleach 2 12504 11733
+blonde 3 10011 3660 2273
+bloody 1 8193
+blouse 2 10011 17448
+bodily 2 5070 23031
+boiler 3 5070 6100 2100
+border 1 2835
+boring 1 15576
+borrow 1 4664
+botany 2 20022 617
+bother 1 17113
+bottle 1 18239
+bottom 1 4593
+bounce 1 26283
+boxing 2 5070 17501
+branch 1 10369
+brandy 2 17631 8562
+breach 1 12635
+breast 1 10751
+breath 1 15945
+breeze 3 13350 2779 5410
+bridge 1 7369
+bright 1 10013
+broker 1 12294
+bronze 1 -1234
+browse 2 22978 4273
+bruise 2 11645 14704
+brunch 2 8794 33687
+brutal 1 5509
+bubble 1 4173
+bucket 2 17933 14858
+buckle 2 24129 3773
+budget 1 1710
+buffer 1 11363
+buffet 2 30567 2435
+bullet 1 14656
+bumper 2 28768 2100
+bundle 1 -1234
+burden 1 2998
+bureau 2 31673 3621
+burial 2 5968 29888
+butter 1 20461
+button 1 24131
+bypass 1 16884
+burger 2 9903 7588
+baggage 1 25513
+balance 1 1831
+balcony 3 9402 3873 2791
+balloon 2 20904 49
+bandage 2 20905 1972
+banking 1 1914
+banquet 3 6626 5089 6530
+bargain 1 7790
+barrier 1 10570
+battery 1 17626
+bearing 1 8672
+because 1 494
+bedding 2 3904 18261
+believe 1 1598
+beloved 1 25520
+beneath 1 11279
+benefit 1 1980
+besides 1 10184
+besiege 2 3904 11396
+between 1 572
+bicycle 1 26271
+billion 1 917
+biology 1 7869
+biscuit 2 24784 27988
+bizarre 1 11828
+blanket 1 18548
+blossom 3 14164 2530 33088
+blunder 1 17112
+bolster 1 6653
+bondage 2 31275 1972
+bouquet 3 24791 5089 6530
+boycott 1 17356
+bracket 2 17114 14858
+bravery 2 8885 1014
+breathe 1 16168
+brewery 3 13350 3942 7838
+bribery 1 16882
+brigade 2 9356 21459
+broaden 1 10571
+breadth 1 24792
+brother 1 11200
+browser 2 22978 17227
+buffalo 3 27091 3827 2141
+burglar 3 9903 8852 3940
+butcher 2 15947 15188
+babyboom 3 31668 2930 3492
+bachelor 3 16164 11467 120
+backward 1 12502
+backyard 1 22405
+bacteria 1 11452
+banknote 2 15177 6536
+bankrupt 1 10246
+barbecue 3 7867 21372 11873
+barracks 1 27061
+baseball 3 9633 2779 10368
+basement 2 9633 9780
+bathroom 2 22960 3861
+beautify 2 30914 17244
+behavior 1 2294
+betrayal 1 16397
+beverage 2 3904 27640
+bewilder 2 20908 6196
+biblical 1 -1234
+birthday 1 15944
+blessing 1 11909
+boastful 2 -1234 7478
+boundary 1 16401
+briefing 1 -1234
+brighten 2 30566 2413
+brochure 3 8939 3986 9876
+buddhism 3 17115 2840 35765
+buddhist 3 17115 2840 -1234
+building 1 2300
+bulletin 2 10185 -1234
+burglary 3 9903 8852 6526
+business 1 1246
+backwards 1 24775
+badminton 3 20903 7381 5779
+barometer 1 19611
+basically 1 12503
+battalion 2 28749 49
+beautiful 1 10073
+beginning 1 2442
+behaviour 2 32046 610
+bilateral 1 2801
+biography 1 27072
+biologist 1 27073
+blackmail 1 15180
+blueprint 1 10695
+botanical 3 20022 3264 7398
+brand-new 3 17631 6014 256
+breakdown 1 8640
+breakfast 1 25533
+briefcase 2 24128 1173
+brilliant 1 12506
+broadcast 1 13099
+brutality 1 12636
+budgetary 1 8674
+butterfly 3 15947 6359 13373
+bystander 3 13870 13041 6196
+babyboomer 4 31668 2930 22972 2100
+background 1 6096
+bankruptcy 1 4954
+basketball 2 9633 -1234
+beforehand 1 -1234
+behavioral 1 9770
+belongings 2 34044 6165
+beneficial 1 6011
+benevolent 1 19612
+binoculars 3 30918 29770 6814
+biological 1 7868
+biochemist 3 9508 20465 6738
+biographer 2 26272 2100
+blackboard 2 15179 4485
+bridegroom 4 9356 2843 2713 3861
+brilliance 2 32921 5610
+bureaucrat 2 32923 114
+behavioural 3 32046 16024 2733
+beneficiary 1 18234
+benevolence 2 14020 -1234
+best-seller 2 13481 22134
+billionaire 1 14653
+biochemical 2 9508 5117
+bureaucracy 1 6765
+businessman 1 14657
+best-selling 2 13481 5063
+bewilderment 3 20908 9090 6609
+bibliography 4 5881 8883 3037 18292
+biochemistry 2 9508 14661
+biographical 2 26272 7398
+breakthrough 1 7509
+bureaucratic 1 7610
+biotechnology 1 14307
+cab 2 8249 4528
+can 1 182
+cap 1 8608
+car 1 5537
+cat 1 19619
+cop 1 27974
+cow 1 13874
+cry 1 13602
+cub 2 6884 4528
+cue 1 27153
+cup 1 21407
+cut 1 2359
+cafe 2 -1234 2578
+cage 1 19617
+cake 1 19239
+calf 2 14165 6128
+call 1 2216
+calm 1 8556
+camp 1 6789
+cane 1 29566
+cape 1 35657
+card 1 8557
+care 1 1852
+cart 2 7611 2435
+case 1 1173
+cash 1 3537
+cast 1 6628
+cave 2 8249 5594
+cell 1 6666
+cent 1 19243
+chat 1 22990
+chef 2 8251 6128
+chew 2 8251 6104
+chin 1 33457
+chip 1 16411
+chop 2 12877 4047
+cite 1 11118
+city 1 2870
+clan 1 19246
+clap 2 16413 4047
+claw 2 16413 6104
+clay 2 16413 2791
+clip 1 -1234
+clog 2 10815 4407
+club 1 10076
+clue 1 24153
+coal 1 3881
+coat 1 -1234
+cock 2 4277 13231
+code 1 6272
+coil 2 4277 6041
+coin 1 13593
+cold 1 7223
+comb 2 7203 4528
+come 1 1210
+cook 1 27142
+cool 1 11457
+cope 1 6632
+copy 1 13599
+cord 1 30936
+core 1 2886
+cork 2 7761 2860
+corn 1 14491
+cost 1 1466
+coup 1 5193
+coup d'état 4 5193 2840 -1234 29427
+cozy 1 19638
+cosy 2 4277 16296
+crab 2 10017 4528
+cram 2 10017 3655
+crew 1 27151
+crop 1 6978
+crow 2 3995 9468
+cube 2 6884 42
+cult 1 16898
+curb 1 8677
+cure 1 7944
+curl 2 8195 3803
+cute 2 6884 6083
+cabin 2 17934 13
+cable 1 15579
+camel 2 15184 5553
+canal 2 6891 2733
+candy 2 6891 8562
+canoe 3 6891 3037 2578
+cargo 1 21885
+carry 1 4069
+carve 1 27101
+catch 1 7907
+cater 1 -1234
+cause 1 1909
+cease 1 13228
+chain 1 5923
+chair 1 9263
+chalk 2 -1234 2860
+chant 1 32463
+chaos 1 5322
+charm 1 17637
+chart 1 12982
+chase 1 26309
+cheap 1 4514
+cheat 1 24143
+check 1 7222
+cheek 2 8251 9555
+cheer 1 20464
+chess 1 11547
+chest 1 21388
+chief 1 4276
+child 1 3085
+chill 1 31284
+china 2 3986 7879
+choir 2 12877 7231
+choke 1 24147
+chord 1 -1234
+chore 2 3986 9007
+chunk 1 25548
+cigar 2 6685 22513
+civic 1 9404
+civil 1 2094
+claim 1 2481
+clamp 1 -1234
+clash 1 8713
+clasp 3 10631 4592 4047
+class 1 2865
+clean 1 4384
+clear 1 1197
+clerk 2 20922 2860
+click 1 -1234
+cliff 1 9510
+climb 1 12206
+cling 1 16640
+cloak 2 10815 7296
+clock 1 12299
+clone 1 20036
+close 1 2002
+cloth 1 27115
+cloud 1 13233
+clown 2 22429 3280
+coach 1 28792
+coast 1 8840
+colon 2 11032 49
+color 1 10960
+comet 2 7203 6530
+comic 2 7203 4889
+comma 2 11653 15
+coral 1 17131
+corps 1 20051
+couch 2 11658 5552
+cough 1 -1234
+could 1 305
+count 1 5954
+court 1 4192
+cover 1 4679
+crack 1 15194
+craft 1 11746
+crane 2 16644 19217
+crash 1 5892
+crate 2 16644 2589
+crave 1 25579
+crawl 2 27148 3803
+crazy 1 15195
+craze 2 10017 5410
+cream 1 -1234
+creep 1 27982
+crime 1 4680
+crisp 2 27985 4047
+cross 1 10078
+crowd 1 8943
+crown 1 13601
+crude 1 8364
+cruel 1 13360
+crush 1 19639
+crust 2 11834 4738
+cubic 1 18578
+curse 1 15197
+curve 1 11207
+cycle 1 3874
+camera 1 27095
+campus 1 21382
+cancel 1 15948
+cancer 1 3766
+candle 2 6891 28029
+cannon 2 6891 12677
+canvas 3 6891 3684 37
+carbon 1 2630
+career 1 6684
+carpet 1 22418
+carrot 2 7611 16738
+carton 2 7611 5779
+casino 1 26301
+castle 2 8249 27572
+casual 1 21887
+cattle 1 16886
+cavity 2 24803 5865
+cellar 2 17366 3940
+cement 1 9702
+censor 1 -1234
+census 1 23528
+center 1 3133
+centre 2 31281 2578
+cereal 2 8119 919
+chance 1 2977
+change 1 677
+chapel 2 7202 32169
+charge 1 4690
+cheque 3 3986 8681 2578
+cheese 2 8251 18597
+chilly 2 24145 4414
+choice 1 2587
+choose 1 3549
+choosy 3 12877 10393 2791
+chorus 1 19245
+christ 3 3986 3992 4738
+church 1 14662
+cinema 2 25549 21432
+circle 1 6585
+circus 1 25551
+clause 1 11202
+clench 3 10631 3023 5552
+clergy 2 20922 10709
+clever 1 11831
+cliché 1 25555
+client 1 14821
+climax 2 13484 29079
+clinic 1 17938
+closet 2 10815 1382
+clothe 2 10815 6
+cloudy 2 17639 8562
+clumsy 1 28790
+clutch 2 17124 -1234
+coarse 3 4277 3922 4273
+coffee 1 11832
+collar 1 32467
+colony 1 24156
+colour 2 11032 610
+column 1 18913
+combat 1 5413
+comedy 1 27120
+commit 1 5752
+common 1 1525
+compel 1 10573
+comply 1 10817
+confer 1 24820
+consul 2 32937 3803
+convey 1 14171
+convoy 2 -1234 2791
+cooker 2 20936 7232
+cookie 3 20936 11569 2578
+copper 1 14032
+corner 1 9635
+corpse 2 26340 4273
+cosmos 2 18573 1024
+cosmic 2 4277 30716
+costly 1 4419
+cotton 1 16179
+county 1 27145
+couple 1 6026
+coupon 2 -1234 49
+course 1 1009
+cousin 1 28810
+coward 2 17132 6288
+cowboy 2 17132 11545
+cradle 1 28811
+creamy 3 7793 3700 2791
+create 1 1491
+credit 1 1645
+crisis 1 555
+critic 1 15961
+crouch 3 3995 9861 5552
+cruise 1 28814
+crunch 1 11121
+curfew 2 8195 1102
+custom 1 28821
+cabbage 3 17934 2523 1972
+cabinet 1 6430
+calcium 3 14165 6685 6154
+calling 1 4393
+calorie 1 22416
+canteen 2 6891 12820
+capable 1 4455
+capital 1 846
+capsule 3 12508 7000 3773
+captain 1 20915
+caption 2 12508 5290
+captive 1 19618
+capture 1 5149
+caravan 3 7611 7665 97
+careful 1 5922
+carrier 1 17359
+cartoon 1 27100
+carving 2 7611 7384
+cashier 3 8249 8102 2100
+catalog 3 12202 13581 4407
+caution 1 9597
+ceiling 1 8120
+celsius 2 22988 -1234
+celcius 3 22988 6685 1063
+central 1 1000
+century 1 1657
+ceramic 3 17636 3700 4889
+certain 1 2463
+certify 1 28778
+chamber 1 20918
+channel 1 7074
+chaotic 1 12203
+chapter 1 13101
+charity 1 13353
+charter 1 15187
+chemist 2 20465 6738
+cherish 1 28783
+chicken 1 19244
+chimney 2 22426 13915
+chronic 1 5139
+cigaret 2 6685 -1234
+circuit 1 20033
+citizen 1 6733
+clarity 1 9552
+clarify 1 12984
+classic 1 7371
+cleanse 2 19625 4273
+clearly 1 2132
+climate 1 1081
+clothes 1 15385
+cluster 1 18248
+coastal 1 8289
+cocaine 1 14995
+cockpit 2 21894 18051
+coconut 3 4277 3873 19461
+coexist 1 20923
+coinage 2 4277 29634
+collect 1 8797
+college 1 7696
+collide 1 -1234
+colonel 2 18563 5553
+combine 1 7760
+comfort 1 9704
+command 1 6546
+commend 2 11653 906
+comment 1 14998
+commune 2 19629 2578
+commute 1 28795
+compact 1 9838
+company 1 2549
+compare 1 7940
+compass 1 21897
+compete 1 4536
+compile 2 10961 10089
+complex 1 2570
+compose 2 7203 5132
+compute 2 23549 6083
+comrade 3 7203 4510 2273
+conceal 1 18915
+concede 1 13488
+conceit 2 16173 38
+concept 1 4631
+concern 1 2665
+concert 1 13734
+concise 2 3873 31685
+condemn 1 11656
+conduct 1 5764
+confess 1 27965
+confide 3 3873 6753 2273
+confine 2 3873 6450
+confirm 1 9706
+conform 1 23001
+confuse 1 20045
+connect 1 8397
+conquer 1 20932
+consent 1 7835
+consist 1 19633
+console 2 3873 8491
+consult 1 21906
+consume 1 7585
+contact 1 9774
+contain 1 4955
+contend 1 12302
+content 1 5624
+contest 1 8714
+context 1 3265
+control 1 1369
+convene 1 13237
+convert 1 11745
+convict 1 26338
+cordial 2 7761 25604
+correct 1 5151
+corrode 2 31695 2273
+corrupt 1 5038
+costume 3 19256 9213 2578
+cottage 2 23005 -1234
+council 1 12643
+counsel 1 18257
+counter 1 5579
+country 1 384
+courage 1 7374
+cracker 2 24164 2100
+creator 1 26344
+cricket 1 16896
+cripple 1 -1234
+crowded 1 11833
+crucial 1 2836
+cruelty 1 18921
+cruiser 3 11834 4759 2100
+crumble 1 28815
+crystal 1 24833
+cuisine 3 6884 4759 4971
+culture 1 2877
+cunning 1 22447
+curable 2 8195 1336
+curious 1 13740
+current 1 948
+curtail 1 12123
+curtain 1 20938
+cushion 1 12002
+custody 1 18922
+customs 1 7048
+cycling 2 23010 4893
+cyclist 2 23010 3763
+cynical 1 9708
+calendar 1 26292
+campaign 1 1787
+capacity 1 1903
+cardinal 2 7611 30593
+careless 1 28772
+carriage 2 25542 1972
+casualty 1 19242
+category 1 9551
+catholic 4 8249 5173 12434 5852
+cautious 1 8795
+cemetery 3 21889 2779 18094
+ceremony 1 15580
+chairman 1 7872
+champion 1 8250
+charming 2 3986 12197
+cheerful 2 24144 7478
+chemical 1 5117
+childish 2 24145 17956
+circular 1 24808
+citation 1 26314
+civilize 2 20034 5410
+civilise 2 20034 4273
+civilian 1 4566
+classify 1 24150
+clearing 1 13232
+clerical 1 18562
+climatic 1 28789
+clinical 1 7340
+clothing 1 13103
+cocktail 1 -1234
+coherent 1 6933
+cohesion 1 7637
+cohesive 1 15388
+coincide 1 20924
+collapse 1 2243
+colonial 1 7255
+colorful 1 23544
+colonize 2 18563 7673
+colonise 2 18563 14704
+commence 2 11653 6370
+commerce 1 10249
+commuter 2 20041 5601
+complain 1 11654
+complete 1 4101
+composer 3 7203 13142 2100
+compound 1 12301
+compress 2 7203 3299
+comprise 1 7941
+computer 1 5140
+conceive 1 22436
+conclude 1 6273
+concrete 1 5482
+condense 2 3873 23020
+conflict 1 1544
+confront 1 4545
+congress 1 20473
+conquest 1 18251
+conserve 1 20474
+consider 1 1740
+conspire 2 31691 10907
+constant 1 6039
+consumer 1 3111
+contempt 1 11913
+continue 1 1259
+contract 1 5672
+contrary 1 2769
+contrast 1 2217
+contrive 3 3873 6615 5594
+converge 1 12641
+converse 2 3873 16769
+convince 1 6401
+corporal 2 27975 2733
+corridor 1 18256
+cosmetic 1 24829
+courtesy 3 11915 20252 2791
+coverage 1 4935
+cowardly 2 25578 8157
+creation 1 2545
+creative 1 5587
+creature 1 21405
+credible 1 3907
+criminal 1 5060
+critical 1 2312
+crossing 1 10702
+cucumber 4 3995 8773 9213 9229
+cultural 1 2875
+cupboard 3 6884 2963 4485
+currency 1 1367
+customer 1 10439
+cylinder 3 11366 10317 6196
+cynicism 1 16181
+cafeteria 4 8249 5643 6359 5789
+calculate 1 14817
+candidate 1 3603
+candidacy 1 12507
+cardboard 3 7611 2840 4485
+carpenter 3 7611 2963 4734
+catalogue 2 12202 24751
+cathedral 4 8249 6802 16429 2733
+celebrate 1 9772
+celebrity 1 22421
+certainly 1 2204
+certainty 1 9084
+challenge 1 1619
+champagne 3 30927 4347 9004
+character 1 6977
+chemistry 1 14661
+chocolate 1 25547
+chopstick 2 24148 8729
+christmas 3 3986 24439 17440
+christian 3 3986 13796 15675
+chronicle 3 24149 5541 3773
+cigarette 1 18246
+circulate 2 25550 2589
+classical 1 11910
+classmate 2 23538 15043
+classroom 1 14027
+clearance 1 26318
+clear-cut 1 18912
+clockwise 3 10815 20467 7139
+coalition 1 3010
+cognitive 1 8362
+cognition 1 27959
+coherence 1 14822
+colleague 1 11456
+collision 1 19627
+colourful 3 11032 16024 7478
+columnist 1 19628
+combative 2 17369 6399
+commander 1 13354
+committee 1 6484
+commodity 1 3565
+communist 1 6308
+communism 1 5924
+community 1 1609
+companion 1 27124
+competent 1 10304
+complaint 1 15954
+component 1 5385
+composite 1 23548
+conceited 2 16173 9604
+concerned 1 4133
+concerted 1 8887
+condition 1 5229
+conducive 1 12879
+conductor 2 31290 9376
+confident 1 6706
+confucian 3 3873 -1234 97
+confusion 1 10752
+connexion 3 3873 31376 18991
+conqueror 3 21903 3547 120
+conscious 1 10133
+consensus 1 2910
+constrain 1 10700
+construct 1 9188
+consulate 1 26333
+container 2 26335 2100
+contented 1 28801
+continent 1 3397
+continual 1 27138
+cooperate 1 6604
+copyright 1 17947
+corporate 1 2321
+correlate 1 -1234
+corrosion 2 31695 8728
+councilor 3 18918 26312 120
+counselor 1 -1234
+countdown 2 18918 -1234
+courtyard 3 11915 11085 6288
+cowardice 2 25578 25605
+crackdown 1 10134
+criterion 1 13359
+criticize 1 10252
+criticise 2 -1234 4273
+criticism 1 4456
+crocodile 4 10890 4277 2840 10089
+culminate 1 -1234
+cultivate 1 14035
+curiosity 1 18260
+currently 1 2239
+customary 1 16646
+calculator 2 30922 6161
+capability 1 8085
+capitalist 1 7047
+capitalism 1 3522
+cartoonist 2 23524 19361
+cell-phone 3 22988 10385 6946
+censorship 1 8194
+centralize 2 28774 5410
+centralise 2 28774 4273
+centigrade 2 26307 10641
+centimeter 2 26307 15810
+centimetre 3 26307 5755 31454
+ceremonial 1 -1234
+chancellor 1 14487
+charitable 1 16887
+classified 1 11455
+collection 1 7792
+collective 1 3402
+commission 1 8434
+commentary 1 10888
+commercial 1 3187
+commitment 1 2318
+comparison 1 6705
+comparable 1 6013
+compassion 1 12209
+compatible 1 10250
+compelling 1 5810
+compensate 1 7428
+competitor 1 16416
+competence 1 10816
+complacent 1 14489
+complement 1 11034
+completion 1 13107
+complexity 1 7204
+complexion 2 32936 49
+complicate 1 15192
+compliment 2 25563 6609
+compliance 1 8088
+comprehend 1 14167
+compromise 1 4278
+compulsory 1 14999
+concession 1 14168
+conception 1 12878
+conceptual 1 14667
+concerning 1 5150
+conclusion 1 4987
+conclusive 1 20472
+concurrent 2 3873 948
+condolence 3 3873 14041 6370
+conference 1 3829
+confidence 1 2397
+confession 2 8477 19675
+conformity 1 25568
+congregate 2 27133 16925
+connection 1 7298
+conscience 1 14030
+consequent 1 22438
+consistent 1 4890
+conspiracy 1 10373
+constitute 1 6859
+constraint 1 10437
+consultant 2 15774 14396
+contagious 1 17128
+contention 1 21400
+contestant 2 24824 31838
+contextual 1 21908
+contingent 1 13357
+contractor 1 20477
+continuous 1 9085
+continuity 1 11365
+contradict 1 18572
+contribute 1 3641
+convenient 1 11657
+convention 1 11744
+conversion 1 13109
+conveyance 3 22441 2930 5610
+conviction 1 8676
+convincing 1 7103
+coordinate 1 9086
+cordiality 3 7761 3303 6524
+correction 1 10187
+corrective 1 23556
+correspond 1 24827
+corruption 1 2311
+councillor 4 18918 3995 10026 120
+counsellor 2 20053 33017
+counteract 1 17948
+courageous 1 13358
+credential 2 29572 13886
+creditable 2 29572 16230
+cumulative 1 9264
+curriculum 1 13875
+cyberspace 1 12003
+calculation 1 11030
+calculating 1 17358
+catastrophe 1 6012
+cauliflower 3 22420 16238 1584
+celebration 1 13229
+certificate 1 -1234
+chairperson 2 30926 3562
+challenging 1 5398
+cholesterol 1 -1234
+chronically 1 16639
+circulation 1 13102
+citizenship 1 8476
+coexistence 1 16171
+coincidence 1 11911
+collaborate 1 13485
+colonialism 1 13105
+combination 1 3918
+comfortable 1 8087
+commemorate 1 19251
+commentator 1 20039
+commonplace 1 20040
+communicate 1 10077
+comparative 1 7666
+compartment 2 20929 28433
+competition 1 2219
+competitive 1 2830
+compilation 3 10961 6100 2962
+complacency 1 8841
+complicated 1 5311
+composition 1 8842
+compression 1 26329
+computerize 2 27128 7673
+computerise 2 27128 14704
+computation 2 23549 9533
+concealment 3 16173 3827 6609
+concentrate 1 9960
+conditional 1 9961
+conditioner 3 21901 10281 2100
+confederate 3 3873 15980 2589
+confinement 1 24821
+conjunction 1 18568
+connotation 2 27970 2962
+consecutive 1 10634
+consequence 1 5273
+considering 1 5599
+considerate 2 34063 2589
+consistency 1 16175
+consolation 1 23553
+consolidate 1 7908
+conspicuous 1 18253
+constituent 1 20934
+consumption 1 1897
+containment 1 8124
+contaminate 2 25569 18000
+contemplate 1 12880
+contentious 1 9707
+continental 1 8715
+contraction 1 7156
+contributor 1 13597
+controversy 1 10016
+convenience 1 11914
+convergence 1 6400
+convertible 1 21401
+cooperation 1 1783
+cooperative 1 6818
+coordinator 2 25573 6161
+cornerstone 1 15396
+corporation 1 13239
+correlation 1 11035
+correlative 2 7761 2453
+counterfeit 1 -1234
+counterpart 1 8941
+countryside 1 13110
+credibility 1 3552
+culmination 1 28818
+cultivation 1 21406
+cancellation 1 21884
+carbohydrate 2 27934 857
+catastrophic 1 6467
+championship 1 22425
+characterize 1 14025
+characterise 2 31282 14704
+christianity 4 3986 13796 4350 33420
+circumstance 1 -1234
+civilization 1 7370
+civilisation 2 20034 25876
+commencement 2 32062 9702
+commendation 2 -1234 2962
+commonwealth 1 -1234
+compensation 1 5384
+compensatory 2 27125 8749
+complication 1 24818
+condemnation 1 13735
+condensation 3 3873 7911 25876
+confidential 1 23551
+confirmation 1 15773
+confucianism 3 3873 -1234 16160
+congratulate 1 -1234
+congregation 2 27133 25673
+consequently 1 11742
+conservative 1 3757
+conservation 1 8123
+considerable 1 3482
+constituency 1 12000
+constitution 1 3899
+construction 1 3386
+consultation 1 11281
+consultative 1 -1234
+contemporary 1 6587
+contemptible 2 27137 15077
+continuation 1 12122
+contribution 1 4956
+conventional 1 3628
+conversation 1 9442
+coordination 1 4888
+cosmopolitan 1 10889
+certification 1 28777
+clarification 2 19247 8891
+collaboration 1 6195
+collaborative 1 12300
+commemoration 1 22433
+commercialize 2 17641 9505
+commercialise 3 17641 6323 4273
+communication 1 5730
+communicative 2 27123 6399
+companionship 3 30575 3595 32582
+compassionate 1 -1234
+compatibility 1 26326
+complementary 1 10131
+complimentary 4 10961 12533 7076 6526
+comprehension 2 15956 24214
+comprehensive 1 3486
+concentration 1 6766
+confederation 1 22437
+configuration 1 20044
+confrontation 1 5510
+congressional 1 5495
+conscientious 3 3873 31826 4853
+consciousness 1 12770
+consideration 1 6834
+consolidation 1 5333
+contamination 1 18570
+contemplation 2 34064 2962
+contemplative 2 34064 6399
+contradiction 1 11549
+contradictory 1 11205
+controversial 1 5979
+correspondent 2 28807 12006
+corresponding 1 11458
+counteraction 2 9962 1536
+characteristic 1 12204
+classification 1 23539
+congratulation 2 32470 22745
+congratulatory 2 21398 8749
+constitutional 1 4029
+correspondence 2 28807 19644
+do 1 438
+dad 2 2840 4901
+dam 1 10964
+day 1 1851
+dew 2 2843 6104
+die 1 4816
+dig 1 28011
+dim 1 18585
+dip 1 21930
+dog 1 11370
+dot 2 5107 2435
+dry 1 10081
+dub 2 6959 4528
+due 1 3488
+dye 2 15407 2578
+damn 2 15587 3280
+damp 2 15587 4047
+dare 1 13741
+dark 1 6402
+dart 2 2840 5994
+dash 1 22451
+data 1 1508
+date 1 5883
+dawn 1 14494
+dead 1 5357
+deaf 1 19258
+deal 1 1590
+dean 1 30939
+dear 1 15778
+debt 1 704
+deck 2 7763 2860
+deed 1 -1234
+deem 1 25594
+deep 1 2546
+deer 1 -1234
+defy 1 13878
+demo 2 16425 2141
+dent 1 12006
+deny 1 6494
+desk 1 27179
+dial 1 25604
+diet 1 11752
+dime 2 3303 2502
+dine 2 2840 4971
+dirt 1 21418
+dish 1 17956
+disk 2 2926 2860
+disc 2 2926 5852
+dive 1 -1234
+dock 1 24195
+dole 2 5107 3773
+doll 2 14041 3803
+dome 2 2840 10649
+doom 1 16191
+door 1 6419
+dorm 2 26379 3655
+dose 1 10822
+dove 2 5107 5594
+down 1 1167
+doze 2 5107 5410
+drag 1 8612
+draw 1 5460
+drip 2 9447 4047
+drop 1 4585
+drug 1 3164
+drum 2 21426 3655
+dual 1 11919
+duck 1 24869
+duly 1 28875
+dull 1 25619
+dumb 2 -1234 4528
+dump 1 20496
+dusk 3 2840 6600 2860
+dust 1 15972
+duty 1 7546
+daddy 3 2840 4497 8562
+daily 1 4772
+dairy 1 13876
+dance 1 23011
+datum 2 27158 6154
+daily 1 4772
+death 1 2565
+debut 2 2843 58
+decay 1 13114
+depth 1 9089
+defer 1 20941
+delay 1 6027
+dense 1 23020
+depot 2 2843 14366
+depth 1 9089
+deter 1 8437
+devil 1 17657
+diary 1 33489
+dying 1 7698
+digit 1 26366
+diner 2 15781 2100
+dirty 1 10442
+disco 2 2926 10959
+ditch 1 28026
+dizzy 3 3303 3451 15100
+dodge 2 5107 10893
+dogma 1 16652
+donor 1 6667
+doubt 1 3082
+dough 2 2840 19766
+dozen 1 8438
+draft 1 7545
+drain 1 10707
+drama 1 10255
+dread 1 28870
+dream 1 5264
+dress 1 15785
+drift 1 13748
+drill 1 25618
+drink 1 17143
+drive 1 3297
+drown 1 28872
+drunk 1 -1234
+dryer 2 16429 13673
+dwarf 1 20965
+dusty 2 6959 18729
+dwell 1 24199
+damage 1 2675
+dampen 1 14172
+danger 1 3523
+daring 1 17651
+darken 2 11916 11474
+dating 1 15400
+dazzle 2 8944 19475
+deadly 1 8197
+dealer 2 21918 2100
+debate 1 1948
+debris 1 27160
+debtor 1 8844
+decade 1 1680
+deceit 1 24837
+decent 1 6835
+decide 1 4070
+decree 1 21920
+deduce 2 2843 26381
+deduct 1 -1234
+deeply 1 3475
+defeat 1 4193
+defect 1 21921
+defend 1 4160
+define 1 5938
+degree 1 3834
+delete 2 17951 6083
+delude 2 15589 2273
+demand 1 1008
+denote 2 7911 19363
+dental 1 20064
+denial 1 8365
+depart 1 23021
+depend 1 3414
+depict 2 27175 2435
+deploy 1 8478
+deport 1 27176
+deputy 1 9710
+derail 1 13880
+derive 1 13604
+desert 1 14173
+design 1 4323
+desire 1 3900
+detach 2 28007 11733
+detail 1 10636
+detain 1 28008
+detect 1 10441
+device 1 10892
+devise 1 8799
+devote 1 10637
+devour 1 -1234
+dialog 2 34078 4407
+diesel 1 16186
+differ 1 8125
+digest 1 -1234
+dilute 1 28014
+dinner 1 15967
+direct 1 2355
+disarm 1 23033
+dismay 1 23577
+distil 3 3303 10473 3803
+divert 1 12779
+divide 1 5195
+divine 1 17665
+doctor 1 10374
+dollar 1 1659
+domain 1 12648
+donate 1 23041
+donkey 2 12411 1284
+dosage 2 5107 -1234
+double 1 4486
+dragon 2 11125 25681
+drawer 2 16654 2100
+dreamy 2 28871 2791
+driver 1 6752
+during 1 1044
+darling 1 -1234
+dealing 1 5274
+deceive 1 25591
+decimal 2 25592 2733
+declare 1 7474
+decline 1 1954
+default 1 3836
+defense 1 2258
+defence 2 8845 6370
+deficit 1 1731
+defiant 1 23015
+degrade 1 27167
+delight 2 13242 13896
+deliver 1 3060
+density 1 15590
+dentist 2 27174 4738
+deplete 1 -1234
+deplore 2 30944 9007
+deposit 1 8060
+depress 1 17382
+deprive 1 17140
+descend 1 24852
+descent 1 13881
+deserve 1 6605
+desktop 3 2843 9866 1868
+despair 1 9553
+despise 1 -1234
+despite 1 1285
+dessert 3 17384 10921 2435
+destiny 1 10506
+destroy 1 5241
+develop 1 2380
+deviate 1 -1234
+diagram 3 3303 4347 22100
+dialect 2 31300 13608
+diamond 1 20069
+dictate 1 10820
+dietary 1 23028
+diffuse 1 21417
+digital 1 2890
+dignity 1 6734
+dignify 2 35695 13760
+dilemma 1 6528
+dioxide 1 7342
+diploma 1 -1234
+disable 2 2926 1336
+discard 1 -1234
+discern 1 13243
+discord 1 20954
+discuss 1 6148
+disease 1 2708
+disgust 1 21421
+dislike 1 19654
+dismiss 1 9410
+display 1 7640
+dispose 1 19655
+dispute 1 5386
+disrupt 1 8611
+dissent 1 9712
+distant 1 6485
+distill 2 3303 756
+distort 1 14039
+disturb 1 -1234
+diverse 1 4988
+divorce 1 11124
+dolphin 3 14041 7058 13
+drastic 1 12412
+drawing 1 7476
+dropout 3 13116 2963 480
+drought 1 8801
+drunken 2 2840 -1234
+dubious 1 8716
+durable 1 9554
+dynamic 1 3895
+dynasty 1 12651
+dweller 3 2840 18759 6374
+darkness 1 19641
+database 1 15003
+daughter 1 9600
+daylight 2 25587 4003
+deadline 1 12124
+deadlock 1 14316
+december 2 7763 28891
+decision 1 2022
+decisive 1 5027
+decorate 2 23012 2589
+decrease 1 9512
+dedicate 1 27165
+definite 1 -1234
+defiance 1 13877
+delegate 1 27999
+deletion 2 17951 5290
+delicacy 2 -1234 9435
+delicate 1 11661
+delivery 1 6340
+delusion 1 14674
+democrat 1 23019
+denounce 1 15780
+describe 1 7205
+designer 1 24182
+desirous 2 30259 31062
+desolate 3 2843 16288 2589
+despatch 2 16905 28741
+destined 1 14497
+detached 1 21927
+detailed 1 7475
+devotion 1 22463
+diabetes 1 8800
+diagnose 1 21415
+dialogue 1 4385
+diameter 2 32949 5601
+dictator 1 8993
+diligent 2 27187 13761
+dilution 2 24190 5290
+diminish 1 8521
+dinosaur 4 15781 10393 5469 4666
+diplomat 1 12307
+director 1 7429
+disabled 1 15402
+disagree 1 9190
+disaster 1 3550
+disclose 1 15008
+discount 1 11368
+discover 1 10895
+discreet 1 27190
+disguise 1 18932
+disorder 1 7206
+dispatch 2 17660 28741
+despatch 2 16905 28741
+dispense 1 24193
+disperse 2 20957 4273
+displace 1 16651
+disposal 1 10307
+dissolve 1 18933
+distance 1 8201
+distinct 1 7641
+distract 1 15783
+distress 1 8321
+district 1 12310
+division 1 6354
+divisive 1 11837
+dividend 1 9963
+doctoral 1 26378
+doctrine 1 6369
+document 1 9713
+domestic 1 1183
+dominate 1 6197
+dominant 1 4910
+donation 1 24196
+doubtful 1 15010
+download 2 8642 12535
+downtown 1 28868
+downward 1 5345
+drainage 2 11125 29634
+dramatic 1 4342
+drawback 2 16654 1118
+dreadful 1 24197
+dressing 1 20078
+drunkard 4 2840 14731 2400 6288
+duration 1 11554
+dynamics 1 6243
+dwelling 3 2840 18759 4893
+dangerous 1 2443
+deception 1 14824
+deceptive 1 20481
+deducible 2 2843 28873
+deduction 1 17950
+deductive 2 14825 6599
+defective 1 22456
+defection 2 8845 16432
+defensive 1 9637
+defendant 2 8845 -1234
+deficient 1 14673
+delicious 2 13242 30571
+demanding 1 5102
+democracy 1 1193
+departure 1 7734
+dependent 1 4315
+depiction 1 26360
+depletion 1 16183
+desertion 2 20948 5290
+designate 1 -1234
+desirable 1 6767
+desperate 1 6109
+detention 1 10966
+detection 1 15201
+detective 2 24854 6599
+deterrent 1 11749
+detergent 2 30260 13761
+determine 1 4083
+detriment 1 16427
+devastate 1 21413
+developer 1 24188
+deviation 1 23026
+diagnosis 1 7764
+dictation 2 10188 9533
+different 1 1289
+difficult 1 1346
+diffusion 1 11038
+digestion 2 15203 33513
+digestive 3 15203 4990 6599
+diligence 1 24859
+dimension 1 8200
+diplomacy 1 3616
+direction 1 3008
+directory 2 15594 27614
+disappear 1 9091
+discharge 1 -1234
+discourse 1 7766
+discovery 1 7875
+dismantle 1 12778
+dismissal 1 21936
+disregard 1 10443
+dissident 1 15782
+diversify 1 11214
+diversity 1 5262
+diversion 1 15405
+doctorate 2 15784 21171
+dominance 1 5788
+dormitory 3 26379 27391 10774
+doubtless 1 23585
+downgrade 1 14176
+downwards 2 8642 13813
+duplicate 2 20497 2589
+decoration 2 7763 25043
+decorative 2 23012 6399
+dedication 1 20482
+deductible 1 22453
+deficiency 1 14038
+definition 1 6527
+definitely 1 17137
+degenerate 1 27998
+delegation 1 10704
+deliberate 1 9088
+delightful 2 13242 -1234
+democratic 1 1553
+denotation 3 7911 5556 2962
+department 1 13362
+dependence 1 5471
+dependable 1 -1234
+deployment 1 7614
+depreciate 1 12513
+depression 1 5194
+derailment 3 9090 12625 6609
+deregulate 1 26362
+derivative 1 18262
+derivation 2 34783 2962
+descendant 2 20947 -1234
+detachment 2 28007 31243
+determined 1 4063
+dictionary 2 10188 19842
+difference 1 2937
+difficulty 1 6567
+diplomatic 1 2790
+disability 1 13364
+disappoint 1 28850
+disapprove 2 2926 10503
+disastrous 1 6606
+discipline 1 5447
+disclosure 1 11212
+discourage 1 8522
+discussion 1 4186
+disgusting 2 24864 10105
+disputable 1 34797
+disruptive 1 6958
+disruption 1 7017
+distortion 1 17662
+distribute 1 10756
+domination 1 11753
+downstairs 3 8642 4131 34021
+durability 1 24198
+declaration 1 6449
+declarative 2 33480 6399
+degradation 1 7874
+demographic 1 4979
+demonstrate 1 5020
+deportation 1 23022
+deprivation 1 19262
+description 1 10575
+descriptive 3 35690 2963 6599
+designation 1 27178
+destination 1 9778
+destruction 1 4077
+destructive 1 6418
+deteriorate 1 12774
+detrimental 1 21928
+devastating 1 4909
+devastation 1 12409
+development 1 808
+dimensional 1 18586
+disapproval 1 21419
+disarmament 1 7639
+disciplined 1 16187
+discrepancy 1 19651
+disposition 1 21422
+distinction 1 7876
+distinctive 1 15596
+distinguish 1 8202
+distraction 1 19656
+distressful 3 3303 16516 29293
+disturbance 1 27195
+documentary 1 18272
+drastically 1 13245
+duplication 1 -1234
+degeneration 2 2843 2591
+deliberation 1 15004
+denunciation 1 -1234
+depreciation 1 5424
+deregulation 1 7257
+desirability 1 22461
+disagreement 1 9408
+disciplinary 1 17386
+discriminate 1 21420
+disintegrate 1 28020
+displacement 1 9842
+dissertation 3 2926 10921 9533
+distribution 1 3597
+distributive 1 23580
+dramatically 1 4102
+demonstration 1 11208
+demonstrative 2 33485 6399
+deterioration 1 9638
+determination 1 7129
+developmental 1 23025
+differentiate 1 23029
+disappearance 1 12989
+disappointing 1 8994
+disappointment 1 10967
+discrimination 1 5600
+discriminatory 1 13495
+disintegration 1 7544
+differentiation 1 28848
+distinguishable 1 33492
+ear 1 24202
+eat 1 7971
+egg 1 18937
+ego 1 24205
+end 1 906
+era 1 2608
+err 2 3547 4666
+eve 1 10257
+eye 1 6836
+each 1 1339
+earn 1 5625
+ease 1 5996
+east 1 8802
+easy 1 2317
+echo 1 14834
+edge 1 7616
+edit 2 2779 14678
+else 1 3266
+emit 1 14681
+envy 1 14682
+epic 1 15787
+euro 1 1648
+even 1 287
+ever 1 1627
+evil 1 6655
+exam 1 28067
+exit 1 4090
+eager 1 6029
+eagle 2 30954 3773
+early 1 1565
+earth 1 7018
+eight 1 4084
+eject 2 2779 33562
+elbow 2 4622 19235
+elder 1 28886
+elect 1 9714
+elite 1 4234
+email 1 16660
+embed 1 -1234
+empty 1 9232
+enact 1 9514
+endow 2 3023 17391
+enemy 1 5689
+enjoy 1 5539
+enrol 3 3023 4440 3803
+ensue 1 24884
+enter 1 4734
+entry 1 6529
+envoy 1 13753
+epoch 1 24215
+equal 1 3546
+equip 1 17964
+erase 1 -1234
+erect 1 18948
+erode 1 9412
+error 1 8643
+erupt 1 14504
+essay 1 16198
+ethic 1 23061
+evade 1 17971
+event 1 4038
+every 1 1303
+evoke 2 6550 22623
+exact 1 13371
+excel 1 25645
+exert 1 13890
+exile 1 10708
+exist 1 4522
+expel 1 20513
+extra 1 5414
+easter 2 2779 26248
+easily 1 2952
+edible 2 20502 6492
+effect 1 2093
+editor 1 17959
+effort 1 1833
+egoism 2 19274 4884
+egoist 2 19274 6738
+eighth 1 17393
+eighty 2 21429 6552
+either 1 1920
+elapse 2 4622 30230
+eleven 2 19663 13957
+elicit 1 21431
+embark 1 15012
+embody 1 13884
+emerge 1 4405
+empire 1 6513
+employ 1 9715
+enable 1 3233
+ending 1 4174
+endure 1 11840
+energy 1 945
+engage 1 3887
+engine 1 6059
+enlist 2 3023 3763
+enough 1 1351
+enrich 1 13497
+enroll 1 23053
+ensure 1 1566
+entail 1 8253
+entire 1 2388
+entity 1 8322
+equate 1 -1234
+equity 1 2929
+eraser 3 3547 4592 2100
+errand 2 17149 12
+escape 1 4892
+escort 2 27228 2435
+estate 1 5626
+esteem 1 28061
+ethics 1 7259
+ethnic 1 3510
+evenly 1 15605
+evolve 1 9847
+exceed 1 6588
+except 1 5170
+excess 1 4179
+excite 2 12991 8298
+excuse 1 8160
+exempt 1 15606
+exotic 1 22489
+expand 1 3598
+expect 1 2796
+expend 2 9192 906
+expert 1 7547
+expire 1 15212
+export 1 2722
+expose 1 10082
+extend 1 5028
+extent 1 3061
+ensure 1 1566
+earnest 1 20966
+eastern 1 5209
+eclipse 2 28037 4273
+ecology 1 25622
+economy 1 431
+educate 1 10757
+edition 1 18592
+elastic 1 -1234
+elderly 1 7375
+elegant 1 19664
+element 1 6548
+elevate 1 24206
+embargo 1 11286
+embassy 1 11042
+embrace 1 4420
+eminent 1 18279
+emotion 1 17145
+emperor 1 14836
+empress 2 5299 3299
+emulate 1 9411
+enclose 2 3023 2002
+endless 1 9095
+endorse 1 13751
+enforce 1 6325
+enhance 1 4841
+enlarge 1 24213
+enquire 3 3023 5089 10907
+enquiry 2 3023 -1234
+entitle 2 7736 29334
+entrust 2 17674 15287
+envelop 2 19277 4047
+envious 2 18945 4853
+episode 1 8752
+equally 1 3651
+equator 2 8681 6161
+erosion 1 8158
+erosive 2 13613 11955
+essence 1 9305
+eternal 1 15412
+evasive 2 6550 31262
+evasion 1 10192
+evening 1 15604
+evident 1 6223
+examine 1 8717
+example 1 685
+excerpt 3 7077 17636 21090
+exclaim 2 7077 2481
+exclude 1 10640
+execute 1 19677
+exhaust 1 24220
+exhibit 1 17676
+expense 1 4727
+explain 1 3667
+explode 1 20094
+exploit 1 7020
+explore 1 10825
+express 1 7021
+extinct 1 -1234
+extract 1 12312
+extreme 1 2754
+eyebrow 3 19684 8939 6104
+enquire 3 3023 5089 10907
+enquiry 2 3023 -1234
+earnings 1 4793
+economic 1 231
+educator 2 21428 6161
+eggplant 3 2779 17684 5503
+eighteen 1 -1234
+ejection 3 2779 18318 5290
+election 1 1251
+elective 2 15208 6599
+electric 1 7258
+electron 2 20968 49
+elegance 2 28042 5610
+elephant 1 18594
+elevator 2 21430 6161
+eligible 1 10896
+eloquent 1 -1234
+emigrate 1 -1234
+emigrant 2 16433 15836
+eminence 1 32497
+emission 1 9781
+emphasis 1 5688
+emphatic 1 28893
+employer 1 12885
+employee 1 11921
+endanger 1 16662
+endeavor 1 14502
+engineer 1 10969
+enormous 1 3408
+entrance 1 17962
+entirety 1 26398
+envelope 1 -1234
+envisage 1 21952
+epidemic 1 7280
+equality 1 4308
+equation 1 13754
+erection 2 29589 5290
+eruption 1 16197
+escalate 1 12012
+essayist 3 9360 7201 6738
+esthetic 2 4990 22728
+estimate 1 5674
+eternity 3 2779 6359 20598
+evacuate 1 23604
+evaluate 1 10191
+eventful 2 23606 7478
+eventual 1 7513
+everyday 1 11288
+everyone 1 2381
+evidence 1 2054
+examiner 3 30277 2066 2100
+examinee 3 30277 11299 2578
+exchange 1 1772
+exciting 1 11557
+exercise 1 5061
+exertion 2 26404 5290
+existent 1 34831
+existing 1 2478
+explicit 1 6894
+exponent 2 31724 4996
+exposure 1 6422
+exterior 2 34115 25739
+external 1 2378
+extended 1 5103
+eyesight 2 19684 6869
+eccentric 2 5969 12297
+economics 1 2636
+economist 1 3464
+ecosystem 1 8291
+editorial 1 16911
+efficient 1 3230
+education 1 1134
+effective 1 1475
+elaborate 1 13883
+electoral 1 3468
+elevation 1 -1234
+eliminate 1 4529
+eloquence 2 20505 6370
+elsewhere 1 2363
+embarrass 2 31310 9471
+emergence 1 4475
+emergency 1 4744
+emotional 1 7226
+empirical 1 8678
+emphasize 1 6934
+emphasise 2 35715 4273
+emptiness 3 14835 15078 10760
+emulation 1 -1234
+enactment 1 18280
+enclosure 2 3023 15767
+encounter 1 12990
+encourage 1 3031
+endeavour 2 33502 610
+endowment 1 24880
+endurance 3 6420 5744 5610
+energetic 1 17146
+enjoyable 2 -1234 1336
+enjoyment 2 -1234 6609
+enlighten 2 31713 2413
+enrolment 2 -1234 6609
+entertain 1 27223
+equipment 1 5399
+equitable 1 7799
+eradicate 1 10578
+erroneous 1 28059
+escalator 2 23058 6161
+essential 1 2455
+establish 1 2973
+esthetics 3 4990 6802 9111
+etiquette 5 2779 4350 5089 14683 6083
+evaporate 2 25639 2589
+everybody 1 9450
+evolution 1 6030
+exemplary 1 22487
+exemplify 1 -1234
+excellent 1 9908
+exception 1 4623
+excessive 1 2921
+exclusion 1 8439
+exclusive 1 8293
+excursion 3 7077 8195 8728
+execution 1 10509
+executive 1 4882
+exemption 1 14838
+existence 1 6289
+expansion 1 2827
+expansive 1 19679
+expensive 1 3841
+expertise 1 5840
+explosion 1 9193
+explosive 1 11045
+exquisite 3 7077 -1234 8298
+extension 1 8367
+extensive 1 6074
+extremity 2 25650 35828
+earthquake 1 7795
+easy-going 3 16431 5291 2978
+ecological 1 7796
+economical 1 28881
+efficiency 1 3304
+elasticity 1 28041
+electorate 1 6164
+electrical 1 16912
+electronic 1 8398
+elementary 1 18276
+emancipate 3 32090 2963 2589
+embodiment 1 23048
+embroidery 4 9964 4440 6384 7838
+emigration 1 20506
+employment 1 1664
+engagement 1 4406
+enrollment 1 10759
+enterprise 1 6687
+enthusiasm 1 8089
+enthusiast 2 32961 10568
+equivalent 1 4122
+escalation 1 8255
+especially 1 1154
+estimation 2 31322 2962
+evacuation 1 19676
+evaluation 1 12131
+eventually 1 2518
+everything 1 3459
+everywhere 1 3725
+exaggerate 1 27233
+excellence 1 13614
+excitement 1 13250
+exhaustion 1 22488
+exhaustive 2 34114 6599
+exhibition 1 23612
+expectancy 1 7301
+expedition 2 19680 14832
+experience 1 2015
+experiment 1 6735
+expiration 1 -1234
+exposition 2 7077 1775
+expression 1 6099
+expressive 2 7077 33622
+expressway 2 24895 678
+extinguish 2 27238 8402
+extinction 1 15416
+extraction 1 11217
+educational 1 4499
+elaboration 2 25624 2962
+electricity 1 3627
+electrician 2 16658 21389
+electronics 1 13750
+eligibility 1 15011
+elimination 1 8847
+encouraging 1 4194
+endorsement 1 12782
+enforcement 1 5864
+engineering 1 4989
+enhancement 1 26392
+environment 1 2055
+equivalence 2 15210 31105
+eradication 1 9846
+evaporation 3 6550 4924 25043
+eventuality 3 23606 3539 6524
+examination 1 11924
+exceedingly 1 17399
+exceptional 1 8849
+exclamation 2 12991 -1234
+exclamatory 3 12991 10386 8749
+expectation 1 8091
+expenditure 1 6098
+experienced 1 3682
+explanation 1 4692
+explanatory 1 27237
+exploration 1 11663
+exportation 2 29595 2962
+extravagant 1 19286
+emancipation 1 24208
+encyclopedia 3 3023 -1234 29165
+enlightening 2 31713 21160
+enterprising 1 -1234
+entertaining 1 -1234
+enthusiastic 1 11216
+entrepreneur 1 20087
+evolutionary 1 8480
+exaggeration 1 24219
+experimental 1 12013
+exploitation 1 9307
+extravagance 1 -1234
+embarrassment 1 20083
+encyclopaedia 5 3023 -1234 6473 2779 20068
+encouragement 1 14327
+energetically 3 23597 5690 9736
+enlightenment 1 24881
+entertainment 1 11287
+environmental 1 2097
+establishment 1 3617
+extraordinary 1 5580
+electronically 3 20968 3660 7186
+entrepreneurial 1 9556
+enthusiastically 1 19276
+environmentalist 2 20088 7011
+fan 1 12517
+far 1 747
+fat 1 12416
+fax 2 7800 4974
+fee 1 16437
+few 1 1102
+fit 1 5971
+fix 1 6590
+fly 1 13373
+foe 1 17978
+fog 1 23625
+for 1 27
+fox 2 7672 4974
+fry 2 3568 6299
+fun 1 17982
+fur 1 32514
+flu 1 13757
+face 1 1492
+fact 1 949
+fade 1 14332
+fail 1 3002
+fair 1 3500
+fake 1 8481
+fall 1 1911
+fame 1 26411
+fare 1 15213
+farm 1 6589
+fast 1 3987
+fate 1 4653
+fear 1 2052
+feat 1 11373
+feed 1 6198
+feel 1 2953
+file 1 15214
+fill 1 5970
+film 1 7227
+find 1 1654
+fine 1 6450
+fire 1 4810
+firm 1 4078
+fish 1 6937
+fist 1 24906
+five 1 1777
+flag 1 11047
+flap 2 12889 4047
+flat 1 9645
+flaw 1 13121
+flee 1 11462
+flip 1 18286
+flow 1 4372
+foam 2 7672 2899
+foil 1 -1234
+fold 1 7130
+folk 1 -1234
+fond 1 27249
+food 1 1752
+fool 1 15983
+foot 1 10024
+fork 2 5401 2860
+form 1 1912
+fort 1 28087
+foul 1 -1234
+four 1 1910
+free 1 1453
+frog 1 32103
+from 1 85
+fuck 2 3568 18412
+fuel 1 3341
+full 1 1876
+fund 1 3323
+fury 1 18288
+fuse 1 25671
+fuss 1 26435
+fable 2 3568 1336
+facet 2 7973 6530
+faint 2 7800 21015
+fairy 1 22492
+faith 1 4530
+false 1 5425
+fancy 1 23615
+fatal 1 10022
+fault 1 8683
+favor 1 3121
+feast 2 5643 10568
+fence 1 14507
+ferry 2 16438 6299
+fetch 2 23617 5552
+fever 1 11926
+fiber 1 23619
+fibre 3 6753 8794 2578
+field 1 3981
+fifth 1 7183
+fifty 1 17977
+fight 1 2445
+final 1 3409
+first 1 564
+fixed 1 5159
+flame 2 6149 14014
+flank 1 -1234
+flare 2 6149 51
+flash 1 25662
+fleet 1 17406
+flesh 1 26424
+fling 2 6149 2781
+flirt 2 30285 2435
+float 1 14684
+flock 1 21968
+flood 1 9266
+floor 1 10023
+flour 2 6149 610
+fluid 1 15982
+flush 1 -1234
+focus 1 1785
+foggy 3 7672 2713 10709
+force 1 1498
+forge 1 8256
+forth 1 8294
+forty 2 5401 6552
+forum 1 10085
+found 1 1991
+frame 1 12660
+frank 1 18959
+fraud 1 8570
+fresh 1 6130
+front 1 4023
+frost 2 15018 4738
+frown 2 15018 19472
+fruit 1 9968
+funny 2 13501 14354
+fabric 1 14048
+facial 1 -1234
+factor 1 3499
+fairly 1 6995
+famous 1 5588
+family 1 2619
+famine 1 12787
+farmer 1 15979
+fasten 2 7800 22161
+father 1 4959
+favour 2 20098 610
+faulty 1 20097
+feeble 1 19687
+fellow 1 6531
+female 1 4997
+fierce 1 11667
+figure 1 4055
+filter 1 24902
+finger 1 15609
+finish 1 13616
+finite 1 21964
+fiscal 1 937
+flavor 1 28932
+flower 2 3568 1584
+fluent 2 12133 4996
+flight 1 6433
+follow 1 2873
+forbid 1 -1234
+forest 1 7050
+forget 1 7184
+formal 1 4187
+format 1 23088
+former 1 1383
+fossil 1 4568
+foster 1 6040
+freeze 1 9145
+friday 2 17981 1851
+friend 1 6591
+fright 2 3568 965
+fringe 1 13618
+frosty 2 15018 18729
+fulfil 3 15421 6753 3803
+fusion 1 11843
+futile 1 12136
+future 1 813
+fridge 2 17981 10893
+factual 1 22491
+faction 1 12786
+factory 1 8063
+faculty 1 19288
+failure 1 1939
+fantasy 1 11126
+farming 1 7548
+farther 1 12993
+fascist 1 12132
+fascism 1 12415
+fashion 1 7261
+fatigue 1 12518
+fearful 1 12519
+feather 2 33521 9925
+feature 1 5893
+federal 1 2728
+feeling 1 5827
+fertile 1 11558
+fiction 1 12314
+fifteen 1 19289
+filling 1 13615
+finally 1 1840
+finance 1 1588
+finding 1 4516
+fireman 2 11842 2401
+firstly 2 21452 20237
+fishing 1 7515
+fixture 2 19690 10283
+flatter 2 6149 20452
+flavour 2 -1234 610
+fluency 2 12133 10897
+flutter 2 12133 17012
+foolish 1 12016
+foreign 1 908
+foresee 1 12791
+forever 1 7587
+forfeit 2 5401 -1234
+forgive 1 23087
+forgery 2 5401 25677
+formula 1 8951
+fortify 2 5401 17244
+fortune 1 10309
+forward 1 2780
+founder 1 9912
+fragile 1 4860
+frantic 1 -1234
+freedom 1 2374
+freeway 2 15017 678
+freight 1 22508
+fulfill 1 5982
+funding 1 2467
+funeral 1 23632
+furnace 3 10086 3441 13726
+furnish 1 28952
+further 1 1247
+furious 1 17682
+fabulous 2 30607 31862
+facility 1 8092
+faithful 1 18953
+familiar 1 6371
+farewell 1 27242
+fatality 2 13252 6524
+fatherly 3 7800 12168 4414
+favorite 1 8719
+feasible 1 6496
+february 3 5643 11645 6526
+feedback 1 9601
+feminine 2 28927 4971
+feminism 1 18284
+feminist 1 20524
+festival 1 -1234
+feverish 1 -1234
+finalize 1 24232
+finalise 3 8999 6323 4273
+fixation 1 22500
+flattery 2 -1234 18094
+flawless 2 3568 20148
+flexible 1 4998
+flourish 1 10827
+folklore 4 15790 2400 3335 9007
+football 1 7644
+forceful 1 16923
+forecast 1 6423
+forehead 2 8569 3331
+foremost 1 6568
+foretell 2 8569 4552
+forestry 1 -1234
+founding 1 7377
+fountain 2 23090 22173
+fourteen 1 -1234
+fraction 1 7302
+fracture 2 19292 10283
+fragment 1 26429
+fragrant 2 16924 8524
+frequent 1 6980
+freshman 2 32513 2401
+friction 1 12892
+friendly 1 6634
+frighten 2 21970 2413
+frontier 1 8615
+fruitful 1 21973
+function 1 5180
+futility 1 20531
+fabricate 2 20520 2589
+falsehood 1 -1234
+fantastic 1 26415
+fascinate 2 34116 18000
+favorable 1 5955
+favourite 3 20098 16024 8298
+fertility 1 8614
+fictional 1 23620
+financial 1 413
+fireplace 2 6753 4517
+fireworks 2 11842 3870
+fisherman 2 30971 2401
+fluctuate 1 -1234
+following 1 2046
+footprint 1 12658
+foreigner 1 -1234
+foresight 1 17679
+forgetful 3 5401 5690 25938
+forgiving 1 28942
+formation 1 8128
+formality 1 25665
+formulate 1 12890
+fortnight 3 5401 25200 13899
+fortunate 1 12659
+fragility 1 10447
+fragrance 3 16924 9309 5610
+framework 1 2579
+franchise 1 23629
+frequency 1 11049
+frustrate 1 26432
+furniture 1 24916
+facilitate 1 5062
+favourable 3 20098 5501 33067
+federation 1 16667
+fellowship 3 16201 14060 7164
+fertilizer 1 12216
+fertiliser 2 -1234 17227
+figurative 2 -1234 6399
+flirtation 1 28085
+formidable 1 8950
+foundation 1 5371
+fraudulent 1 18609
+friendship 1 14509
+fulfilment 3 35746 6100 6609
+functional 1 11563
+fabrication 2 20520 2962
+familiarity 1 20979
+familiarize 3 30608 7581 5410
+familiarise 2 30608 6368
+fascinating 1 17401
+fascination 1 26416
+fashionable 1 14334
+feasibility 1 21449
+fingerprint 2 18608 10270
+flexibility 1 4911
+fluctuation 2 16442 2962
+forgettable 4 5401 5690 10478 1336
+foreseeable 1 7449
+formulation 1 20103
+forthcoming 1 10195
+fragmentary 2 31731 6526
+frantically 2 16212 9736
+frustration 1 7378
+frustrating 1 16214
+fulfillment 1 21974
+fundamental 1 2207
+furthermore 1 5160
+facilitation 1 21956
+fortification 2 5401 21630
+fragmentation 1 7947
+go 1 1567
+gap 1 2813
+gas 1 2289
+gay 1 10311
+get 1 1593
+god 1 23096
+gum 2 5908 3655
+gun 1 8296
+gut 1 20112
+guy 1 21471
+gym 2 18617 3655
+gain 1 2765
+game 1 3077
+gang 1 20106
+gaol 2 8616 9524
+gasp 2 24243 4047
+gate 1 16925
+gaze 1 28956
+gear 1 23091
+gene 1 7549
+germ 2 10901 3655
+gift 1 12018
+girl 1 12996
+give 1 2023
+glad 1 -1234
+glow 2 2713 1366
+glue 1 23095
+goal 1 2119
+goat 2 6656 114
+gold 1 3855
+golf 1 -1234
+good 1 935
+gown 2 6656 19472
+grab 1 13254
+gram 1 18964
+gray 1 24250
+grey 1 28101
+grid 1 9516
+grim 1 9149
+grin 1 -1234
+grip 1 8893
+grow 1 2738
+gulf 1 26448
+gaol 2 8616 9524
+gauge 1 14841
+genre 2 7700 8265
+ghost 1 15614
+giant 1 6470
+given 1 904
+gland 2 2713 2198
+glare 2 8852 51
+glass 1 15423
+gleam 2 20994 2899
+glide 2 17411 2273
+globe 1 11127
+gloom 1 21465
+glory 1 15424
+glove 2 2713 6499
+goods 1 1827
+goose 2 6656 11856
+gorge 2 18961 6015
+grace 1 17162
+grade 1 10641
+grain 1 13375
+grand 1 6060
+grant 1 8524
+grape 2 8015 12681
+graph 1 20108
+grasp 1 8442
+grass 1 20110
+grave 1 7132
+graze 2 8015 5410
+great 1 1558
+greed 1 10581
+green 1 3875
+greet 1 28967
+grief 1 -1234
+grill 2 10828 12146
+grind 1 27271
+groan 2 17685 97
+grope 2 17685 12681
+gross 1 7133
+group 1 2048
+guard 1 7701
+guess 1 11129
+guest 1 18966
+guide 1 5181
+guilt 1 13376
+gadget 2 24242 1593
+galaxy 3 15612 3306 24549
+gallon 1 28091
+gamble 1 11844
+garage 2 8685 1972
+garden 1 -1234
+garlic 2 8685 17179
+gather 1 9147
+gender 1 3962
+genius 1 14511
+gentle 1 28092
+giggle 3 23637 2713 3773
+gifted 1 22518
+glamor 2 30978 120
+glance 1 12316
+glider 2 17411 6196
+global 1 301
+gloomy 1 17161
+golden 1 10580
+gospel 1 -1234
+gossip 1 24247
+govern 1 7131
+gramme 3 8015 3440 2502
+grassy 2 30979 2791
+grease 2 12137 14302
+greasy 2 12137 20898
+greedy 1 17983
+grieve 2 10828 10257
+grocer 2 17685 12981
+groove 3 2713 32626 5594
+ground 1 3064
+guitar 3 5908 3659 3940
+growth 1 295
+guilty 1 10196
+gallery 2 30289 7838
+garbage 1 22514
+garment 1 15218
+general 1 2429
+genetic 1 4735
+genuine 1 4471
+geology 2 5690 10203
+gesture 1 12315
+glacier 2 30621 10831
+glamour 2 30978 610
+glimpse 1 15987
+glitter 2 17411 17012
+goodbye 3 29608 13870 2578
+gradual 1 5997
+grammar 3 8015 3440 16695
+granted 1 5828
+graphic 1 15617
+gravity 1 10449
+grocery 1 -1234
+gadgetry 3 24242 5690 2940
+gangster 2 25672 10472
+gardener 2 -1234 2100
+gasoline 1 10448
+generate 1 3569
+generous 1 6259
+geometry 3 5690 11574 2940
+gigantic 1 20538
+glorious 1 19295
+glossary 3 17160 7922 6526
+goodness 2 29608 5973
+gorgeous 3 18961 5690 4853
+graduate 1 11464
+graceful 2 9309 22927
+governor 1 7320
+gracious 2 9309 17338
+grandson 1 25682
+grateful 1 16928
+greeting 2 12137 31722
+grievous 2 17984 4853
+guardian 1 23643
+guidance 1 7702
+gardening 2 -1234 8563
+gathering 1 8130
+generally 1 3317
+generator 2 11928 6161
+gentleman 2 24917 2401
+geography 1 9363
+geometric 3 5690 11574 19089
+glamorous 1 26443
+globalize 2 15615 9505
+globalise 3 15615 6323 4273
+gradually 1 4421
+gratitude 1 28964
+guarantee 1 4094
+guideline 2 28971 2211
+gymnasium 5 2713 26791 3441 10006 6154
+guitarist 3 5908 29035 4738
+generalize 2 11928 9505
+generalise 3 11928 6323 4273
+generation 1 2591
+generosity 1 15422
+geographic 1 10380
+geological 1 24245
+glamourous 3 30978 16024 4853
+government 1 286
+graduation 1 18291
+grandchild 2 18965 3085
+greenhouse 1 6710
+genetically 1 10087
+grammatical 5 8015 3440 3440 7200 12118
+grandparent 2 18965 11229
+grandfather 1 19296
+grandmother 1 22522
+graphically 2 20109 7186
+gravitation 2 35755 17702
+geologically 2 5690 28235
+geometrically 3 5690 11574 35053
+grandchildren 1 15616
+granddaughter 4 14513 16899 5469 23635
+geographically 1 17683
+he 1 359
+hi 1 15024
+ham 1 14050
+hat 1 17991
+hay 2 4397 2791
+hen 1 33539
+her 1 1335
+him 1 1518
+hip 1 -1234
+his 1 267
+hit 1 3380
+hop 2 5359 4047
+hot 1 6863
+how 1 590
+hug 2 11052 4407
+hum 2 11052 3655
+hut 2 11052 2435
+hack 2 3758 8391
+hail 1 30294
+hair 1 17686
+half 1 1807
+hall 1 21983
+halt 1 6110
+hand 1 2398
+hang 1 14514
+hard 1 1649
+harm 1 4569
+hate 1 8257
+haul 1 25692
+have 1 65
+hawk 1 21476
+haze 2 4397 5410
+hazy 2 4397 15100
+head 1 3331
+heal 1 20120
+heap 2 4991 17619
+hear 1 6736
+heat 1 6737
+heel 1 17166
+heir 1 18623
+hell 1 16447
+help 1 975
+herb 2 10261 4528
+herd 1 21001
+here 1 2296
+hero 1 10764
+hers 2 3758 2878
+hide 1 8754
+high 1 927
+hike 1 7948
+hill 1 24259
+hint 1 17690
+hire 1 8132
+hive 2 7108 5594
+hold 1 2137
+hole 1 11759
+holy 1 13380
+home 1 1629
+homo 2 11130 2141
+hook 1 18300
+hope 1 1830
+horn 2 10975 3280
+hose 1 28992
+host 1 4298
+hour 1 6327
+howl 2 24263 3803
+huge 1 2184
+hunt 1 18975
+hurl 2 12524 3803
+hurt 1 6076
+habit 1 13377
+hairy 2 4397 22570
+handy 2 8895 8562
+happy 1 5753
+hardy 1 33537
+harsh 1 7451
+haste 2 4397 17237
+hasty 1 22527
+hatch 2 21475 5552
+haunt 1 -1234
+haven 1 8526
+havoc 1 10763
+heart 1 3753
+heave 2 4991 18542
+heavy 1 4493
+hedge 1 7617
+hello 2 11467 12221
+hence 1 6311
+hilly 2 23106 4414
+hinge 1 22533
+hobby 3 5359 2523 57
+hoist 2 5359 6738
+honey 2 31742 2791
+honor 1 6981
+horse 1 13381
+hotel 1 12523
+hound 2 3758 19035
+house 1 4149
+hover 2 5359 8047
+human 1 1144
+humid 2 15027 6690
+humor 1 28994
+hurry 1 24934
+hammer 1 18294
+hamper 1 20115
+hacker 2 3758 22930
+handle 1 9150
+happen 1 3193
+harass 2 6820 9832
+harbor 1 17165
+harden 2 6820 7910
+hardly 1 3511
+hasten 1 20997
+hatred 1 8804
+hazard 1 10973
+health 1 995
+hearty 2 13897 6552
+heated 1 10829
+heaven 1 21479
+hectic 2 30296 6438
+height 1 9453
+helmet 2 11467 3512
+herald 1 18969
+herbal 2 10261 23506
+hereby 2 4991 -1234
+heroic 1 12020
+heroin 1 19702
+hiding 1 13379
+highly 1 2111
+hijack 1 -1234
+hinder 1 18299
+hockey 1 26466
+hollow 1 15026
+homely 2 13622 4414
+honest 1 7878
+honour 2 21003 610
+horror 1 13763
+hotdog 2 20123 11370
+hourly 1 20125
+huddle 3 3758 20706 3773
+humane 1 13764
+humble 1 21999
+humbly 2 15027 11029
+humour 2 15027 610
+hunger 1 5554
+hungry 1 9454
+hunter 2 12896 5601
+hurdle 1 21487
+hybrid 1 12023
+hyphen 3 12022 7058 4031
+habitat 1 18293
+halfway 1 17986
+handful 1 9194
+happily 1 13123
+harbour 2 30295 610
+harmful 1 7801
+harmony 1 13124
+harness 1 12793
+harvest 1 15022
+hateful 1 -1234
+heading 1 8617
+healthy 1 4225
+hearing 1 10711
+heating 1 11466
+hectare 1 20545
+heiress 3 4991 3595 -1234
+helpful 1 9364
+heroine 2 30298 4971
+heroism 1 22531
+herself 1 10644
+highway 1 14052
+himself 1 3068
+history 1 1428
+holiday 1 12664
+honesty 1 17691
+hopeful 1 11760
+horizon 1 8618
+horrify 2 21005 13760
+hostess 3 5359 4131 10760
+hostage 1 10451
+hostile 1 6896
+housing 1 2831
+however 1 1142
+hundred 1 7230
+hunting 1 19307
+hurtful 2 12524 25938
+husband 1 10976
+hygiene 1 21006
+habitual 2 17413 20263
+handbook 2 8204 2974
+handicap 1 27277
+handsome 1 -1234
+hardship 1 10972
+hardware 1 14051
+harmless 1 22526
+headache 1 -1234
+headline 1 10903
+heighten 1 21481
+helpless 1 21000
+heritage 1 12019
+hesitate 1 14845
+hesitant 1 15798
+historic 1 4422
+hitherto 1 19704
+holiness 2 16449 9970
+homeless 1 16929
+homeland 1 11930
+homework 1 -1234
+honorary 3 21003 3972 6526
+hopeless 1 18625
+horrible 1 21484
+hospital 1 8325
+humanity 1 4487
+humanism 2 12417 4884
+humanist 2 12417 6738
+humidity 2 15027 14517
+humorous 2 15027 31382
+hydrogen 1 16219
+hygienic 3 33545 3023 4889
+hysteria 1 22000
+hamburger 3 12317 9903 7588
+happiness 1 7229
+hazardous 1 18968
+healthful 2 30625 7478
+heartfelt 2 20544 4703
+hibernate 3 7108 6564 31020
+hierarchy 1 13505
+highlight 1 8805
+high-tech 1 8484
+hindrance 1 26465
+historian 1 9052
+honeymoon 1 25698
+honorable 1 25699
+honourary 3 21003 16024 6526
+hostility 1 7321
+household 1 3388
+housewife 2 19306 7138
+housework 2 19306 898
+humiliate 1 25706
+humourous 3 15027 16024 4853
+hurricane 1 15222
+hurriedly 3 12524 3992 21946
+hypocrisy 1 12024
+hypocrite 3 31744 16644 8298
+handicraft 2 28975 17748
+harassment 1 11465
+harmonious 1 17990
+headmaster 2 12138 9521
+helicopter 1 10712
+helplessly 2 20999 13631
+hemisphere 1 21988
+henceforth 3 19303 8119 8294
+hesitation 1 18298
+historical 1 2990
+homosexual 1 -1234
+honourable 3 21003 5501 33067
+horizontal 1 24261
+horsepower 3 10975 4432 532
+hospitable 1 21485
+hypothesis 1 12140
+hysterical 1 25708
+handicapped 2 28975 22943
+handwriting 2 8204 6989
+hibernation 3 7108 6564 3797
+homogeneous 1 17995
+hospitalize 2 23654 9505
+hospitality 1 25703
+humiliation 1 9718
+headmistress 3 12138 21040 9471
+headquarters 1 10643
+hierarchical 1 18970
+humanitarian 1 4214
+hypocritical 1 17168
+hypothetical 1 18626
+i 1 1908
+if 1 220
+in 1 13
+it 1 38
+ice 1 7479
+icy 1 -1234
+ill 1 6225
+ink 2 2066 2860
+inn 2 2066 3280
+its 1 90
+icon 1 19308
+idea 1 1999
+idle 1 13384
+idly 1 18304
+idol 3 3595 5107 3803
+inch 1 18979
+into 1 452
+iron 1 9416
+isle 2 4759 3773
+item 1 16941
+ideal 1 5182
+idiom 2 31342 3655
+idiot 3 3595 3303 6742
+image 1 5324
+imply 1 6017
+incur 1 14342
+index 1 5449
+infer 1 26492
+inner 1 11471
+input 1 13256
+irony 1 9649
+issue 1 1651
+ivory 1 18994
+ignite 1 26479
+ignore 1 4632
+immune 1 8368
+impact 1 1463
+impair 1 -1234
+impart 1 29626
+import 1 4673
+impose 1 3717
+inborn 2 2066 4404
+income 1 1088
+indeed 1 701
+indict 2 32992 2435
+indoor 1 14055
+induce 1 9719
+infant 1 12142
+infect 1 21499
+inform 1 11848
+inject 1 15229
+injure 2 19313 9876
+injury 1 17424
+inland 1 21503
+inmate 2 2066 15043
+insane 1 29650
+insect 1 26497
+insert 2 20137 2435
+inside 1 5909
+insist 1 5645
+instal 2 24276 2733
+insult 1 17425
+insure 1 15626
+intact 1 12667
+intake 1 26500
+intend 1 13509
+intent 1 7518
+invade 1 16229
+invent 1 17176
+invert 2 2066 25975
+invest 1 3036
+invite 1 13006
+inward 1 10646
+ironic 1 13007
+island 1 5691
+itself 1 1370
+iceberg 1 20550
+idiotic 2 31342 6438
+illness 1 7431
+illegal 1 4773
+illicit 1 11220
+imaging 1 25714
+imagine 1 4079
+imitate 1 21492
+immense 1 7379
+immerse 2 33553 4273
+impetus 1 12527
+impress 1 21495
+improve 1 1968
+impulse 1 15227
+incline 2 8205 2211
+include 1 2254
+indoors 2 2066 9446
+indulge 1 24957
+inertia 1 11935
+inflate 1 18307
+inflict 1 13385
+inhabit 1 23665
+inherit 1 16226
+inhibit 1 18983
+initial 1 4817
+inquire 2 25728 10907
+inquiry 1 12900
+insider 1 16935
+insight 1 9366
+inspect 2 30639 13608
+inspire 1 8896
+install 1 14185
+instant 1 14186
+instead 1 1426
+intense 1 6569
+interim 1 8650
+intrude 2 28157 2273
+invader 3 11134 4497 2100
+invalid 1 29028
+involve 1 5754
+isolate 1 13129
+idealism 1 18977
+identify 1 4472
+identity 1 3465
+ideology 1 4785
+ignition 3 6131 6133 5290
+ignorant 1 13624
+illusion 1 9268
+illusory 1 17171
+imminent 1 9311
+immunity 1 13901
+immunize 2 23659 5410
+immunise 2 23659 4273
+imperial 1 6199
+implicit 1 6996
+imposing 1 5300
+imprison 2 24270 49
+incident 1 11054
+inclined 1 10513
+increase 1 1064
+indebted 1 8527
+indicate 1 5927
+industry 1 1843
+inferior 1 14344
+infinite 1 21012
+infinity 2 30989 5865
+infringe 1 -1234
+inherent 1 8687
+initiate 1 9784
+innocent 1 7263
+innovate 1 10583
+insanity 2 2066 19403
+instance 1 10383
+instinct 1 16687
+instruct 2 22560 2435
+insulate 1 16458
+integral 1 9972
+interact 1 10144
+interest 1 809
+interior 1 13510
+internal 1 2851
+internet 1 -1234
+interval 1 -1234
+intimate 1 18636
+intimacy 2 30640 9435
+intrigue 2 29024 14336
+intruder 3 34883 9739 2100
+invasion 1 4835
+invasive 1 18990
+inventor 1 28158
+investor 1 6942
+inviting 1 14855
+involved 1 3578
+ironical 2 26507 7398
+irrigate 2 29033 16925
+irritate 2 18314 2589
+ice-cream 3 5541 4681 -1234
+identical 1 11296
+idiomatic 4 3595 3303 5884 11198
+ignorance 1 8572
+imaginary 1 22544
+imitation 1 22546
+imitative 2 19709 6399
+immediate 1 3148
+immensely 1 15226
+immensity 2 34871 30714
+immersion 2 33553 8728
+immigrate 2 4408 14065
+immigrant 1 10454
+impatient 1 25718
+implement 1 3091
+important 1 769
+impromptu 3 20556 11226 23288
+impulsive 1 27298
+incentive 1 4476
+incidence 1 15029
+inclusion 1 5415
+inclusive 1 3790
+including 1 784
+incumbent 1 8206
+indicator 1 8034
+indignant 3 24272 3441 4678
+indulgent 2 22552 13761
+infection 1 9457
+inference 2 2066 24229
+inflation 1 1231
+influence 1 1887
+influenza 1 20134
+informant 3 2066 21456 2435
+ingenious 1 23664
+ingenuity 1 16455
+initially 1 5039
+injection 1 18632
+injurious 2 19313 33689
+innocence 1 29648
+insertion 2 20137 5290
+insistent 1 -1234
+inspector 2 32538 9376
+institute 1 16000
+insulator 2 21014 6161
+insurance 1 2639
+integrate 1 6864
+integrity 1 6498
+intellect 1 29019
+intention 1 6919
+intensity 1 8649
+intensify 1 9054
+intensive 1 8487
+interfere 1 13005
+interpret 1 11224
+interrupt 1 29659
+intervene 1 6112
+interview 1 10515
+intricate 1 22566
+intricacy 2 32124 9435
+intrinsic 1 16461
+introduce 1 6471
+intrusion 1 20140
+intuition 1 18310
+intuitive 1 16938
+invention 1 11673
+inventory 1 17429
+inversion 2 2066 4903
+invisible 1 11301
+irregular 1 27329
+irritable 2 18314 1336
+isolation 1 5895
+idealistic 1 21488
+illiterate 1 20552
+illiteracy 1 15225
+illuminate 2 22542 2589
+illustrate 1 16222
+imperative 1 5373
+impatience 1 -1234
+importance 1 3074
+imposition 1 11053
+impossible 1 2771
+impression 1 8686
+impressive 1 5313
+inaugurate 3 32989 5744 2589
+incidental 2 24271 20064
+incredible 1 22551
+incredibly 1 18629
+indefinite 1 18002
+indication 1 9053
+indicative 1 23661
+indictment 1 18980
+indigenous 1 8035
+individual 1 2210
+inducement 2 19312 9780
+inevitable 1 3850
+indulgence 2 22552 26438
+industrial 1 2491
+infectious 1 7262
+infinitive 3 30989 3595 6599
+infliction 2 30991 5290
+ingredient 1 14702
+inhabitant 2 34153 4678
+inhibition 2 28144 25525
+initiation 2 21502 2962
+initiative 1 3218
+innovation 1 1997
+innovative 1 4217
+insightful 2 25729 -1234
+insistence 1 10143
+inspection 1 18633
+instalment 3 24276 3827 6609
+instructor 2 22560 9376
+instrument 1 7703
+insulation 1 30309
+intangible 1 18987
+interested 1 6078
+intimidate 1 17428
+invaluable 1 14703
+invariably 1 9152
+investment 1 687
+invitation 1 14057
+ironically 1 7380
+irrational 1 8721
+irrigation 1 11135
+irritation 2 18314 2962
+irritating 2 18314 2852
+ideological 1 4506
+imagination 1 10142
+imaginative 1 24266
+immediately 1 3860
+immigration 1 3024
+imperialism 1 13001
+imperialist 1 18305
+implication 1 9557
+importation 2 31751 2962
+improvement 1 5152
+inclination 1 15623
+incorporate 1 13003
+independent 1 2624
+indifferent 1 14343
+indignation 1 21496
+industrious 2 27304 4853
+inferiority 2 29009 25806
+influential 1 5928
+information 1 1720
+informative 2 29010 6399
+inheritance 1 14852
+innumerable 1 22009
+inquisitive 3 26496 5244 6599
+inspiration 1 10584
+instalation 3 24276 3827 2962
+installment 2 25730 6609
+instinctive 2 31349 6599
+institution 1 4534
+instruction 1 20138
+instructive 1 16457
+integration 1 2200
+intelligent 1 9851
+intentional 1 20565
+interaction 1 9196
+interactive 1 24965
+intercourse 1 29655
+interesting 1 7083
+interpreter 2 23672 5601
+interrogate 2 5010 31414
+interviewer 2 5010 30061
+interviewee 4 5010 31472 6803 2578
+investigate 1 12320
+involvement 1 5804
+illumination 2 22542 2962
+illustration 1 22543
+illustrative 2 29622 6399
+imprisonment 1 11847
+inauguration 1 11298
+incidentally 1 25721
+increasingly 1 1316
+independence 1 2628
+indifference 1 10198
+infringement 1 24959
+installation 1 26498
+instrumental 1 16001
+intellectual 1 3807
+intelligence 1 3112
+intelligible 2 34161 29606
+interference 1 8162
+intermediate 1 14521
+intermediary 1 24281
+intermittent 1 26503
+interruption 1 24284
+intervention 1 2508
+intimidation 1 13903
+introduction 1 6839
+introductory 1 29661
+investigator 2 34166 6161
+irrespective 1 24286
+impossibility 1 16683
+incorporation 1 25722
+indispensable 1 7769
+individualism 1 21497
+industrialize 1 29641
+industrialise 3 27304 6323 4273
+inspirational 1 20562
+instantaneous 2 27317 4853
+institutional 1 2782
+international 1 554
+interrogation 1 22013
+intrinsically 1 22014
+investigation 1 6755
+identification 1 13383
+implementation 1 4423
+infrastructure 1 1430
+interpretation 1 7023
+jam 2 3892 2899
+jar 1 27334
+jaw 2 14856 6104
+jet 1 23127
+job 1 1962
+jog 2 12144 4407
+joy 1 18006
+jack 2 3892 8391
+jail 1 11136
+jazz 3 3892 7865 4752
+jeep 2 12026 25632
+jerk 1 33004
+join 1 3780
+joke 1 16692
+july 2 12669 4414
+jump 1 12423
+june 2 3892 18415
+junk 1 18640
+jury 1 18320
+just 1 592
+jeans 2 12026 4119
+jelly 3 3892 4622 4414
+jewel 2 12026 28495
+joint 1 4280
+jolly 2 3892 31786
+judge 1 6898
+juice 1 -1234
+juicy 2 12669 -1234
+juror 3 3892 17018 4666
+jacket 1 28165
+jargon 1 20143
+jetlag 2 31761 10265
+jockey 2 -1234 1284
+joyous 3 12144 2930 4853
+joyful 3 12144 2930 7478
+jungle 1 25744
+junior 1 15632
+january 3 3892 18887 6526
+jealous 2 12026 27032
+jewelry 1 -1234
+journal 1 13908
+journey 1 9852
+justice 1 3452
+justify 1 5389
+jealousy 3 12026 3827 30342
+jeopardy 1 16942
+judicial 1 6344
+judgment 1 6425
+junction 2 31003 5290
+juvenile 2 32545 10089
+jewellery 3 12026 25985 7838
+judiciary 1 6899
+judgement 2 31762 26437
+jeopardize 1 10833
+jeopardise 2 -1234 4273
+journalism 1 9199
+journalist 1 9098
+jurisdiction 1 9606
+justification 1 8404
+key 1 1284
+kid 2 2400 6690
+kin 1 11304
+kit 2 2400 38
+keen 1 8897
+keep 1 1993
+kick 1 16231
+kill 1 5841
+kilo 2 29674 2141
+kind 1 2134
+king 1 4261
+kiss 2 2400 23677
+kite 2 2400 8298
+knee 3 2400 5391 2578
+knit 1 19721
+knob 2 -1234 4528
+knot 1 -1234
+know 1 1582
+kneel 3 2400 5391 5553
+knife 1 -1234
+knock 1 29042
+kettle 2 6841 15083
+kidnap 2 32547 17619
+kidney 1 18996
+knight 2 2400 7805
+knotty 3 2400 17727 6552
+kingdom 1 16232
+kitchen 1 21512
+knowhow 1 13132
+keyboard 2 21510 4485
+kilogram 1 -1234
+kindness 1 29040
+kilometer 1 23129
+kilometre 2 34172 31454
+knowledge 1 2633
+kilogramme 4 30316 8015 3440 2502
+kindergarten 2 29039 2413
+knowledgeable 1 22022
+lab 1 17435
+lad 1 28174
+lag 1 10265
+lap 1 34178
+law 1 1423
+lay 1 6226
+leg 1 15636
+let 1 2403
+lid 1 16944
+lie 1 5210
+lip 1 13632
+log 1 24304
+lot 1 3292
+low 1 1366
+lace 1 34175
+lack 1 1721
+lady 2 3335 19595
+lake 1 30649
+lamb 2 10386 4528
+lame 1 19321
+lamp 2 10386 4047
+land 1 2198
+lane 1 22025
+lash 1 19723
+lass 2 3335 9832
+last 1 657
+late 1 2245
+lawn 2 13909 3280
+lazy 1 27349
+lead 1 1519
+leaf 1 19726
+leak 1 18013
+lean 1 12532
+leap 1 12321
+left 1 1531
+lend 1 6535
+lens 1 15236
+less 1 666
+lest 1 9785
+levy 1 14862
+lick 1 20573
+liar 2 4353 3940
+life 1 1459
+lift 1 6865
+like 1 468
+lily 2 4353 4414
+limb 2 12533 4528
+lime 2 12533 2578
+limp 2 12533 4047
+line 1 2211
+link 1 4712
+lion 1 16008
+list 1 3763
+live 1 2212
+load 1 12535
+loaf 2 33570 6128
+loan 1 6043
+lock 1 12027
+logo 2 4597 1567
+long 1 793
+look 1 2107
+loom 1 14712
+loop 1 14713
+loot 2 18647 2435
+lord 1 -1234
+lose 1 3042
+loss 1 2776
+loud 1 13011
+love 1 6499
+luck 1 8406
+lump 2 6451 15813
+lung 1 17180
+lure 1 18328
+label 1 13259
+labor 1 1338
+large 1 920
+laser 2 19001 2100
+laugh 2 14860 13122
+later 1 1984
+layer 1 14707
+learn 1 3554
+lease 1 15635
+least 1 1073
+leave 1 2551
+legal 1 2177
+lemon 2 31363 49
+level 1 1374
+lever 1 19729
+light 1 4003
+limit 1 3196
+linen 2 10317 4031
+liner 1 18325
+liter 2 4353 5601
+litre 2 4353 31454
+liver 1 16239
+lobby 1 11937
+local 1 1504
+lodge 2 4597 10893
+lofty 1 12324
+logic 1 4624
+loose 1 9202
+lorry 2 21525 6299
+lover 1 33018
+lower 1 1584
+loyal 1 10714
+lucky 1 10031
+lunar 2 20578 3940
+lunch 1 15439
+lyric 2 11572 31821
+labour 2 12671 610
+ladder 1 15634
+laptop 1 -1234
+lately 1 7771
+latter 1 4760
+launch 1 4413
+lavish 1 16004
+lawyer 1 11768
+lastly 1 19724
+lawful 1 32131
+layman 2 24985 2401
+layoff 2 24985 1476
+layout 2 24985 480
+leader 1 1838
+league 1 19324
+legacy 1 4438
+legend 1 29054
+lesson 1 3791
+letter 1 7551
+liable 1 15637
+likely 1 875
+linear 1 14863
+linger 1 23137
+liquid 1 8299
+liquor 2 25751 120
+listen 1 8327
+litter 2 4353 17012
+little 1 1140
+living 1 2016
+lively 1 22034
+locate 1 21523
+locker 2 10908 7232
+lonely 1 22586
+length 1 12425
+loosen 1 15438
+lotion 2 4597 5290
+loudly 1 16467
+lounge 3 3335 16258 6015
+lovely 2 4597 18419
+luxury 1 9238
+laundry 2 6534 -1234
+lawsuit 1 21515
+landing 1 7452
+largely 1 1857
+leading 1 1810
+leaflet 3 3584 7128 2403
+learned 1 3933
+learner 2 21024 6867
+leather 2 24295 9925
+lecture 1 16006
+leftist 1 10516
+leisure 1 13512
+lenient 1 -1234
+lesbian 2 24298 27906
+liberal 1 2566
+liberty 1 7158
+library 1 19731
+license 1 11851
+licence 2 8445 6370
+limited 1 2240
+linkage 1 24301
+lioness 3 4353 3660 10760
+literal 1 23695
+lodging 2 4597 24189
+logical 1 6608
+lengthy 1 13389
+lottery 1 18327
+loyalty 1 7979
+luggage 3 6451 17684 1972
+lyrical 2 11572 29235
+landlord 2 9854 -1234
+landlady 3 9854 3335 19595
+landmark 1 12145
+language 1 3970
+latitude 1 27346
+lavatory 3 6534 3684 8749
+laughter 1 -1234
+laziness 2 26520 9970
+learning 1 3983
+lecturer 3 20571 5947 11781
+legalize 2 13133 9505
+legalise 3 13133 6323 4273
+lemonade 3 3584 7305 9185
+leniency 2 -1234 10897
+leverage 1 3823
+liberate 1 17708
+lighting 1 15808
+likewise 1 2694
+lipstick 2 34186 8729
+listener 2 27359 2100
+literary 1 20575
+literate 1 19735
+literacy 1 9787
+lobbyist 2 30324 6738
+locality 2 10908 6524
+location 1 9237
+logistic 2 18020 13130
+loophole 1 27363
+luminous 2 29070 4853
+luncheon 3 20578 8251 49
+landscape 1 7304
+laborious 2 12671 21065
+legendary 1 19325
+legislate 1 29055
+leisurely 2 24297 4062
+liability 1 8212
+librarian 2 34903 16388
+lightning 1 29057
+limelight 1 -1234
+literally 1 8757
+livestock 1 12323
+logistics 1 12028
+longevity 1 13634
+longitude 2 19011 29036
+lubricate 3 6451 20912 2589
+lucrative 1 12029
+luxurious 1 26539
+laboratory 1 13629
+leadership 1 1521
+legislator 2 24296 6161
+legitimate 1 4359
+legitimacy 1 3102
+liberation 1 11675
+lieutenant 2 26526 26718
+likelihood 1 6375
+limitation 1 21520
+linguistic 1 14190
+literature 1 11769
+livelihood 1 18326
+locomotive 2 -1234 31030
+logistical 1 14528
+loneliness 3 29694 4622 9970
+legislation 1 3398
+legislative 1 6292
+linguistics 2 24300 30311
+living-room 4 4353 3684 9097 3861
+lubrication 3 6451 20912 2962
+longitudinal 4 19011 3659 9739 15997
+me 1 2502
+my 1 1395
+mad 1 13514
+man 1 2401
+map 1 6943
+mar 1 16695
+mat 2 3440 114
+may 1 457
+may 1 457
+mix 1 6245
+mom 2 4861 3655
+mop 2 4861 4047
+mow 2 4861 6104
+mud 1 21535
+mug 2 8722 4407
+maid 2 6261 6690
+mail 1 25000
+main 1 1898
+make 1 722
+male 1 6376
+mall 1 18021
+many 1 319
+mark 1 5242
+mask 1 16696
+mass 1 3214
+mate 1 15043
+math 1 15044
+meal 1 17713
+mean 1 2345
+meat 1 7520
+meet 1 2358
+melt 1 23142
+memo 1 29721
+mend 1 20152
+menu 1 19334
+mere 1 4705
+mess 1 9856
+mild 1 12542
+mile 1 12430
+milk 1 12325
+mill 1 23713
+mind 1 3450
+mine 1 9918
+mint 2 7381 2435
+miss 1 8902
+mist 1 29736
+moan 2 4861 97
+mock 2 4861 13231
+mode 1 12798
+mold 1 18656
+mood 1 7306
+moon 1 16952
+more 1 91
+most 1 302
+move 1 1736
+much 1 470
+mule 2 8722 3773
+must 1 436
+mute 2 8722 6083
+myth 1 10201
+madam 2 24309 2899
+magic 1 12428
+major 1 900
+manly 2 6167 4414
+march 1 9651
+march 1 9651
+marry 1 14529
+marsh 2 7705 10044
+match 1 5998
+maths 2 6261 12241
+maybe 1 6920
+mayor 1 11059
+means 1 1217
+meaty 2 5755 32911
+medal 1 25762
+media 1 1773
+melon 2 16700 49
+mercy 1 14865
+merge 1 20154
+merit 1 8901
+merry 2 9002 6299
+messy 1 13913
+metal 1 17716
+meter 1 15810
+metre 2 5755 31454
+metro 2 5755 27621
+midst 1 7915
+might 1 880
+milky 2 22046 10316
+minor 1 8328
+minus 1 15812
+misty 2 32563 2791
+mixer 2 30657 2100
+model 1 1756
+moist 2 4861 6738
+mould 2 3440 21550
+moldy 2 22049 8562
+mommy 2 31775 1395
+money 1 1119
+month 1 2012
+moody 2 4861 25035
+moral 1 2645
+motel 2 17188 5553
+motor 1 15642
+mount 1 11477
+mourn 2 23722 3280
+mouse 1 25778
+mouth 1 18336
+movie 1 10389
+muddy 2 26561 8562
+music 1 9241
+madden 2 24309 7910
+magnet 1 24310
+maiden 2 6261 30987
+makeup 1 27369
+malice 2 18330 8396
+mammal 2 18650 29710
+manage 1 3047
+manner 1 5555
+manual 1 22041
+marble 2 7705 6492
+margin 1 7233
+marine 1 9974
+market 1 665
+martyr 1 -1234
+marvel 1 29074
+master 1 9521
+matter 1 2233
+mature 1 10910
+meadow 3 5755 16156 6104
+medium 1 7740
+melody 3 5755 4597 8562
+member 1 1534
+memory 1 6044
+menace 1 18653
+mental 1 5853
+mentor 1 22601
+merely 1 3189
+merger 1 15443
+metric 1 12906
+method 1 7433
+midday 2 13396 1851
+middle 1 3181
+mighty 1 16949
+mining 1 8447
+mingle 2 25767 3773
+minute 1 13774
+mirror 1 12431
+misery 1 10911
+mister 2 3440 29668
+mobile 1 4693
+modern 1 2035
+modest 1 4594
+modify 1 17720
+mouldy 3 32566 3335 8562
+moment 1 2755
+monday 2 7305 1851
+monkey 2 7305 1284
+morale 1 15048
+mortal 1 19751
+mostly 1 3431
+mother 1 6843
+motion 1 9563
+motive 1 12543
+murder 1 6263
+murmur 3 32152 8722 4666
+muscle 1 15644
+museum 1 19342
+mutter 2 8722 17012
+mutual 1 4981
+myself 1 11941
+machine 1 6452
+magical 1 27367
+magnify 2 27368 13760
+majesty 2 16469 23603
+manhood 2 6167 14694
+manager 1 13391
+mandate 1 4344
+mankind 1 13635
+mansion 2 6167 8728
+marital 1 28200
+marshal 1 19743
+marxism 3 7705 6186 4884
+marxist 3 7705 6186 6738
+massive 1 1881
+massage 2 26545 1972
+mastery 1 18023
+maximum 1 9652
+maximal 2 18024 2733
+meaning 1 4500
+measure 1 3587
+mediate 1 22596
+medical 1 3501
+meeting 1 2365
+mention 1 4181
+mercury 1 29723
+message 1 3422
+midwife 2 13396 7138
+migrate 1 14065
+migrant 1 8573
+mileage 3 22046 2779 1972
+militia 1 12223
+million 1 1025
+mindset 1 9315
+mineral 1 15046
+minimum 1 4745
+minimal 1 7950
+miracle 1 9522
+mislead 1 29094
+missile 1 5153
+missing 1 5700
+mission 1 4682
+mistake 1 3998
+mixture 1 12326
+modesty 1 27392
+monarch 1 27393
+monitor 1 7482
+monster 1 23152
+monthly 1 9156
+morning 1 11308
+musical 1 21045
+mystery 1 14722
+magazine 1 12905
+magnetic 1 24311
+mainland 1 9855
+maintain 1 2500
+majestic 2 16469 23059
+majority 1 1917
+maneuver 1 9973
+manifest 1 15639
+marathon 1 27373
+marginal 1 6500
+maritime 1 7674
+marriage 1 6472
+massacre 1 9270
+material 1 4786
+maternal 1 9155
+maturity 1 10458
+maximize 1 7432
+maximise 2 18024 14704
+meantime 1 6842
+mechanic 2 20150 4889
+mediator 1 23141
+medicare 2 17714 51
+medicine 1 5956
+medieval 1 16947
+memorial 1 29722
+memorize 2 17715 7673
+memorise 3 24320 11312 4273
+merchant 1 28208
+merciful 3 9002 6685 7478
+metallic 3 5755 12350 17179
+metaphor 1 11853
+midnight 1 23709
+militant 1 10319
+military 1 814
+minimize 1 7053
+minimise 2 28210 14704
+minister 1 2322
+ministry 1 7522
+minority 1 4218
+mistaken 1 10588
+mistress 2 21040 9471
+mobilize 1 6636
+mobilise 2 25014 4273
+moderate 1 4399
+modifier 3 33029 6753 2100
+moisture 3 4861 8211 9876
+molecule 2 32149 32240
+momentum 1 4972
+monarchy 1 11773
+monetary 1 1156
+monopoly 1 5581
+monotony 3 7305 5556 14357
+monument 1 22051
+morality 1 8809
+moreover 1 1056
+mortgage 1 5484
+mosquito 1 15447
+motherly 2 25777 4414
+motivate 1 16249
+motorway 2 19022 678
+mounting 1 5768
+mountain 1 12432
+mourning 1 23723
+mouthful 2 32566 31447
+movement 1 2407
+multiple 1 5198
+multiply 1 18660
+muscular 1 16251
+mushroom 2 31777 3861
+musician 2 25021 21389
+mythical 1 29104
+machinery 1 10769
+magnitude 1 7552
+malicious 1 19014
+malignant 2 18330 26445
+mandatory 1 9916
+manoeuvre 5 6167 3037 15789 3684 8265
+marketing 1 9562
+martyrdom 3 20149 4439 14042
+marvelous 2 -1234 4853
+masculine 2 -1234 4971
+maternity 1 29718
+meanwhile 1 2339
+mechanics 1 21529
+mechanism 1 4080
+mechanize 2 20150 7673
+mechanise 2 20150 14704
+mediation 1 19016
+medicinal 2 17714 15997
+melodious 3 5755 4597 22464
+mentality 1 14064
+merriment 3 9002 3992 6609
+messenger 2 22602 -1234
+metabolic 1 26549
+microwave 3 29086 16739 18542
+migration 1 3156
+milestone 1 14531
+militancy 1 24322
+miniature 2 21534 27056
+miserable 1 21039
+modernize 1 10836
+modernise 2 23716 4273
+moderator 2 26557 6161
+molecular 1 15047
+momentary 2 31369 6526
+momentous 1 14866
+monstrous 2 -1234 4853
+mortality 1 6262
+multitude 1 18661
+municipal 1 9240
+murderous 1 13914
+mythology 2 21046 10203
+magistrate 3 14715 27330 2589
+mainstream 1 4818
+management 1 2509
+managerial 1 18651
+manipulate 1 10457
+manuscript 4 6167 6600 17377 21090
+marvellous 4 7705 3684 10376 4853
+meaningful 1 5288
+measurable 1 12540
+mechanical 1 16014
+medication 1 16245
+membership 1 3288
+memorandum 2 17715 24758
+metabolism 2 26548 10276
+methodical 3 18332 3037 31301
+meticulous 1 27384
+microphone 2 8134 6946
+microscope 2 8134 4461
+millimeter 2 21533 15810
+millimetre 3 21533 5755 31454
+miraculous 1 23714
+misfortune 1 29732
+misleading 1 8214
+missionary 2 4266 17762
+moderation 1 10773
+monopolize 2 18657 5410
+monopolise 2 18657 4273
+monotonous 3 7305 -1234 4853
+monumental 1 17186
+motivation 1 8956
+mysterious 1 19753
+magnificent 1 25758
+maintenance 1 9788
+malpractice 2 9520 3661
+manufacture 1 15441
+masculinity 2 -1234 15625
+masterpiece 1 -1234
+materialism 1 29076
+materialist 2 19331 7011
+materialize 1 11140
+materialise 3 19331 6323 4273
+mathematics 1 11938
+measurement 1 13394
+merchandise 1 14349
+meritorious 2 30328 21065
+methodology 1 23144
+microscopic 2 26550 4889
+millionaire 2 32142 20439
+ministerial 1 13137
+momentarily 2 31369 30231
+mountainous 1 -1234
+magnificence 2 33020 6370
+manipulation 1 5731
+manipulative 2 20581 6399
+manufacturer 1 16471
+mathematical 1 14717
+metaphorical 2 27383 7398
+metropolitan 1 16247
+microwavable 4 29086 16739 7665 1336
+middle-class 1 6570
+modification 1 13638
+multilateral 1 3069
+municipality 2 30333 6524
+manifestation 1 15640
+mechanization 2 20150 7024
+mechanisation 3 20150 4759 2962
+misunderstand 2 24327 3374
+modernization 1 6277
+modernisation 3 26557 -1234 2962
+multiplication 3 23724 8445 2962
+misunderstanding 1 18026
+no 1 306
+nap 2 3441 17619
+net 1 2677
+new 1 256
+nil 2 6133 3803
+nod 1 29754
+nor 1 2018
+not 1 61
+now 1 323
+nut 1 26571
+nail 1 22611
+name 1 3447
+navy 1 15244
+near 1 3355
+neat 1 24338
+neck 1 24339
+need 1 614
+nest 1 21053
+news 1 1942
+next 1 1141
+nice 1 14352
+nine 1 5080
+none 1 3149
+noon 1 31782
+norm 1 8136
+nose 1 19354
+nosy 2 5403 16296
+note 1 6536
+noun 2 25795 3280
+nude 2 13267 2273
+numb 2 34207 4528
+naive 1 13012
+naked 1 19025
+nasty 1 16019
+naval 1 8135
+needy 1 25025
+nerve 1 16706
+never 1 1417
+niece 2 6133 31308
+night 1 7805
+ninth 1 25791
+noble 1 15452
+noise 1 19350
+noisy 1 28224
+north 1 5999
+novel 1 7844
+nurse 1 -1234
+namely 1 6741
+napkin 3 3441 4924 11304
+narrow 1 5088
+nation 1 3797
+native 1 9723
+nature 1 2854
+nearly 1 1892
+nearby 1 11310
+needle 1 25024
+negate 1 27398
+nephew 2 -1234 23651
+nicety 2 13517 29591
+nickel 2 13517 20570
+ninety 2 32159 6552
+nobody 1 6822
+noodle 3 5403 9792 3773
+normal 1 3307
+notice 1 9157
+notify 2 17728 13760
+notion 1 5646
+nudity 2 19355 5865
+number 1 1400
+naivety 2 35835 6552
+narrate 2 17723 857
+natural 1 1977
+naughty 3 16705 10141 6552
+neglect 1 9005
+neither 1 2625
+nervous 1 11774
+network 1 4571
+neutral 1 9273
+nightly 2 29115 10282
+nominal 1 4872
+nominee 1 10838
+notable 1 7590
+nothing 1 2008
+nourish 2 25795 31058
+novelty 1 24348
+nowhere 1 5829
+nuclear 1 907
+nucleus 1 29765
+nursery 3 19761 10921 2791
+nurture 1 11142
+narrator 2 34930 6161
+narrowly 1 11141
+national 1 776
+navigate 1 10390
+necklace 3 26567 2400 34175
+negation 2 17725 2962
+negative 1 2533
+neighbor 1 7706
+nickname 2 28222 3447
+nineteen 2 32159 12820
+nitrogen 1 19348
+nobility 2 5403 19613
+nominate 1 28225
+nonsense 1 14353
+normally 1 7980
+northern 1 4130
+notation 2 17727 2962
+notebook 2 34931 2974
+notional 2 5403 10924
+novelist 1 21057
+november 2 30663 28891
+nowadays 1 4586
+nuisance 2 13267 -1234
+numerous 1 5974
+nutrient 2 21060 4996
+narration 2 34930 2962
+narrative 1 4746
+naturally 1 6114
+necessary 1 2058
+necessity 1 9653
+negligent 2 25026 13761
+negotiate 1 4992
+neighbour 2 34204 610
+newspaper 1 6798
+nightmare 1 10267
+normalize 1 14194
+normalise 2 27408 4273
+northeast 1 16253
+northwest 1 23161
+notorious 1 11227
+notoriety 3 17727 11312 29591
+numerical 1 22620
+nutrition 1 6799
+nationwide 1 14067
+navigation 1 18665
+neglectful 3 17725 20571 25938
+negligence 1 -1234
+negligible 1 13516
+negotiable 1 31375
+networking 1 19345
+neutrality 1 14534
+neutralize 1 18338
+neutralise 2 27401 4273
+nomination 1 8957
+noteworthy 1 22059
+noticeable 1 28227
+nationality 1 13266
+nationalist 1 3971
+nationalism 1 3506
+necessarily 1 4267
+necessitate 1 -1234
+negotiation 1 6944
+nonetheless 1 3609
+nourishment 1 20171
+neighborhood 1 7618
+nevertheless 1 5129
+northeastern 1 20600
+northwestern 2 18034 24513
+notification 1 -1234
+neighbourhood 3 34204 16024 14694
+normalization 1 8370
+normalisation 2 27408 25876
+notwithstanding 1 8854
+of 1 11
+on 1 49
+or 1 120
+ox 2 3037 4974
+oak 2 3037 7296
+oar 2 3037 3940
+odd 1 10717
+off 1 1476
+oil 1 1127
+old 1 1925
+one 1 226
+opt 1 11311
+ore 1 9007
+our 1 610
+out 1 480
+owe 1 10464
+owl 1 29796
+own 1 696
+oath 1 17445
+obey 1 28229
+odds 1 7028
+odor 2 9792 120
+oily 2 3037 15028
+okay 2 25799 9596
+omit 2 5884 38
+once 1 1432
+only 1 270
+onto 1 6151
+open 1 1742
+oral 1 14724
+ours 1 11064
+oval 2 3037 15682
+oven 1 -1234
+over 1 462
+obese 1 19762
+occur 1 4316
+ocean 1 7161
+odour 2 9792 610
+offer 1 2348
+often 1 961
+olive 1 29140
+onion 2 3660 18991
+onset 1 10323
+opera 1 23736
+optic 1 25042
+orbit 1 16256
+order 1 1039
+organ 1 15054
+other 1 284
+ought to 2 7808 10
+ounce 1 17193
+outer 1 19036
+overt 1 17732
+owing to 2 1929 10
+owner 1 11067
+oxide 1 24362
+ozone 1 18045
+object 1 8723
+oblige 1 23165
+obsess 2 13399 10760
+obtain 1 6921
+occupy 1 11775
+oddity 2 9792 31703
+offend 1 27413
+office 1 2588
+offset 1 4797
+online 1 3731
+onward 1 18038
+opaque 1 11576
+opener 2 29143 2100
+openly 1 6000
+oppose 1 5647
+option 1 3078
+orange 1 28244
+ordeal 1 -1234
+orient 1 28245
+origin 1 7056
+orphan 1 -1234
+outfit 2 4488 5971
+outing 2 5501 3675
+outlaw 1 28250
+outlet 1 22064
+output 1 2519
+outset 1 10394
+oxygen 1 19768
+obesity 1 9418
+obliged 1 10520
+obscene 1 29767
+obscure 1 11480
+observe 1 16254
+obvious 1 2804
+oceanic 2 31024 15565
+o'clock 3 3037 -1234 12299
+october 3 8448 4920 9229
+odorous 2 9792 31382
+offense 1 13916
+offence 2 10589 6370
+officer 1 11573
+olympic 3 34937 11226 4889
+oneself 1 17730
+ongoing 1 3638
+opening 1 4071
+operate 1 4659
+opinion 1 3460
+oppress 2 5525 3299
+optical 2 5525 11498
+optimum 2 15453 6154
+optimal 1 9275
+orbital 3 3972 2523 18316
+orderly 1 7707
+organic 1 10461
+outcome 1 2276
+outdoor 1 18344
+outline 1 23739
+outlook 1 6115
+outrage 1 9459
+outside 1 2503
+outward 1 13781
+overall 1 2472
+overdue 1 14198
+overlap 1 16963
+oversee 1 13646
+obedient 1 29129
+observer 1 13400
+obstacle 1 7055
+obstruct 1 22621
+occasion 1 8958
+occupant 2 30340 4678
+offender 2 10589 16663
+offering 1 4796
+official 1 2025
+olympics 3 34937 11226 10452
+olympiad 4 34937 11226 3595 4901
+omission 1 25040
+operator 1 20178
+opponent 1 9006
+opposite 1 4237
+optional 1 -1234
+optimism 1 6328
+optimist 1 29783
+ordinary 1 3670
+organism 1 18341
+organize 1 8688
+organise 2 25045 14704
+oriental 2 11312 23055
+ornament 3 3972 19343 4996
+orthodox 1 14358
+outbreak 1 7236
+outdated 1 10718
+original 1 5360
+outdoors 2 4488 9446
+outgoing 1 13519
+overcoat 2 3207 -1234
+overcome 1 3646
+overflow 2 3207 4372
+overhaul 1 10395
+overhead 2 3207 3331
+overhear 2 3207 6736
+outsider 1 17731
+outwards 2 33038 13219
+overlook 1 12227
+override 1 25815
+overseas 1 7057
+overtake 1 18042
+overtime 1 23742
+overturn 1 22066
+obedience 1 25797
+objection 1 15817
+objective 1 3951
+obscenity 3 7134 25143 5865
+obscurity 2 -1234 5865
+observant 2 17446 4678
+obsession 1 10981
+obsessive 2 13399 30274
+obviously 1 4718
+occupancy 3 33590 10096 13112
+offensive 1 7619
+offspring 1 14868
+operation 1 5710
+operative 1 20177
+orchestra 2 21549 15
+otherwise 1 3079
+ourselves 1 5830
+orphanage 3 15249 3264 1972
+originate 1 20607
+outskirts 3 4488 15481 2980
+overnight 1 8137
+oversight 1 7953
+overstate 1 23175
+overthrow 1 9101
+overwhelm 1 16480
+ownership 1 4747
+obligation 1 7806
+obligatory 2 23164 8749
+obtainment 2 7134 33664
+occasional 1 14867
+occupation 1 5404
+occurrence 1 17191
+oftentimes 3 12679 7166 1655
+opposition 1 1891
+oppression 1 11484
+oppressive 1 15248
+optimistic 1 6200
+ornamental 4 3972 3441 24090 2733
+outrageous 1 17195
+observatory 2 17446 8749
+observation 1 12032
+obstruction 1 23733
+operational 1 7880
+opportunity 1 1751
+orientation 1 11577
+originality 2 22625 6524
+outstanding 1 9100
+occasionally 1 10094
+occupational 1 18036
+organization 1 3612
+organisation 3 25045 4759 2962
+overwhelming 1 5429
+old-fashioned 1 13642
+organizational 1 10462
+organisational 3 25045 4759 11640
+overwhelmingly 1 7435
+pad 1 23176
+pan 1 25818
+pat 2 2963 114
+paw 2 6473 6104
+pay 1 1699
+pea 2 5662 15
+peg 1 12803
+pen 1 25822
+per 1 1440
+pet 1 26601
+pie 1 12150
+pig 2 8067 4407
+pin 1 18355
+pit 1 18051
+pop 1 16712
+pot 1 14366
+pub 2 8332 4528
+put 1 1330
+pace 1 3656
+pack 1 19368
+pact 1 8689
+page 1 9975
+pain 1 5461
+pair 1 18348
+pale 1 16261
+palm 1 29799
+pant 2 2963 4678
+park 1 14200
+part 1 1001
+pass 1 5756
+past 1 1105
+path 1 2451
+pave 1 14361
+peak 1 5275
+pear 2 5662 3940
+peck 2 22634 2860
+peel 2 5662 5553
+peep 2 5662 25632
+peer 1 13016
+pest 1 30677
+pick 1 8262
+pile 1 17454
+pill 2 2963 6225
+pine 1 -1234
+pink 2 13785 2860
+pint 2 2963 21015
+pipe 1 25064
+pity 1 16027
+plan 1 2000
+play 1 2068
+plea 1 22080
+plot 1 11069
+plow 2 2963 1366
+plug 1 17455
+plus 1 6202
+poem 1 26610
+poet 1 15458
+poke 2 5614 6018
+pole 1 -1234
+poll 1 7484
+pond 2 2963 19764
+pool 1 7554
+poor 1 1341
+pork 1 25072
+port 1 8375
+pose 1 5132
+post 1 6961
+pour 1 17742
+pray 1 -1234
+prey 1 16269
+prop 1 12807
+pull 1 6985
+pump 1 14371
+pure 1 9104
+push 1 3103
+paddy 3 2963 4497 8562
+paint 1 16481
+panda 2 2963 17101
+panel 1 9725
+panic 1 7135
+pants 2 2963 8834
+paper 1 4458
+party 1 1663
+pasta 2 6473 23257
+paste 2 6473 17237
+patch 1 28262
+pause 1 14071
+peace 1 1409
+peach 2 5662 11733
+pearl 3 5662 3922 3803
+pedal 2 18047 2733
+penny 2 8373 14354
+perch 2 6329 5552
+peril 1 12228
+petty 1 14725
+phase 1 5265
+photo 1 17453
+piano 2 8067 12501
+picky 2 23750 2791
+piece 1 7918
+pilot 1 11581
+pinch 2 2963 18979
+pitch 1 21077
+pizza 3 2963 8403 10220
+place 1 1460
+plain 1 12435
+plane 1 13140
+plant 1 5503
+plate 1 30351
+plaza 2 22639 10220
+plead 1 -1234
+point 1 1269
+poise 2 5614 14704
+polar 1 14073
+porch 2 13648 5552
+pound 1 7954
+power 1 532
+press 1 3299
+price 1 1319
+pride 1 7085
+proud 1 7646
+prime 1 2992
+print 1 10270
+prior 1 5911
+prize 1 9569
+probe 1 15062
+prone 1 8037
+proof 1 7309
+prose 2 5528 4273
+prove 1 3324
+pulse 2 14370 4273
+punch 1 25096
+pupil 2 28300 6041
+purse 1 23766
+pushy 2 8332 12815
+phone 1 6946
+petrol 2 13922 3803
+packet 2 16709 14858
+palace 1 18349
+parade 1 23177
+parcel 1 -1234
+pardon 1 19771
+parent 1 11229
+parish 2 4894 8402
+parole 2 24367 3773
+parrot 2 4894 16738
+partly 1 2938
+pastry 2 6473 16519
+patent 1 6983
+patrol 1 21555
+patron 1 18354
+peanut 3 5662 18887 2435
+peddle 2 5662 19257
+pencil 2 8373 31683
+people 1 344
+pepper 2 5662 30685
+period 1 1913
+perish 1 29167
+permit 1 7382
+person 1 3562
+petrol 2 13922 3803
+phrase 1 8097
+picnic 3 21560 3441 4889
+pierce 3 8067 3547 8396
+pigeon 3 23751 2779 49
+pillar 1 9242
+pillow 2 19374 1366
+pirate 2 15058 2589
+piracy 1 18356
+pistol 3 2963 8211 9524
+plague 1 12683
+planet 1 3642
+please 1 13786
+pledge 1 7029
+plenty 1 5211
+plight 1 9858
+player 1 7189
+plough 2 7591 19766
+plunge 1 12684
+plural 2 7591 23865
+pocket 1 16971
+poetry 1 24381
+poetic 1 -1234
+poised 1 8621
+poison 1 18053
+police 1 3439
+policy 1 463
+polish 2 11487 10044
+polite 1 20630
+ponder 1 19041
+porter 1 33053
+poster 1 16266
+potato 3 5614 5869 10
+potent 1 8811
+powder 2 27457 6196
+praise 1 11072
+prayer 1 -1234
+preach 1 24388
+prefer 1 5474
+pretty 1 9278
+priest 2 7919 8292
+prince 1 18057
+prison 1 5732
+profit 1 5276
+prompt 1 14212
+propel 1 14076
+proper 1 5486
+public 1 573
+punish 1 8906
+purity 1 22658
+purify 2 29197 13760
+purple 2 13023 15059
+pursue 1 2773
+puzzle 1 12042
+package 1 4788
+painful 1 5232
+painter 2 19769 5601
+paradox 1 8761
+parking 1 -1234
+partial 1 8372
+partner 1 4182
+passage 1 10396
+passion 1 13269
+passive 1 10841
+pastime 2 14873 477
+pasture 2 6473 29305
+patient 1 5790
+patriot 2 20618 6742
+pattern 1 4394
+payment 1 5678
+payroll 1 11580
+peasant 1 20182
+penalty 1 9525
+pending 1 14543
+penguin 3 8373 5908 13
+pension 1 4335
+percent 1 12036
+perfect 1 5526
+perform 1 6984
+perfume 3 6329 8483 2502
+perhaps 1 1477
+perplex 2 26600 4974
+persist 1 7237
+phrasal 2 33050 25874
+physics 1 8763
+pianist 3 8067 3264 6738
+picture 1 5805
+pilgrim 2 19374 9149
+pioneer 1 19375
+planner 2 31390 2100
+plastic 1 12436
+plateau 1 25065
+plumber 2 31798 9229
+podcast 3 5614 2840 6628
+pollute 1 26614
+popular 1 2172
+portion 1 8960
+portray 1 11777
+possess 1 9419
+poverty 1 1597
+posture 1 14876
+postage 2 5614 3520
+postman 2 11488 2401
+pottery 2 15253 18094
+poultry 3 27456 3335 2940
+precede 2 25078 2273
+precise 1 7775
+predict 1 5120
+preface 2 4762 1492
+premier 1 15651
+premise 1 13020
+premium 1 8264
+prepare 1 5791
+present 1 3432
+preside 1 25082
+presume 1 -1234
+pretend 1 11862
+pretext 1 13524
+prevail 1 8036
+prevent 1 1971
+preview 2 4762 1575
+primary 1 2964
+printer 2 33061 5601
+private 1 1146
+privacy 1 7239
+problem 1 964
+proceed 1 9056
+process 1 1188
+produce 1 2336
+product 1 4366
+profile 1 10038
+program 1 1615
+project 1 2658
+prolong 1 15463
+promise 1 3247
+promote 1 2993
+pronoun 3 30687 5501 3280
+propose 1 8576
+prosper 1 11863
+protect 1 2146
+protein 1 17746
+protest 1 5081
+proverb 1 28297
+provide 1 1371
+provoke 1 10039
+publish 1 11690
+pudding 2 8332 18261
+pumpkin 3 8332 11226 11304
+purpose 1 4169
+pursuit 1 6153
+pyramid 1 22095
+painting 1 22069
+pamphlet 3 26590 7058 2403
+panorama 3 10096 3972 12759
+paradigm 1 8449
+paradise 1 25819
+parallel 1 7162
+paralyze 2 30673 5410
+paralyse 2 30673 4273
+parasite 1 26592
+parental 1 18046
+particle 1 20617
+partisan 1 8096
+passerby 3 2963 29553 57
+passport 1 19371
+password 2 15823 4922
+pathetic 1 22074
+patience 1 10592
+pavement 2 6473 32675
+peaceful 1 4017
+peculiar 1 13270
+penalize 1 20620
+penalise 3 8373 6323 4273
+pendulum 1 16966
+perceive 1 11230
+perilous 1 15252
+periodic 1 13017
+permeate 2 21558 2589
+personal 1 2555
+persuade 1 6201
+petition 1 15456
+pharmacy 2 23746 9435
+physical 1 4011
+planning 1 4096
+platform 1 5161
+pleasure 1 14208
+pleasant 1 22641
+pleasing 1 24379
+plumbing 1 26607
+politics 1 1402
+pollster 2 32173 10472
+porridge 3 13648 3992 10893
+position 1 1775
+positive 1 2542
+possible 1 1455
+populous 1 12437
+portable 1 17202
+populate 2 22644 2589
+portrait 1 25074
+possibly 1 4176
+postcard 2 11488 8557
+postpone 1 10097
+practise 2 35873 4273
+practice 1 3661
+powerful 1 1901
+preacher 2 24389 2100
+precious 1 11144
+predator 2 32604 120
+pregnant 1 12913
+presence 1 4289
+preserve 1 5648
+pressure 1 1769
+pressing 1 5629
+prestige 1 10653
+pretense 1 16489
+pretence 3 4762 2528 6370
+previous 1 2819
+princess 2 26625 10760
+printing 1 8068
+priority 1 3636
+prisoner 1 16490
+probable 1 15834
+probably 1 2089
+proclaim 1 18059
+profound 1 4633
+progress 1 1421
+prohibit 1 13144
+property 1 3032
+proposal 1 3787
+prospect 1 3934
+protocol 1 14369
+provided 1 2604
+province 1 8577
+publicly 1 4811
+punctual 2 33064 16762
+purchase 1 4964
+panoramic 4 10096 3972 3700 4889
+paperback 2 -1234 1118
+parachute 3 4894 9631 21184
+paragraph 3 24366 9659 5287
+paralysis 1 8959
+parameter 2 -1234 5601
+parenting 2 26593 3675
+partially 1 18352
+partition 1 16263
+passenger 1 28261
+patriotic 1 12545
+patronize 2 30347 7673
+patronise 2 30347 14704
+patronage 1 15251
+penetrate 1 27438
+peninsula 1 11684
+pensioner 2 8373 34277
+performer 1 25058
+permanent 1 3485
+perpetual 1 14202
+persecute 2 29809 6083
+persevere 2 6329 3212
+personnel 1 8690
+pessimism 1 10325
+pessimist 2 32171 29736
+pesticide 1 20625
+petroleum 1 14203
+physician 1 18681
+physicist 1 19777
+placement 1 22079
+plaintiff 2 33612 9515
+planetary 1 15826
+plausible 1 6900
+plentiful 1 14072
+pointless 1 17740
+poisonous 1 21561
+policeman 1 25070
+political 1 317
+pollution 1 4250
+pollutant 2 19783 14396
+porcelain 3 13648 22988 14295
+portfolio 1 7436
+portrayal 2 26615 31112
+potential 1 1282
+practical 1 4706
+preceding 1 12547
+precedent 1 7265
+prejudice 1 14075
+premature 1 8263
+preoccupy 2 4762 11775
+prescribe 1 23197
+precision 1 13924
+predatory 1 13650
+pregnancy 1 13925
+precisely 1 3200
+presently 2 13523 7798
+president 1 1496
+prevalent 1 12914
+priceless 1 -1234
+primarily 1 4665
+primitive 1 20191
+principal 1 6592
+principle 1 3083
+privatize 1 18687
+privatise 2 34968 4273
+privilege 1 10327
+procedure 1 11686
+processor 2 25836 120
+professor 1 8330
+programme 2 23762 2502
+projector 2 31808 9376
+prominent 1 5912
+promising 1 4415
+promotion 1 7920
+pronounce 2 30687 17193
+proofread 3 5528 12679 5212
+propagate 2 18063 2589
+propeller 2 29194 27212
+prosecute 1 15835
+prototype 2 28296 18116
+provision 1 5109
+proximate 2 30688 2589
+proximity 1 10654
+publicize 2 24399 5410
+publicise 2 24399 4273
+publicity 1 18692
+parliament 1 4024
+particular 1 1940
+passionate 1 13402
+patriotism 1 12149
+pedestrian 2 -1234 97
+perception 1 5814
+perceptive 2 28265 6599
+percentage 1 3708
+perfection 1 -1234
+periodical 2 34223 31301
+permanence 2 30676 6370
+permeation 2 21558 2962
+permission 1 15649
+permissive 1 -1234
+perpetuate 1 15650
+perplexity 2 26600 22761
+persistent 1 5502
+personally 1 10148
+persuasion 1 18679
+persuasive 1 13921
+petitioner 3 27443 10281 2100
+phenomenon 1 5377
+philosophy 1 7845
+photograph 1 29172
+pilgrimage 1 29175
+plantation 2 12229 9533
+playground 2 20183 3064
+politeness 3 11487 7166 10760
+politician 1 6001
+population 1 1329
+popularity 1 6868
+possession 1 11949
+possessive 2 31040 30274
+precaution 2 4762 9597
+prediction 1 10523
+preferable 1 13405
+preference 1 9657
+presidency 1 3021
+presumably 1 7524
+prevalence 1 11583
+prevention 1 6487
+preventive 1 9726
+privileged 1 9466
+procession 3 5528 3995 19675
+production 1 1771
+productive 1 3555
+profession 1 9317
+proficient 2 -1234 4996
+profitable 1 7777
+projection 1 14879
+prominence 1 15063
+propaganda 1 6355
+proportion 1 5430
+prosperity 1 2543
+prosperous 1 5361
+protection 1 2749
+protective 1 14550
+proverbial 1 17460
+provincial 1 10465
+psychiatry 1 23205
+psychology 1 9009
+punishment 1 8069
+purposeful 1 29198
+puzzlement 2 28302 13910
+paradoxical 1 18350
+participate 1 5325
+participant 1 20616
+partnership 1 5130
+peculiarity 2 23181 14478
+penetration 1 17737
+performance 1 2464
+permissible 1 19776
+persecution 1 11068
+persistence 1 12330
+personality 1 10324
+perspective 1 3814
+pessimistic 1 11143
+philosopher 1 9207
+photography 2 20627 18292
+picturesque 4 21560 5947 8725 7485
+polytechnic 3 18360 33667 4889
+possibility 1 3310
+practicable 2 26618 1336
+predecessor 1 6743
+predominate 2 4762 6197
+preliminary 1 16268
+preposition 2 4762 1775
+preoccupied 1 11313
+preparation 1 12685
+predictable 1 6330
+predominant 1 28281
+preparatory 1 -1234
+prestigious 1 19786
+presumption 1 19379
+probability 1 8812
+problematic 1 6168
+proceedings 1 11687
+proficiency 1 28288
+progressive 1 4912
+progression 1 29832
+prohibition 1 11688
+prohibitive 1 -1234
+propagation 2 18063 2962
+proposition 1 10525
+prosecution 1 12152
+prospective 1 16270
+provocation 1 15064
+provocative 1 14214
+psychiatric 1 18064
+publication 1 9727
+punctuality 2 34973 6524
+particularly 1 1310
+perseverance 1 23745
+photographic 2 20627 15617
+photographer 2 -1234 2100
+postponement 1 29819
+potentiality 3 15253 7736 6524
+practicality 2 26618 6524
+practitioner 1 29184
+prerequisite 1 12040
+predominance 1 23758
+prescription 1 11145
+preferential 1 13789
+presentation 1 19378
+preservation 1 15256
+preservative 3 4762 22137 6399
+presidential 1 2145
+proclamation 2 27466 2962
+productivity 1 1764
+professional 1 4927
+proportional 1 17745
+psychiatrist 2 32608 4738
+psychologist 1 22093
+parliamentary 1 4072
+participation 1 3678
+petrochemical 2 13922 5117
+philosophical 1 14544
+physiological 1 -1234
+precautionary 1 11489
+privatization 1 7526
+privatisation 3 19045 34727 2962
+pronunciation 2 30687 27631
+psychological 1 7404
+pharmaceutical 1 5957
+quit 1 14881
+quiz 2 14078 4752
+quake 2 5089 14296
+quart 2 14216 2435
+queen 1 29200
+query 2 5089 7838
+quest 1 7405
+queue 2 22097 11873
+quick 1 6061
+quiet 1 9369
+quite 1 3629
+quota 1 12808
+quote 1 19049
+quiver 2 14078 8047
+qualify 1 11234
+quality 1 2659
+quarrel 1 23769
+quarter 1 4012
+quantify 1 21571
+quantity 1 9796
+question 1 1358
+quarterly 1 15653
+quotation 2 18693 2962
+qualitative 1 22659
+quarrelsome 3 14216 9798 354
+quantitative 1 4039
+qualification 1 26638
+questionnaire 3 25846 14533 10907
+quantification 2 29845 8891
+rag 2 4510 4407
+rap 2 4510 4047
+rat 2 4439 114
+raw 1 7778
+ray 1 12154
+red 1 3889
+rib 2 3992 4528
+rid 1 12442
+rig 1 26665
+rim 1 -1234
+rip 2 3992 4047
+rob 1 29238
+rod 1 25136
+rot 1 16738
+row 1 9468
+rub 1 -1234
+rug 2 5976 4407
+run 1 1815
+race 1 4206
+rack 2 4439 8391
+rage 1 8961
+raid 1 18695
+rail 1 10328
+rain 1 13791
+rank 1 11151
+rape 1 12688
+rare 1 6116
+rash 1 22101
+rate 1 857
+read 1 5212
+real 1 919
+reap 1 9729
+rear 1 27483
+reel 2 1372 5553
+rein 1 7921
+rely 1 3718
+rent 1 10100
+rest 1 1872
+rice 1 8071
+rich 1 1974
+ride 1 10470
+ring 1 9529
+riot 2 3992 6742
+ripe 1 19060
+rise 1 1189
+risk 1 970
+road 1 3798
+roar 2 4440 3940
+rock 1 13152
+role 1 1096
+roll 1 8167
+roof 1 22681
+room 1 3861
+root 1 5592
+rope 2 4440 12681
+rose 1 4886
+rosy 1 17469
+rude 2 5976 2273
+ruin 1 15267
+rule 1 1738
+rush 1 10150
+rust 2 5976 4738
+radar 1 16493
+radio 1 9860
+rainy 1 24405
+raise 1 2456
+rally 1 8302
+ranch 2 7283 5552
+range 1 3184
+rapid 1 2140
+ratio 1 3461
+reach 1 2246
+react 1 8859
+ready 1 4103
+realm 1 11588
+rebel 1 10098
+recur 1 22111
+refer 1 11952
+reign 1 15261
+relax 1 18370
+relay 2 1372 6226
+relic 1 23778
+renew 1 14080
+repay 1 8813
+repel 2 29875 3803
+reply 1 17218
+rider 2 3992 6196
+ridge 2 3992 10893
+rifle 2 3992 28084
+right 1 965
+rigid 1 9211
+rigor 1 -1234
+ripen 2 3992 25822
+risky 1 4551
+rival 1 5940
+river 1 10273
+roast 2 4440 10568
+robot 1 15471
+rocky 1 26668
+rough 1 14082
+round 1 3804
+rouse 2 9861 4273
+route 1 6658
+royal 1 12693
+rumor 1 21586
+ruler 1 11395
+rural 1 3344
+rusty 2 5976 18729
+rabbit 2 18694 6127
+racial 1 7621
+racism 1 10917
+racist 1 11235
+ragged 2 25850 8400
+raging 1 15065
+random 1 13527
+rather 1 946
+ratify 1 11237
+ration 1 22102
+rattle 2 4439 31664
+rarely 1 4928
+rarity 2 4439 14478
+rating 1 6436
+reader 1 24409
+really 1 2124
+reason 1 1454
+recall 1 7527
+recede 1 -1234
+recent 1 735
+recipe 1 9209
+recite 2 7437 8298
+reckon 1 18699
+record 1 2979
+reduce 1 1443
+refine 1 -1234
+reform 1 1268
+refuge 1 14377
+refund 2 1372 3323
+refuse 1 6756
+refute 1 29217
+regard 1 3389
+regime 1 1385
+region 1 1066
+regret 1 12809
+reject 1 6101
+relate 1 14553
+relief 1 4162
+relish 1 -1234
+remain 1 1299
+remark 1 18068
+remedy 1 11239
+remind 1 10206
+remote 1 7284
+remove 1 6454
+render 1 11154
+renown 2 34988 3280
+rental 1 24426
+repair 1 9010
+repeat 1 8303
+report 1 2013
+repute 2 18071 6083
+rescue 1 5327
+resent 1 19393
+reside 1 17756
+resign 1 12231
+resist 1 5649
+resort 1 6118
+result 1 968
+resume 1 10845
+résumé 4 4439 7140 17772 3912
+retail 1 6297
+retain 1 5733
+retell 2 1372 4552
+retire 1 13655
+retort 3 1372 7383 2435
+return 1 1859
+reveal 1 8040
+review 1 5183
+revise 1 13412
+revive 1 6571
+revolt 1 10043
+reward 1 7711
+rhythm 2 25130 3655
+ribbon 3 3992 2523 25528
+riddle 2 3992 19257
+rigour 2 21584 610
+ritual 1 20652
+robust 1 4074
+rocket 1 13030
+roller 2 21113 6374
+rotten 2 29240 2413
+rotate 2 4440 17242
+rubber 1 27507
+rumour 2 22685 610
+ruling 1 3816
+runner 1 22687
+runway 2 14731 678
+radiate 2 13526 2589
+radiant 2 13526 4678
+radical 1 3415
+railway 1 12153
+rainbow 2 19385 19235
+realize 1 4695
+realise 2 35892 4273
+reading 1 7406
+readily 1 9320
+reality 1 2180
+realism 1 10329
+receive 1 3559
+receipt 2 25852 21090
+recover 1 5663
+recruit 1 13025
+rectify 2 7437 17244
+recycle 1 -1234
+referee 2 -1234 31816
+reflect 1 3219
+refrain 1 10401
+refresh 2 16725 32192
+refugee 1 3815
+refusal 1 6948
+regular 1 6537
+rejoice 1 26647
+release 1 6405
+relieve 1 15659
+remnant 2 33074 4678
+removal 1 8909
+renewal 1 10468
+replace 1 4517
+repress 1 24427
+request 1 8490
+require 1 1611
+reserve 1 4583
+resolve 1 3988
+respect 1 3011
+respond 1 3215
+restore 1 3732
+retired 1 10846
+retreat 1 8018
+reunite 2 1372 8535
+reunion 2 1372 2159
+revenge 1 13278
+revenue 1 3563
+reverse 1 4655
+revival 1 7285
+revolve 2 17222 5594
+riotous 3 3992 5556 4853
+rivalry 1 10403
+robbery 3 4440 2523 32916
+robotic 1 27506
+romance 1 -1234
+roughly 1 2449
+routine 1 7849
+royalty 2 19399 18884
+rubbish 1 -1234
+ruinous 1 25139
+running 1 3305
+radiator 2 13526 6161
+raggedly 3 4510 29604 8157
+railroad 1 25101
+raincoat 4 4510 8205 3037 114
+rational 1 5346
+rapidity 2 9659 14517
+reaction 1 5243
+reassure 1 12335
+recently 1 1324
+receiver 2 25852 8047
+reckless 1 7710
+recorder 2 7437 1039
+recovery 1 2070
+refinery 2 24415 7838
+regiment 2 19388 6609
+regional 1 1422
+register 1 13409
+regulate 1 7407
+rehearse 2 29220 4273
+relative 1 2453
+relation 1 15262
+relevant 1 4081
+religion 1 4410
+reliance 1 5742
+reliable 1 5133
+remember 1 5664
+remedial 1 29224
+reminder 1 8580
+renovate 3 1372 30663 2589
+renowned 1 19392
+reproach 1 -1234
+republic 1 11315
+reporter 1 20644
+research 1 1509
+resemble 1 10780
+reserved 1 15264
+resident 1 19394
+resolute 1 16730
+resource 1 4827
+response 1 1702
+restless 1 24431
+restrain 1 15265
+restrict 1 8814
+retailer 1 25863
+retarded 2 -1234 5334
+retrieve 2 -1234 10257
+reversal 1 7677
+reviewer 2 1372 30061
+revision 1 13279
+rhetoric 1 3570
+rhythmic 2 25130 33026
+ridicule 1 25131
+rigidity 1 20209
+rigorous 1 10658
+romantic 1 18376
+rotation 1 29241
+ruthless 1 14890
+radiation 1 11390
+realistic 1 5816
+rebellion 1 11238
+reception 1 20197
+recession 1 2370
+recipient 1 10205
+receptive 1 23775
+recognize 1 2424
+recognise 2 -1234 4273
+recommend 1 11589
+reconcile 1 8764
+recording 1 20198
+reduction 1 2859
+redundant 1 16498
+reference 1 8579
+reformist 1 11153
+regarding 1 5143
+registrar 3 19388 10533 4666
+regretful 2 16985 25938
+regulator 1 13273
+rehearsal 2 29220 25874
+reinforce 1 6404
+rejection 1 6712
+rejoicing 2 32616 31746
+relevance 1 10467
+religious 1 2395
+reluctant 1 5913
+remainder 1 19803
+rendering 1 15660
+renewable 1 4885
+reparable 2 32190 1336
+repayment 1 10721
+represent 1 4281
+reproduce 1 21581
+reputable 1 22670
+reservoir 1 22672
+reshuffle 2 24430 3773
+residence 1 17219
+resistant 1 8726
+restraint 1 8070
+resultant 2 29881 14396
+retention 1 25865
+retaliate 1 15661
+retelling 2 1372 6614
+retrieval 3 -1234 6550 2733
+rewarding 1 13795
+reasonable 1 4719
+rebellious 1 27485
+reciprocal 1 19386
+recitation 2 7437 17702
+recreation 2 25112 2962
+recurrence 1 17754
+recyclable 4 7437 2930 10631 1336
+redundancy 1 23219
+referendum 1 3160
+refinement 2 24415 9780
+reflection 1 8489
+reflective 2 19054 16656
+refutation 2 17465 9533
+regardless 1 3991
+regimental 2 19801 23055
+regularity 2 16726 14478
+regulation 1 2783
+regulatory 1 2923
+relativity 1 -1234
+relaxation 1 18703
+relentless 1 10330
+reluctance 1 9323
+remarkable 1 4424
+renovation 3 1372 5403 19464
+repertoire 3 31054 4920 10907
+repetition 1 23221
+repetitive 1 26655
+repeatedly 1 4606
+reputation 1 6203
+repression 1 5679
+republican 1 16502
+repressive 1 10920
+researcher 1 19806
+resentment 1 8100
+resistance 1 3458
+resolution 1 3973
+respectful 1 19396
+respective 1 8963
+responsive 1 10041
+respondent 2 31819 12006
+restaurant 1 14220
+resumption 1 14730
+retirement 1 5135
+retrospect 1 17221
+revelation 1 15841
+revengeful 3 -1234 5690 7478
+reversible 1 25870
+revolution 1 2704
+rhetorical 1 13530
+ridiculous 1 24438
+radioactive 1 15654
+reactionary 1 16982
+realization 1 11391
+realisation 2 35892 25876
+reassurance 1 19796
+recognition 1 4489
+recruitment 1 13793
+reformation 2 1372 8128
+refreshment 3 1372 9050 19816
+regrettable 1 21101
+remembrance 2 31404 21572
+reminiscent 1 11492
+renaissance 1 16276
+replacement 1 9057
+requirement 1 7556
+resemblance 1 21582
+reservation 2 1372 31075
+residential 1 10101
+resignation 1 11393
+resourceful 2 25126 7478
+respectable 1 16733
+responsible 1 2855
+restoration 1 10272
+restriction 1 23784
+restrictive 1 12044
+retaliation 1 10042
+ratification 1 12334
+receptionist 2 28310 20259
+recreational 1 28311
+refrigerator 2 30360 6161
+registration 1 14378
+rehabilitate 1 -1234
+relationship 1 2292
+reminiscence 2 34248 30246
+reproduction 1 21105
+reproductive 1 12043
+respectively 1 6205
+radioactivity 2 33068 3272
+rectification 2 7437 21630
+refrigeration 1 29865
+reinforcement 1 -1234
+retrospective 2 12691 31835
+reunification 1 10102
+revolutionary 1 5567
+recommendation 1 16272
+reconciliation 1 6611
+reconciliatory 2 1372 20931
+rehabilitation 1 17215
+representation 1 7112
+representative 1 6693
+responsibility 1 2406
+so 1 300
+sad 1 11868
+say 1 1424
+sea 1 4763
+see 1 1595
+set 1 1382
+sew 2 4432 6104
+sex 1 6670
+she 1 1693
+shy 1 12815
+sin 1 14566
+sip 2 5244 4047
+sir 2 5244 4666
+sit 1 7648
+six 1 2792
+ski 1 12342
+sky 1 7957
+sob 2 7411 4528
+son 1 4252
+sow 1 17479
+spy 1 20233
+sue 1 16294
+sum 1 7562
+sun 1 10045
+sack 2 2530 8391
+safe 1 3203
+sail 2 6639 6041
+sake 1 7410
+sale 1 8581
+salt 1 16741
+same 1 826
+sand 1 14558
+save 1 3087
+scan 2 2530 182
+scar 2 6572 3940
+seal 1 22129
+seat 1 7310
+seed 1 12812
+seek 1 2918
+seem 1 1706
+self 1 11495
+sell 1 4195
+send 1 5405
+sexy 1 -1234
+shed 1 6170
+ship 1 7164
+shit 2 3929 38
+shoe 2 11241 2578
+shop 1 12340
+shot 1 7559
+show 1 2426
+shut 1 7531
+sick 1 9371
+side 1 2157
+sigh 1 20668
+sign 1 3877
+silk 2 15069 2860
+sing 1 8103
+sink 1 13157
+site 1 7287
+size 1 2944
+skim 2 9866 9914
+skin 1 11078
+skip 2 22143 4047
+slam 2 2530 17703
+slap 1 24475
+slim 1 16996
+slip 1 15846
+slot 2 2530 3292
+slow 1 2814
+slum 2 13799 3655
+smog 1 24477
+snap 1 18084
+snob 2 -1234 4528
+snow 1 21600
+soak 2 7411 7296
+soap 1 27546
+soar 1 14740
+sock 2 7411 13231
+soda 2 7411 7341
+sofa 2 18388 15
+soft 1 3630
+soil 1 7532
+sole 1 8491
+solo 2 16288 2141
+some 1 354
+song 1 15070
+soon 1 2129
+sore 2 2530 9007
+sort 1 4737
+soul 1 12924
+soup 1 21604
+sour 1 20231
+span 1 26700
+spin 1 13040
+spit 2 4425 38
+spot 1 9373
+spur 1 5793
+stab 2 18722 4528
+star 1 9473
+stay 1 4675
+stem 1 5712
+step 1 2186
+stir 1 21614
+stop 1 2432
+stun 2 16520 3280
+such 1 274
+suck 1 -1234
+suit 1 7114
+sure 1 1996
+surf 2 9474 6128
+swap 1 10336
+sway 1 14395
+swim 1 28409
+saint 2 2530 28712
+salad 2 9162 4901
+salon 2 9162 49
+salty 2 9162 6552
+sauce 3 2530 5469 8396
+scale 1 2571
+scare 1 16993
+scary 1 21119
+scene 1 9469
+scent 1 24453
+scold 2 14084 18012
+scope 1 4461
+score 1 11317
+scorn 1 22127
+scout 2 6572 480
+scrap 1 20215
+screw 2 12811 6104
+scrub 2 23236 4528
+seize 1 6999
+sense 1 1559
+serve 1 3043
+seven 1 3890
+shade 1 29257
+shady 1 28361
+shaft 2 8169 11292
+shake 1 13035
+shaky 1 16744
+shall 1 14223
+shame 1 10781
+shape 1 4087
+share 1 1362
+shark 1 20665
+sharp 1 3781
+shave 2 2530 65
+sheep 1 21125
+sheer 1 8815
+sheet 1 7191
+shelf 1 21126
+shell 1 24464
+shift 1 1933
+shine 1 14737
+shiny 2 3929 23123
+shirt 1 -1234
+shock 1 4511
+shoot 1 17231
+shore 1 10407
+short 1 1797
+shout 2 3929 480
+shove 1 27533
+showy 2 12920 2791
+shred 2 3929 3889
+shrub 2 31832 4528
+shrug 1 21596
+shyly 3 3929 2930 4414
+siege 1 11396
+sight 1 6869
+silky 2 15069 10316
+since 1 700
+sixty 1 25895
+skate 2 9866 2589
+skill 1 7113
+skirt 2 15481 2435
+skull 2 9866 21637
+slack 1 12048
+slash 1 18083
+slave 1 17477
+sleep 1 14385
+slice 1 20671
+slide 1 12449
+slope 1 19821
+slump 1 9801
+small 1 1449
+smart 1 4736
+smash 2 9326 12198
+smell 2 9326 11285
+smile 1 20674
+smoke 1 13532
+smoky 2 11785 10316
+snack 2 13158 8391
+snail 2 13158 25486
+snake 2 13158 14296
+sneak 2 26695 7296
+sniff 2 21135 9515
+snowy 2 21136 2791
+sober 1 15482
+sobre 3 7411 8794 2578
+solar 1 4660
+solid 1 6694
+solve 1 4219
+sorry 1 13941
+sound 1 3698
+south 1 5568
+space 1 3338
+spade 1 -1234
+spare 1 14569
+spark 1 12818
+speak 1 4639
+spear 2 15484 3940
+speed 1 5899
+spell 1 13418
+spend 1 3308
+spice 2 4425 7479
+spicy 2 4425 -1234
+spill 1 12697
+spine 2 4425 4971
+spite 1 21141
+split 1 7593
+spoil 1 -1234
+spoon 2 12344 49
+sport 1 9662
+spray 2 4425 12154
+squad 1 28386
+stack 2 4131 8391
+staff 1 5431
+stage 1 3520
+stain 1 -1234
+stair 2 4131 2864
+stake 1 4524
+stale 2 4131 10005
+stalk 2 15074 2860
+stall 1 14570
+stamp 1 18389
+stand 1 3374
+stare 2 4131 51
+stark 1 8141
+start 1 1894
+state 1 759
+steak 2 6758 7296
+steal 1 16055
+steam 1 11245
+steel 1 5013
+steep 1 10334
+steer 1 13535
+stern 1 26703
+stick 1 8729
+stiff 1 19424
+still 1 756
+sting 1 10105
+stock 1 2572
+stone 1 8042
+stony 2 4131 14357
+stool 2 9733 9524
+stoop 2 9733 23169
+store 1 7811
+storm 1 7413
+story 1 3140
+stout 2 4131 480
+stove 2 9733 5594
+strap 2 10533 4047
+straw 1 29963
+stray 2 10533 2791
+strip 1 15485
+study 1 2723
+stuff 1 14392
+stump 2 -1234 4047
+style 1 5031
+sugar 1 8379
+suite 1 27580
+sunny 1 24500
+super 1 25926
+surge 1 5163
+swamp 1 22171
+swear 1 28407
+sweat 1 -1234
+sweep 1 18398
+sweet 1 21154
+swell 1 29980
+swift 1 12348
+swing 1 9666
+swipe 2 34295 12681
+sword 1 17483
+sacred 1 12444
+sadden 2 20653 7910
+saddle 2 31063 3773
+safety 1 3119
+sailor 2 29908 120
+salary 1 13153
+salmon 2 9162 24330
+salute 2 9162 21184
+sample 1 14083
+satire 2 17473 8265
+savage 1 22126
+saving 1 2750
+saying 1 5054
+scarce 1 7438
+scenic 2 25143 4889
+scheme 1 5529
+school 1 2817
+scrape 2 20655 12681
+scream 2 12811 2899
+screen 1 15269
+script 1 16283
+search 1 4862
+season 1 10531
+second 1 1192
+secret 1 5617
+sector 1 1257
+secure 1 2903
+seduce 2 4432 26381
+seldom 1 12694
+select 1 10406
+senate 2 9531 2589
+senior 1 3925
+sensor 2 22135 120
+serial 1 23241
+series 1 4584
+settle 1 6987
+severe 1 3212
+sexual 1 5379
+shabby 3 8169 2523 57
+shadow 1 6671
+shaver 2 8169 8047
+shield 1 13937
+shiver 2 8102 8047
+shorts 2 16745 2980
+should 1 291
+shower 1 -1234
+shrewd 1 22697
+shrimp 2 21128 15813
+shrink 1 9370
+sicken 3 5244 3995 11474
+signal 1 6228
+silent 1 8582
+silver 1 10208
+simple 1 2833
+simply 1 1526
+singer 1 23807
+single 1 2011
+sister 1 12559
+sketch 1 -1234
+sleeve 2 16749 10257
+slight 1 12816
+skiing 2 22143 2781
+skinny 2 29938 14354
+sleepy 2 23247 2791
+slogan 1 9470
+smelly 3 9326 4622 4414
+smoggy 3 11785 2713 10709
+smooth 1 9803
+snatch 2 26694 5552
+soccer 1 8965
+social 1 791
+socket 2 33086 14858
+sodium 2 7411 20961
+soften 1 22700
+solely 1 7560
+solemn 1 29279
+soothe 3 7411 3037 6
+sorrow 1 -1234
+source 1 2490
+speech 1 3177
+speedy 1 -1234
+sphere 1 7087
+spider 2 4425 22541
+spinal 2 4425 15997
+spiral 1 7741
+spirit 1 5665
+splash 2 4425 19723
+sponge 2 31081 6015
+spongy 2 31081 10709
+spouse 1 27557
+sprawl 1 -1234
+spread 1 3226
+spring 1 6388
+square 1 8696
+stable 1 2793
+stance 1 4426
+staple 1 19420
+starry 2 10662 6299
+starve 1 19421
+static 1 14571
+statue 1 25912
+status 1 2185
+steady 1 6456
+steamy 3 6758 3700 2791
+sticky 1 27567
+stifle 1 13942
+stigma 1 16515
+stitch 2 10473 -1234
+stormy 2 17482 1395
+storey 3 4131 14069 2791
+strain 1 8223
+strait 2 10533 38
+strand 1 29961
+streak 1 23264
+stream 1 10410
+street 1 7031
+stress 1 5200
+strict 1 7490
+stride 2 11158 2273
+strike 1 4560
+string 1 12346
+stripe 2 11158 12681
+strive 1 13043
+stroke 1 13668
+stroll 2 4131 8167
+strong 1 1218
+studio 2 25917 2141
+stuffy 3 16520 8324 2791
+stupid 1 13669
+sturdy 2 -1234 8562
+submit 1 11695
+subtle 1 12163
+suburb 1 29969
+subway 1 -1234
+sudden 1 5833
+suffer 1 3737
+sulfur 1 24499
+summer 1 4207
+summit 1 2883
+summon 1 29974
+sunday 2 14394 1851
+sunset 1 25182
+superb 1 28400
+supper 2 16295 1440
+supply 1 1969
+survey 1 5463
+switch 1 10994
+symbol 1 8966
+system 1 654
+sadness 1 19810
+sailing 1 28347
+salvage 1 23793
+sarcasm 3 25142 14485 3655
+satisfy 1 8766
+sausage 2 6639 13049
+scanner 3 6572 9353 2100
+scandal 1 7852
+scatter 2 6572 20452
+scenery 3 6572 23597 2791
+scholar 1 14380
+science 1 2473
+scratch 1 17226
+secrecy 1 13154
+section 1 12337
+secular 1 3908
+segment 1 13155
+seeming 1 13282
+seizure 1 19066
+selfish 1 14561
+seminar 1 28358
+senator 1 15270
+serious 1 1562
+servant 1 25889
+session 1 12813
+service 1 2717
+serving 1 6437
+setback 1 13658
+setting 1 4104
+seventy 2 18715 6552
+several 1 1724
+shallow 1 20664
+sharpen 1 29260
+shatter 1 -1234
+shelter 1 12236
+shortly 1 11784
+shuttle 2 18081 15083
+shyness 3 3929 2930 5973
+signify 1 25893
+silence 1 8041
+silicon 1 27535
+similar 1 1623
+silvery 2 15069 1014
+sincere 1 16748
+situate 2 30713 2589
+sixteen 1 -1234
+skyline 2 23245 2211
+slender 2 2530 8898
+sitting 1 9011
+sizable 1 19415
+skating 2 9866 2852
+skeptic 1 24473
+sceptic 2 32198 6438
+sketchy 3 26688 2528 -1234
+skilful 3 9866 6100 7478
+skilled 1 5817
+slavery 1 10597
+slipper 2 18385 30685
+smuggle 2 25161 3773
+society 1 1533
+soldier 1 18721
+solicit 2 20230 38
+solvent 1 19822
+soluble 1 -1234
+somehow 1 6518
+someone 1 4588
+spatial 1 25904
+sparkle 2 19417 29676
+speaker 1 14387
+special 1 3281
+species 1 4828
+specify 1 23250
+sponsor 1 21142
+squeeze 1 11693
+stadium 1 25908
+stagger 2 14388 7588
+stammer 2 16054 10647
+standby 2 22159 57
+stapler 2 30717 6374
+starter 1 30372
+startle 2 10662 29334
+station 1 9867
+statute 1 24493
+steamer 3 6758 3700 2100
+steward 2 6758 10480
+stiffen 2 28388 4031
+stomach 1 19828
+storage 1 7455
+strange 1 9374
+stretch 1 11959
+student 1 6406
+stumble 1 23266
+stylish 2 19830 24302
+subject 1 3528
+subsidy 1 9212
+succeed 1 3454
+success 1 1692
+suffice 1 13538
+suggest 1 3185
+suicide 1 6922
+sulphur 3 12701 7058 9807
+summary 1 18396
+sunrise 2 14394 1189
+support 1 718
+suppose 1 9060
+supreme 1 12564
+surfing 1 29316
+surface 1 7325
+surgery 1 13945
+surgeon 1 21619
+surname 2 9474 3447
+surpass 1 12565
+surplus 1 2756
+survive 1 4676
+suspect 1 8494
+suspend 1 13539
+sustain 1 3989
+swallow 1 20686
+sweater 2 14097 14984
+swimmer 2 32652 10647
+symptom 1 10852
+synonym 2 32656 21665
+salesman 2 28348 2401
+sanction 1 18708
+sandwich 3 18079 3942 16682
+sanitary 1 27511
+satirist 3 17473 3992 4738
+saturate 3 24450 5744 2589
+saturday 3 24450 5744 1851
+scarcity 1 9863
+scarcely 1 14732
+scenario 1 3697
+schedule 1 14379
+scissors 3 29912 7922 6152
+scornful 3 26676 3441 7478
+scramble 1 16506
+scrutiny 1 8219
+seasonal 1 21120
+security 1 930
+seedling 3 18080 2840 4893
+selfless 2 -1234 666
+semester 2 21595 21953
+sensible 1 5778
+sentence 1 10332
+separate 1 5630
+sequence 1 11870
+sergeant 3 10921 5690 4678
+severity 1 12447
+shameful 1 27527
+shepherd 2 27528 3296
+shipping 1 12695
+shipment 2 8102 30681
+shipyard 2 27530 19865
+shopping 1 11782
+shortage 1 7209
+shoulder 1 14087
+showcase 1 24467
+sideways 2 12921 1802
+simulate 2 21130 2589
+simplify 1 18716
+singular 1 20669
+sinister 1 15479
+skeleton 2 -1234 5779
+skillful 1 21598
+slightly 1 5650
+slippery 1 23816
+smuggler 2 25161 6374
+snobbish 3 -1234 2523 27912
+sociable 2 11594 1336
+software 1 6229
+solidity 2 32212 5865
+solidify 1 25162
+solitary 1 23820
+solitude 2 21137 27626
+solution 1 2099
+somebody 1 19823
+sometime 1 13940
+somewhat 1 5347
+southern 1 3759
+souvenir 3 12562 9877 7231
+spacious 2 4425 17338
+specific 1 3175
+specimen 3 13663 4408 4031
+spectrum 1 8652
+spelling 2 4425 12781
+speeding 1 29286
+spending 1 1202
+splendid 1 27555
+splendor 3 22156 6420 120
+spoonful 3 12344 3660 7478
+sprinkle 3 4425 13656 29676
+stagnate 1 21146
+stagnant 1 8222
+standard 1 3144
+steadily 1 6597
+stimulus 1 2573
+stocking 2 30374 4261
+stoppage 2 20680 9975
+straight 1 13536
+stranger 1 18088
+strangle 2 22163 3773
+strategy 1 1487
+striking 1 6300
+strength 1 3736
+struggle 1 3425
+stubborn 1 18394
+stuffing 2 16520 24230
+stunning 1 10849
+submerge 2 5944 20154
+subtlety 3 22167 3584 6552
+subtract 2 5944 18741
+suburban 1 29970
+suddenly 1 5278
+suicidal 1 14572
+suitable 1 12453
+suitcase 3 7000 3659 1173
+sunlight 1 16754
+sunshine 2 14394 14737
+superior 1 8380
+supplier 1 12819
+suppress 1 9664
+surgical 1 13161
+surprise 1 4208
+surround 1 20685
+survival 1 4427
+survivor 1 -1234
+suspense 2 32224 20971
+swimming 1 20687
+symmetry 1 26713
+sympathy 1 10995
+symbolic 1 8626
+symphony 3 32654 3758 14357
+syndrome 1 18091
+sacrifice 1 8168
+safeguard 1 7850
+salvation 1 18378
+sanctuary 1 16504
+sarcastic 3 25142 3995 19228
+satellite 1 9572
+satirical 2 17473 29235
+scholarly 1 18379
+schooling 1 9244
+scientist 1 8334
+scripture 2 31419 10283
+sculpture 2 25881 10283
+secondary 1 5616
+secretive 1 22689
+secretary 1 8695
+seduction 2 26682 5290
+seductive 1 26683
+segregate 2 31422 16925
+segmental 2 21122 5853
+seemingly 1 4929
+selection 1 6886
+selective 1 12338
+sensation 2 22135 2962
+seniority 1 24458
+sensitive 1 5942
+sentiment 1 4720
+september 4 4432 2963 2528 28891
+seventeen 2 31424 4031
+shameless 2 29258 666
+shorthand 2 16745 31853
+shrubbery 3 3929 22124 32916
+signature 1 12922
+sincerity 1 25158
+situation 1 2197
+skeptical 1 8769
+sceptical 2 32198 11498
+slaughter 1 12049
+smuggling 1 16287
+so-called 1 2409
+socialize 1 29942
+socialise 3 11594 6323 4273
+socialism 1 9923
+socialist 1 8220
+sociology 1 -1234
+solemnity 2 31428 20598
+solicitor 2 20230 18317
+something 1 2076
+sometimes 1 2805
+somewhere 1 9804
+sorrowful 3 16053 16739 7478
+southeast 1 27552
+southwest 1 29281
+sovereign 1 3048
+spaceship 3 4425 15367 7164
+spaghetti 4 4425 4347 4991 15082
+sparingly 2 19417 6077
+specialty 1 25165
+spectacle 1 13665
+spectator 2 27554 6161
+speculate 1 19825
+spherical 2 33090 7398
+spiritual 1 12238
+splendour 3 22156 6420 610
+spokesman 1 23253
+sportsman 3 22157 14579 2401
+spotlight 1 12925
+stability 1 1547
+stabilize 1 6102
+stabilise 2 22703 4273
+stainless 3 4131 14157 666
+staircase 3 4131 9227 1173
+statement 1 4696
+statesman 1 18725
+statistic 1 25910
+statutory 1 20677
+stimulate 1 5514
+stimulant 2 19075 4678
+stipulate 2 22707 2589
+strategic 1 1849
+stressful 2 16516 29293
+structure 1 3372
+stupidity 1 -1234
+submarine 1 20241
+subscribe 1 23834
+subsidize 1 12347
+subsidise 2 25179 4273
+substance 1 10154
+successor 1 5104
+suffering 1 3599
+summarize 2 25181 7673
+summarise 2 25181 14704
+supervise 1 22715
+supporter 1 14742
+supremacy 1 13420
+surrender 1 10923
+suspicion 1 7923
+symmetric 2 25187 12906
+symposium 1 26715
+syndicate 3 16061 10188 2589
+synthesis 1 18734
+synthetic 1 10853
+semi-colon 3 8767 11032 49
+salutation 2 23792 9533
+sanitation 1 7851
+saturation 2 24450 25233
+scandalous 1 29246
+scholastic 2 33649 19228
+scientific 1 2965
+scrutinize 1 27515
+scrutinise 4 23236 2528 12421 4273
+separation 1 8768
+sequential 2 14735 13886
+separatist 1 12557
+settlement 1 4587
+similarity 1 17761
+simplicity 1 19819
+simulation 1 27537
+skyscraper 3 23245 20655 1440
+skepticism 1 8770
+scepticism 2 32198 26724
+sleepiness 2 23247 9970
+smartphone 1 18386
+solidarity 1 4375
+spacecraft 2 21605 29584
+specialize 1 22701
+specialise 3 16998 6323 4273
+specialist 1 25906
+speciality 2 16998 6524
+speechless 2 32213 666
+stagnation 1 4253
+standpoint 1 13534
+starvation 1 12927
+stationary 2 4131 23501
+stationery 2 30718 7838
+stereotype 2 31083 25809
+stewardess 4 6758 8105 2843 9471
+straighten 3 10533 10905 2413
+streamline 1 20239
+strengthen 1 2915
+structural 1 1878
+subjective 1 20240
+submission 1 18395
+submissive 3 5944 4266 11955
+subscriber 2 22166 9229
+subsequent 1 4844
+substitute 1 8072
+succession 1 8532
+successive 1 9247
+successful 1 2238
+sufficient 1 3679
+suggestion 1 12054
+suggestive 2 32222 6599
+supervisor 1 16755
+supplement 1 15487
+supportive 1 10537
+supposedly 1 5184
+suspension 1 13947
+suspicious 1 10475
+symbolical 2 -1234 34184
+sympathize 1 28412
+sympathise 2 31441 14704
+synthesize 2 21620 2944
+synthesise 3 21620 5244 4273
+systematic 1 8862
+sacrificial 2 34259 10197
+scholarship 1 24454
+second-hand 2 10660 2398
+secretarial 3 31421 24506 2733
+segregation 1 16742
+sensational 1 23802
+sensitivity 1 12160
+sentimental 1 29253
+shortcoming 1 19068
+sightseeing 3 31425 2528 6488
+significant 1 1546
+singularity 1 29270
+sociologist 1 20228
+sovereignty 1 3289
+spectacular 1 9012
+speculation 1 7412
+speculative 1 7440
+spokeswoman 2 25166 4650
+sponsorship 2 31837 16479
+spontaneous 1 17235
+spontaneity 2 35936 5865
+sportswoman 3 22157 14579 4650
+standardize 2 23826 5410
+standardise 2 23826 4273
+statistical 1 8625
+stimulation 1 29297
+stipulation 2 22707 2962
+subordinate 1 16059
+subsistence 1 14899
+substantial 1 3071
+subtraction 2 5944 9738
+superficial 1 18397
+superiority 1 11160
+supermarket 1 28403
+supervision 1 6950
+supposition 2 16295 1775
+suppression 1 12164
+suppressive 2 16295 33622
+susceptible 1 10993
+sustainable 1 1941
+symmetrical 1 23837
+sympathetic 1 13948
+satisfaction 1 11591
+satisfactory 1 19811
+significance 1 6517
+simultaneous 1 12558
+southeastern 1 24483
+southwestern 2 12562 24513
+specifically 1 5162
+spokesperson 1 23254
+subscription 2 5944 25145
+substitution 1 15075
+superstition 3 9013 10473 5290
+surroundings 1 27585
+surveillance 1 5569
+sophisticated 1 5557
+specification 2 16998 8891
+subordination 1 29309
+superstitious 3 9013 10473 16758
+supplementary 1 29314
+sophistication 1 16751
+specialization 1 13664
+specialisation 3 16998 6323 25876
+superintendent 3 9013 28151 12006
+sustainability 1 4349
+systematically 1 10108
+standardization 1 -1234
+standardisation 4 22159 3922 2926 2962
+straightforward 1 6988
+tv 2 2528 6303
+to 1 10
+tag 1 17484
+tan 1 18402
+tap 1 10338
+tax 1 931
+tea 1 21158
+ten 1 2413
+the 1 6
+tie 1 10279
+tin 1 12352
+tip 1 12353
+toe 2 4920 2578
+ton 1 5779
+too 1 705
+top 1 1868
+tow 2 4920 6104
+toy 1 29335
+try 1 2940
+tub 1 30024
+tug 2 5947 4407
+two 1 582
+tack 1 23838
+tact 2 2528 2131
+tail 1 11497
+take 1 922
+tale 1 12239
+talk 1 3901
+tall 1 15671
+tame 1 17006
+tank 1 11872
+tape 1 12567
+task 1 3605
+taxi 1 15489
+team 1 4115
+tear 1 16299
+tech 1 6519
+teen 1 12820
+tell 1 4552
+tend 1 3186
+tent 1 31093
+term 1 1847
+test 1 3300
+text 1 10109
+than 1 158
+that 1 22
+them 1 489
+then 1 913
+they 1 116
+thin 1 9806
+this 1 80
+thus 1 1162
+tick 1 33672
+tide 1 7651
+tidy 2 4350 8562
+tile 1 17488
+till 1 30005
+tilt 1 21167
+time 1 477
+tiny 1 7456
+tire 1 24517
+toil 2 4920 6041
+toll 1 7241
+tone 1 10214
+tool 1 5363
+toss 2 4920 9471
+tour 1 12704
+town 1 7001
+tram 2 8172 3655
+trap 1 6032
+tray 2 8172 2791
+tree 1 15492
+trek 2 11322 2860
+trim 2 6615 3655
+trip 1 6923
+true 1 1511
+tube 1 -1234
+tuck 2 2528 18412
+tune 1 15084
+turn 1 1712
+twin 1 11084
+type 1 3818
+tyre 2 11085 8265
+tire 1 24517
+table 1 4863
+taboo 1 13421
+taste 1 13162
+tasty 2 5869 18729
+teach 1 9014
+tease 2 5704 14302
+tempo 2 17486 2141
+tempt 1 -1234
+tense 1 15852
+thank 1 17776
+theft 1 12167
+their 1 94
+theme 1 10155
+there 1 288
+these 1 338
+thick 1 21627
+thief 2 5173 34144
+thigh 2 5173 28996
+thing 1 2399
+think 1 1875
+third 1 1867
+thorn 1 29328
+those 1 517
+three 1 1043
+throw 1 9926
+thumb 1 19437
+tidal 2 4350 17379
+tiger 1 21166
+tight 1 7781
+timid 1 17780
+tired 1 14744
+title 1 10856
+toast 2 4920 10568
+today 1 639
+token 1 16064
+tooth 1 25949
+topic 1 8336
+torch 1 27613
+total 1 2006
+touch 1 10340
+tough 1 4684
+towel 2 4920 28495
+tower 2 4920 23878
+toxic 1 6281
+trace 1 19846
+track 1 4441
+tract 1 18741
+trade 1 624
+trail 1 19445
+train 1 6847
+trait 1 22737
+trash 2 8172 10044
+tread 1 21173
+treat 1 5301
+trend 1 3012
+trial 1 5164
+tribe 1 21175
+trick 1 12705
+troop 1 14402
+truck 1 23852
+truly 1 3851
+trunk 2 8772 29364
+trust 1 2947
+truth 1 3124
+trial 1 5164
+tumor 1 16531
+tutor 2 5947 9376
+twice 1 5064
+twist 1 15085
+tablet 1 29982
+tackle 1 5703
+tactic 1 11961
+tailor 1 27588
+talent 1 5258
+tangle 2 20248 3773
+tanker 2 9667 7232
+target 1 2506
+tariff 1 6574
+teller 2 2528 27212
+temper 1 20250
+temple 1 25192
+tenant 1 26718
+tender 1 22725
+tennis 1 25935
+tenure 1 8410
+terror 1 4949
+theirs 1 11320
+theory 1 3197
+thesis 1 14576
+thirst 1 20692
+thirty 1 28429
+thorny 1 23846
+though 1 1061
+thread 1 23277
+threat 1 1633
+thrift 1 20254
+thrill 2 16301 12146
+thrive 1 7715
+throat 2 19436 114
+throne 1 20256
+thrust 1 17487
+ticket 1 16525
+tickle 2 10278 29676
+timber 1 20258
+timely 1 10280
+timing 1 8171
+tissue 1 13164
+tiring 2 4350 9529
+toilet 2 23279 6530
+tomato 3 15079 3306 10
+tongue 1 30011
+topple 1 13808
+toward 1 1128
+tragic 1 8043
+trauma 1 11698
+travel 1 5235
+treaty 1 3416
+trench 2 21174 5552
+tribal 1 7959
+tricky 1 16530
+trifle 2 6615 28084
+triple 1 11162
+trophy 2 10341 20628
+tropic 3 10341 2963 4889
+trying 1 2866
+tumble 1 29342
+tumour 2 29341 610
+tunnel 1 23855
+turkey 2 10926 1284
+turtle 2 10926 29334
+twelve 1 22187
+twenty 1 11700
+typist 2 22188 6738
+tactful 2 18400 25938
+takeoff 1 23841
+teacher 1 12568
+tedious 2 5704 22464
+telling 1 6614
+tension 1 6674
+terrace 2 30727 13726
+terrain 1 15673
+terrify 2 26719 13760
+testify 1 29993
+textile 1 17243
+texture 2 30381 10283
+theater 1 14227
+theatre 2 26721 8265
+therapy 1 10213
+thereby 1 2580
+thermal 1 27601
+thirsty 2 15674 18729
+thought 1 2879
+thrifty 2 16301 22510
+through 1 810
+thunder 2 5173 885
+tigress 2 4350 31334
+tighten 1 9872
+tobacco 1 7441
+tonnage 2 25948 34928
+tonight 2 25948 13899
+topical 2 18740 7398
+tornado 3 7383 3441 15560
+torture 1 8306
+tourism 1 7033
+tourist 1 15081
+towards 1 4318
+tractor 2 16760 9376
+traffic 1 7678
+tragedy 1 5946
+trailer 3 8172 6100 2100
+trainer 2 22736 2100
+trainee 3 8172 11299 2578
+transit 1 11790
+tremble 2 27620 6492
+tribune 2 28443 18415
+tribute 1 20702
+trickle 1 20704
+trigger 1 5464
+triumph 1 7210
+trivial 1 12244
+trolley 2 27622 7282
+trouble 1 4337
+trumpet 1 30023
+trustee 3 10600 6758 2578
+tuesday 3 5947 4990 1851
+tuition 1 22186
+turmoil 1 4902
+turnout 1 10284
+twelfth 3 32668 3568 6539
+typical 1 6759
+talented 1 10599
+tangible 1 9109
+taxation 1 5082
+teaching 1 8863
+teenager 1 28418
+temporal 2 27594 2733
+tendency 1 6673
+terminal 1 25193
+terrible 1 7564
+terribly 1 19840
+terrific 2 26719 25656
+tertiary 1 14400
+textbook 1 12240
+thankful 2 29995 7478
+thinking 1 2751
+thirteen 1 -1234
+thorough 1 14902
+thousand 1 7986
+threaten 1 4919
+thriller 3 16301 3335 6374
+thursday 3 5173 5744 32201
+tireless 2 31098 666
+tiresome 2 31098 354
+together 1 1515
+tolerate 1 9737
+tolerant 1 12929
+tomorrow 1 7622
+township 2 -1234 7164
+training 1 3131
+tranquil 2 31453 6041
+transfer 1 4066
+transmit 1 17785
+treasure 1 25206
+treasury 1 11699
+triangle 1 26737
+trillion 1 2087
+tropical 1 11600
+trousers 3 8772 20609 2878
+truthful 2 10600 31447
+turnover 1 18102
+tutorial 3 5947 2528 16962
+talkative 3 12350 2400 6399
+technical 1 4132
+technique 1 17775
+telephone 1 15280
+telescope 2 15851 4461
+temporary 1 4075
+tentative 1 19839
+terminate 1 25937
+territory 1 3719
+terrorism 1 2908
+terrorist 1 3055
+testimony 1 13045
+therefore 1 2967
+therapist 2 33107 6738
+threshold 1 6659
+tolerance 1 7313
+tolerable 1 17781
+trademark 1 30015
+tradition 1 5433
+transcend 1 13951
+transform 1 5245
+transient 1 30020
+translate 1 7743
+transport 1 4921
+traumatic 1 13952
+treasurer 3 11322 16162 11781
+treatment 1 2919
+turbulent 1 13291
+twentieth 1 4209
+technician 2 27593 7949
+technology 1 1500
+telescopic 3 15851 34265 4889
+television 1 5014
+temptation 1 7886
+theatrical 3 6802 16628 12118
+themselves 1 1571
+thoughtful 1 13290
+throughout 1 2667
+thunderous 3 5173 4183 4853
+tournament 1 19845
+tragically 1 21633
+transcript 2 17489 16283
+transistor 2 -1234 120
+transition 1 2693
+translator 2 26736 6161
+transplant 1 22185
+tremendous 1 8044
+triangular 3 6615 8791 15859
+triumphant 1 26739
+turbulence 1 10999
+typewriter 3 11085 5662 10481
+temperament 1 23844
+temperature 1 7351
+temporarily 1 7563
+termination 1 -1234
+territorial 1 4188
+thermometer 3 12168 3440 29775
+theoretical 1 10339
+therapeutic 1 16063
+traditional 1 2117
+trafficking 1 9476
+tranquility 1 30017
+transaction 1 8864
+transparent 1 5487
+translation 1 22184
+transmitter 2 35052 5601
+troublesome 1 22741
+thanksgiving 3 29995 2530 3354
+transference 2 9280 24229
+transitional 1 11161
+transmission 1 7744
+transparency 1 4082
+technological 1 2459
+therapeutical 2 34302 11498
+transformation 1 3702
+transportation 1 5931
+transplantation 2 23851 9533
+telecommunications 1 10411
+up 1 530
+us 1 1063
+use 1 932
+ugly 1 11000
+undo 1 17793
+unit 1 6301
+upon 1 3534
+urge 1 9534
+user 1 11792
+used 1 1321
+ultra 2 5452 27616
+uncle 2 13809 3773
+under 1 885
+unify 1 18750
+union 1 2159
+unite 1 8535
+unity 1 4846
+until 1 1581
+upper 1 8268
+upset 1 14910
+urban 1 3161
+urine 2 5744 4971
+usage 1 13049
+usual 1 5631
+utter 1 14584
+uneasy 1 16304
+unfold 1 16068
+unique 1 4189
+unless 1 2901
+unveil 2 1406 16539
+update 1 15286
+uphold 1 8046
+upload 2 7167 12535
+upward 1 6715
+urgent 1 4255
+useful 1 4164
+utmost 1 19096
+uncover 1 26751
+undergo 1 12247
+uniform 1 13955
+unleash 1 10602
+upgrade 1 12169
+upright 3 3539 7919 13896
+uranium 1 8338
+upwards 1 21183
+urgency 1 8452
+urinate 2 5744 18000
+useless 1 12577
+usually 1 3489
+utility 1 11875
+utilize 2 25971 5410
+utilise 2 25971 4273
+utterly 1 9674
+ugliness 2 12822 24993
+ultimate 1 5453
+umbrella 1 14905
+underlie 1 18747
+universe 1 9927
+uprising 1 11003
+upstairs 3 7167 4131 34021
+urbanize 2 20717 7673
+urbanise 2 20717 14704
+unanimous 1 15493
+uncertain 1 4845
+underline 2 4183 2211
+undermine 1 3477
+undertake 1 7492
+underwear 2 4183 12828
+universal 1 3710
+ultimately 1 2479
+underlying 1 3893
+underneath 3 4183 5391 10182
+understand 1 2326
+unemployed 1 5780
+uniformity 2 9379 30615
+unilateral 1 6616
+university 1 5408
+up-to-date 1 28467
+uncertainty 1 3065
+underground 1 9574
+undertaking 1 11164
+undoubtedly 1 4864
+unification 1 8865
+utilization 1 19462
+utilisation 2 25971 25876
+unemployment 1 1573
+urbanization 1 6640
+urbanisation 3 20717 4759 2962
+underestimate 1 10927
+undergraduate 1 29354
+understanding 1 2861
+unprecedented 1 3525
+underdeveloped 1 16764
+van 1 12933
+via 1 4502
+vow 1 19097
+vain 1 15288
+vary 1 8495
+vast 1 3109
+veil 1 16539
+vein 1 28479
+vent 1 25974
+verb 2 8143 4528
+very 1 1014
+vest 1 21651
+veto 1 7652
+vice 1 7458
+view 1 1575
+visa 1 12708
+void 1 16307
+volt 2 23305 2435
+vote 1 2142
+vague 1 9478
+valid 1 9676
+value 1 1514
+valve 1 28476
+vapor 3 3684 13478 4666
+venue 1 18420
+verge 1 11166
+verse 1 16769
+video 1 9575
+vigor 1 16770
+virus 1 6849
+visit 1 3869
+vital 1 3058
+vivid 1 16772
+vocal 1 13052
+vogue 2 11251 14336
+voice 1 5545
+voter 1 9018
+vacant 1 30051
+vacuum 1 8226
+vanity 2 11702 5865
+valley 1 25237
+vanish 1 19463
+vapour 3 3684 4924 610
+velvet 2 18754 17493
+vendor 1 -1234
+verbal 1 18108
+verify 1 21187
+versus 1 7062
+vessel 1 27641
+viable 1 4982
+victim 1 7745
+violin 2 5558 30667
+virgin 2 20720 22519
+virtue 1 10860
+vision 1 2700
+visual 1 24538
+volume 1 6173
+voyage 2 29389 1972
+vulgar 1 25242
+vacancy 2 18418 16863
+vaccine 1 5901
+various 1 3138
+variety 1 5024
+variant 1 13169
+vehicle 1 9017
+venture 1 7926
+verdict 1 13295
+version 1 4903
+veteran 1 18423
+vibrate 2 5558 27083
+vicious 1 7193
+victory 1 2535
+village 1 8074
+vinegar 3 3684 11299 22513
+violate 1 10110
+violent 1 3896
+virtual 1 7653
+visible 1 6378
+visitor 1 27645
+vitamin 1 18756
+volcano 2 27647 2141
+voltage 2 23305 -1234
+voucher 1 -1234
+vacation 1 16768
+validate 1 21649
+validity 1 15090
+valuable 1 5093
+variable 1 12934
+velocity 1 19466
+vertical 1 20719
+vicinity 1 29381
+vigorous 1 12066
+villager 2 25240 26224
+violence 1 1964
+virtuous 1 12067
+vitality 1 16076
+vocation 1 26774
+volatile 1 6172
+volcanic 2 27647 4889
+vaccinate 1 30052
+variation 1 15289
+vegetable 1 23868
+ventilate 2 29378 2245
+versatile 3 14235 7200 3773
+vibration 2 35070 2962
+victimize 2 31108 7673
+viewpoint 1 23304
+violation 1 9329
+violinist 2 21653 23666
+virginity 3 20720 2713 15625
+virtually 1 3846
+visionary 1 17254
+visualize 2 24537 9505
+visualise 3 24537 6323 4273
+volunteer 1 26775
+voluntary 1 7243
+vegetarian 1 25973
+vegetation 1 -1234
+victorious 1 14105
+visibility 1 23873
+vocabulary 1 26773
+vocational 1 13296
+volatility 1 4376
+volleyball 4 23305 3584 2930 10368
+voluminous 4 3684 18670 7381 4853
+vulnerable 1 2889
+vaccination 1 9675
+ventilation 2 29378 18322
+verification 1 13811
+vulnerability 1 6033
+we 1 237
+war 1 895
+wax 2 7168 4974
+way 1 678
+web 1 10047
+wed 1 21656
+wet 2 6803 2435
+who 1 315
+why 1 1007
+win 1 3054
+wit 2 3942 38
+wage 1 2981
+wait 1 5770
+wake 1 4915
+walk 1 9677
+wall 1 6575
+want 1 1530
+ward 1 10480
+ware 1 21655
+warm 1 10158
+warn 1 11499
+wary 1 8912
+wash 1 21190
+watt 2 15499 2435
+wave 1 4518
+wavy 2 7168 25243
+weak 1 2411
+wear 1 12828
+weed 1 -1234
+week 1 3273
+weep 2 6803 25632
+well 1 629
+west 1 9929
+what 1 352
+when 1 308
+whip 1 22758
+whom 1 3067
+wide 1 4026
+wife 1 7138
+wild 1 9742
+will 1 75
+wind 1 4820
+wine 1 21658
+wing 1 10218
+wink 2 12936 2860
+wipe 1 21659
+wire 1 16543
+wise 1 7139
+wish 1 5872
+with 1 52
+wolf 1 -1234
+wood 1 12173
+wool 1 -1234
+word 1 4922
+work 1 898
+worm 1 25990
+wrap 2 25992 4047
+wagon 1 34336
+waist 2 7168 6738
+waive 2 18424 5594
+waken 3 3942 6748 4031
+waste 1 5174
+watch 1 6554
+water 1 1821
+weary 1 19858
+weave 2 17255 5594
+wedge 1 17803
+weigh 1 11500
+weird 2 26780 3296
+whale 2 10343 10005
+wharf 3 10343 3922 6128
+wheat 1 14748
+wheel 1 20724
+where 1 751
+which 1 152
+while 1 441
+whirl 3 10343 5071 3803
+white 1 5074
+whole 1 2935
+whose 1 1813
+width 1 29409
+widen 1 12172
+widow 2 9216 17391
+wield 1 13959
+windy 2 12936 8562
+witty 2 15097 6552
+witch 1 -1234
+woman 1 4650
+world 1 204
+worry 1 4091
+worse 1 1930
+worst 1 3566
+worth 1 2880
+would 1 123
+wound 1 17500
+wreck 1 22214
+wrist 2 -1234 4738
+write 1 6641
+wrong 1 2329
+waggon 3 3942 4347 25681
+waiter 2 30068 2100
+waiver 1 29392
+wallet 2 31110 2435
+wander 2 3942 21358
+warmth 1 25246
+weaken 1 4854
+wealth 1 1899
+weapon 1 6850
+weekly 1 16773
+weight 1 4661
+whilst 3 10343 6100 4738
+whisky 3 10343 4759 10316
+wholly 1 12580
+wicked 1 25988
+winner 1 8969
+window 1 8628
+winery 2 12936 7838
+winter 1 9423
+wisdom 1 5267
+wither 1 29413
+within 1 1240
+wonder 1 5546
+wooden 1 -1234
+woolen 2 19861 11137
+worker 1 6716
+worthy 1 8866
+wrench 2 34344 5552
+writer 1 10481
+warfare 1 7289
+warning 1 5337
+warrant 1 14236
+warrior 1 22755
+washing 1 17497
+wealthy 1 4812
+weather 1 5392
+webcast 2 29398 6628
+website 1 14914
+wedding 1 28492
+weekday 2 31875 1851
+weekend 1 15095
+welcome 1 4656
+welfare 1 3375
+western 1 7494
+whereas 1 3242
+whereby 1 6924
+whether 1 1026
+whisper 2 28501 2100
+whistle 1 -1234
+whoever 1 13171
+widower 3 9216 23586 2100
+willing 1 2718
+without 1 839
+witness 1 9931
+woollen 3 13298 6279 11137
+wording 1 24548
+workout 2 10219 480
+worried 1 5417
+worship 1 17807
+wrestle 2 18764 3773
+wrinkle 3 22213 2066 29676
+writing 1 6989
+waitress 2 30068 -1234
+wardrobe 3 8105 13116 42
+warranty 2 32250 6552
+wasteful 1 13814
+watchful 2 15290 7478
+weakness 1 4553
+well-off 1 28496
+whatever 1 3013
+whenever 1 7117
+wherever 1 9215
+wildlife 1 16308
+wireless 1 21194
+withdraw 1 6246
+withhold 1 21195
+workshop 1 29415
+wrapping 2 25992 9102
+wreckage 1 29419
+wretched 2 23882 28416
+warehouse 2 25983 4149
+weariness 2 6803 26243
+wednesday 4 6803 2840 18667 1851
+westerner 2 28497 6867
+whichever 1 22210
+wholesale 1 12935
+wholesome 2 25250 354
+willpower 2 26785 532
+withstand 1 9930
+wonderful 1 17499
+workforce 1 5533
+worldwide 1 2392
+worthless 1 21662
+wrestling 1 -1234
+waterproof 2 22756 7309
+watertight 2 22756 7781
+well-being 1 8413
+well-known 1 10726
+whatsoever 1 20723
+widespread 1 3325
+wilderness 1 29411
+withdrawal 1 4599
+worthwhile 1 12581
+worthiness 1 30744
+whereabouts 3 26782 4265 11681
+willingness 1 4338
+x-ray 2 18113 12154
+yes 1 3897
+yet 1 745
+you 1 1252
+yard 1 19865
+yawn 2 33139 3280
+year 1 576
+yell 2 2930 11285
+yeah 2 12069 6562
+yoga 2 11501 14687
+your 1 2987
+yacht 2 25994 2435
+yearn 1 30088
+yield 1 4697
+young 1 1697
+yours 2 2930 11064
+youth 1 4525
+yearly 1 27661
+yellow 1 13965
+yoghurt 4 11501 10141 5744 2435
+yearning 1 15690
+yourself 1 13173
+youthful 1 18115
+yesterday 1 13172
+youngster 3 30407 2713 10472
+yourselves 2 2930 5830
+zip 2 15691 4047
+zoo 2 13546 2141
+zeal 1 19103
+zero 1 3567
+zone 1 5292
+zoom 2 13546 12033
+zigzag 4 3451 6131 3451 19212
+zipper 2 15691 30685
+zealous 1 29424
+zoology 2 13546 10203
+zoological 2 13546 11483

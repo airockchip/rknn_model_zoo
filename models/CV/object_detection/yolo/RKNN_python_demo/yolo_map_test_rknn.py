@@ -25,6 +25,14 @@ NMS_THRESH = 0.45
 IMG_SIZE = (640, 640)  # (width, height), such as (1280, 736)
 # IMG_SIZE = (768, 384)
 
+EX_SUPPORT_MAP = {
+    'v5': 'yolov5',
+    'v6': 'yolov6',
+    'v7': 'yolov7',
+    'v8': 'yolov8',
+    'ppyoloe': 'ppyoloe_plus',
+}
+
 CLASSES = ("person", "bicycle", "car","motorbike ","aeroplane ","bus ","train","truck ","boat","traffic light",
            "fire hydrant","stop sign ","parking meter","bench","bird","cat","dog ","horse ","sheep","cow","elephant",
            "bear","zebra ","giraffe","backpack","umbrella","handbag","tie","suitcase","frisbee","skis","snowboard","sports ball","kite",
@@ -142,12 +150,12 @@ def box_process(position, anchors, args):
         xyxy[:, 2, :, :] = box[:, 0, :, :] + box[:, 2, :, :]/ 2  # bottom right x
         xyxy[:, 3, :, :] = box[:, 1, :, :] + box[:, 3, :, :]/ 2  # bottom right y
 
-    elif args.model == 'yolov6':
+    elif args.model == 'yolov6' and position.shape[1]==4:
         box_xy  = grid +0.5 -position[:,0:2,:,:]
         box_xy2 = grid +0.5 +position[:,2:4,:,:]
         xyxy = np.concatenate((box_xy*stride, box_xy2*stride), axis=1)
 
-    elif args.model in ['yolov8', 'ppyoloe_plus']:
+    elif args.model in ['yolov6', 'yolov8', 'ppyoloe_plus']:
         position = dfl(position)
         box_xy  = grid +0.5 -position[:,0:2,:,:]
         box_xy2 = grid +0.5 +position[:,2:4,:,:]
@@ -166,10 +174,12 @@ def post_process(input_data, anchors, args):
             classes_conf.append(input_data[i][:,5:,:,:])
     elif args.model in ['yolov6', 'yolov8', 'ppyoloe_plus']:
         defualt_branch=3
+        pair_per_branch = len(input_data)//defualt_branch
+        # Python 忽略 score_sum 输出
         for i in range(defualt_branch):
-            boxes.append(box_process(input_data[2*i], None, args))
-            classes_conf.append(input_data[2*i+1])
-            scores.append(np.ones_like(input_data[2*i+1][:,:1,:,:], dtype=np.float32))
+            boxes.append(box_process(input_data[pair_per_branch*i], None, args))
+            classes_conf.append(input_data[pair_per_branch*i+1])
+            scores.append(np.ones_like(input_data[pair_per_branch*i+1][:,:1,:,:], dtype=np.float32))
 
     def sp_flatten(_in):
         ch = _in.shape[1]
@@ -234,27 +244,34 @@ def setup_model(args):
     model_path = args.model_path
     if model_path.endswith('.pt') or model_path.endswith('.torchscript'):
         platform = 'pytorch'
-        from common.framework_excuter.pytorch_excute import Torch_model_container
+        from common.framework_executor.pytorch_executor import Torch_model_container
         model = Torch_model_container(args.model_path)
     elif model_path.endswith('.rknn'):
         platform = 'rknn'
-        from common.framework_excuter.rknn_excute import RKNN_model_container 
+        from common.framework_executor.rknn_executor import RKNN_model_container 
         model = RKNN_model_container(args.model_path, args.target, args.device_id)
     elif model_path.endswith('onnx'):
         platform = 'onnx'
-        from common.framework_excuter.onnx_excute import ONNX_model_container
+        from common.framework_executor.onnx_executor import ONNX_model_container
         model = ONNX_model_container(args.model_path)
     else:
         assert False, "{} is not rknn/pytorch/onnx model".format(model_path)
     print('Model-{} is {} model, starting val'.format(model_path, platform))
     return model, platform
 
+def img_check(path):
+    img_type = ['.jpg', '.jpeg', '.png', '.bmp']
+    for _type in img_type:
+        if path.endswith(_type) or path.endswith(_type.upper()):
+            return True
+    return False
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     # basic params
     parser.add_argument('--model_path', type=str, required= True, help='model path, could be .pt or .rknn file')
     parser.add_argument('--img_show', action='store_true', default=False, help='draw the result and show')
+    parser.add_argument('--img_save', action='store_true', default=False, help='save the result')
     parser.add_argument('--target', type=str, default='rk1808', help='target RKNPU platform')
     parser.add_argument('--device_id', type=str, default=None, help='device id')
 
@@ -274,6 +291,8 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if args.model in EX_SUPPORT_MAP.keys():
+        args.model = EX_SUPPORT_MAP[args.model]
     if args.model not in SUPPORT_MODEL:
         print('ERROR: {} model type is not support.'.format(args.model))
         exit()
@@ -315,10 +334,19 @@ if __name__ == '__main__':
 
     # run test
     for i in range(len(img_list)):
+        if not img_check(img_list[i]):
+            continue
         print('finish {}/{}'.format(i+1, len(img_list)), end='\r')
 
         img_name = img_list[i]
-        img_src = cv2.imread(os.path.join(args.img_folder, img_name))
+        img_path = os.path.join(args.img_folder, img_name)
+        if not os.path.exists(img_path):
+            print("{} is not found", img_name)
+            continue
+
+        img_src = cv2.imread(img_path)
+        if img_src is None:
+            continue
 
         '''
         # using for test input dumped by C.demo
@@ -349,16 +377,20 @@ if __name__ == '__main__':
         outputs = model.run([input_data])
         boxes, classes, scores = post_process(outputs, anchors, args)
 
-        if args.img_show is True:
+        if args.img_show or args.img_save:
             print('\n\nIMG: {}'.format(img_name))
-            if args.color == 'RGB':
-                img_p = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-            else:
-                img_p = img.copy()
+            img_p = img_src.copy()
             if boxes is not None:
-                draw(img_p, boxes, scores, classes)
-            cv2.imshow("full post process result", img_p)
-            cv2.waitKeyEx(0)
+                draw(img_p, co_helper.get_real_box(boxes), scores, classes)
+
+            if args.img_save:
+                if not os.path.exists('./yolo_output'):
+                    os.mkdir('./yolo_output')
+                cv2.imwrite(os.path.join('./yolo_output', img_name), img_p)
+            
+            if args.img_show:
+                cv2.imshow("full post process result", img_p)
+                cv2.waitKeyEx(0)
 
         # record maps
         if args.coco_map_test is True:

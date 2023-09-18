@@ -40,6 +40,20 @@ class Image_preprocessor():
         _img = copy.deepcopy(self.img)
         if isinstance(target_size, list):
             target_size = tuple(target_size)
+
+        if len(target_size) == 4:
+            if target_size[0] == 1:
+                target_size = target_size[2:]
+            else:
+                raise ValueError("target_size should be (1,3,h,w) or (3,h,w), but got {}".format(target_size))
+        elif len(target_size) == 3:
+            if target_size[0] == 3:
+                target_size = target_size[1:]
+            else:
+                raise ValueError("target_size should be (3,h,w) but got {}".format(target_size))
+        elif len(target_size) != 2:
+            raise ValueError("target_size should be (h,w) or (3,h,w) or (1,3,h,w) but got {}".format(target_size))
+
         _img = cv2.resize(self.img, (target_size[1],target_size[0])) # model got hwc info, but cv2 need wh
         self.img = _img
         if self.color_type == 'GRAY':

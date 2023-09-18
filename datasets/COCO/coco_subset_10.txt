@@ -1,0 +1,10 @@
+val_test/000000000285.jpg
+val_test/000000000785.jpg
+val_test/000000001296.jpg
+val_test/000000001000.jpg
+val_test/000000000776.jpg
+val_test/000000000139.jpg
+val_test/000000000632.jpg
+val_test/000000000872.jpg
+val_test/000000000724.jpg
+val_test/000000001268.jpg

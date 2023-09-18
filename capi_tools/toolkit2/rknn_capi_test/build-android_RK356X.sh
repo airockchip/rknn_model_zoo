@@ -4,7 +4,7 @@ set -e
 
 if [ -z ${ANDROID_NDK_PATH} ]
 then
-  ANDROID_NDK_PATH=/home/lc/ndk/android-ndk-r23b
+  ANDROID_NDK_PATH=~/opt/android-ndk-r17
 fi
 
 BUILD_TYPE=Release

@@ -29,6 +29,7 @@
 #define NPY_SUPPORT 1
 #if NPY_SUPPORT
 #  include "cnpy/cnpy.h"
+#  include "transpose_utils.h"
 using namespace cnpy;
 #endif
 
@@ -87,7 +88,8 @@ static void dump_tensor_attr(rknn_tensor_attr* attr)
 }
 
 #if NPY_SUPPORT
-static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_attr, int* input_type, int* input_size)
+static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_attr, int* input_type, int* input_size,
+                               int* type_bytes)
 {
   int req_height  = 0;
   int req_width   = 0;
@@ -107,6 +109,11 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
     req_channel = input_attr->dims[1];
     break;
   case RKNN_TENSOR_UNDEFINED:
+    if (input_attr->n_dims == 4) {
+      req_channel = input_attr->dims[1];
+      req_height  = input_attr->dims[2];
+      req_width   = input_attr->dims[3];
+    }
     break;
   default:
     printf("meet unsupported layout\n");
@@ -115,8 +122,8 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
 
   NpyArray npy_data = npy_load(input_path);
 
-  int         type_bytes = npy_data.word_size;
-  std::string typeName   = npy_data.typeName;
+  *type_bytes          = npy_data.word_size;
+  std::string typeName = npy_data.typeName;
 
   printf("npy data type:%s\n", typeName.c_str());
 
@@ -130,6 +137,8 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
     *input_type = RKNN_TENSOR_FLOAT32;
   } else if (typeName == "8") {
     *input_type = RKNN_TENSOR_BOOL;
+  } else if (typeName == "int32") {
+    *input_type = RKNN_TENSOR_INT32;
   } else if (typeName == "int64") {
     *input_type = RKNN_TENSOR_INT64;
   }
@@ -158,8 +167,95 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
     return NULL;
   }
 
-  // TODO: copy
-  memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+  // // TODO: copy
+  // memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+
+  switch (input_attr->fmt) {
+  case RKNN_TENSOR_NHWC: {
+    memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+    break;
+  }
+  case RKNN_TENSOR_NCHW: {
+    int32_t perm[4] = {0, 3, 1, 2};
+    int32_t dims[4] = {(int32_t)input_attr->dims[0], req_height, req_width, req_channel};
+    int32_t order   = 4;
+    if (typeName == "int8") {
+      int8_t* src_dat = npy_data.data<int8_t>();
+      int8_t* dst_dat = (int8_t*)data;
+      TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "uint8") {
+      uint8_t* src_dat = npy_data.data<uint8_t>();
+      uint8_t* dst_dat = (uint8_t*)data;
+      TENSOR_TRANSPOSE(uint8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "float16") {
+      uint16_t* src_dat = npy_data.data<uint16_t>();
+      uint16_t* dst_dat = (uint16_t*)data;
+      TENSOR_TRANSPOSE(uint16_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "float32") {
+      float* src_dat = npy_data.data<float>();
+      float* dst_dat = (float*)data;
+      TENSOR_TRANSPOSE(float, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "8") { // bool
+      int8_t* src_dat = npy_data.data<int8_t>();
+      int8_t* dst_dat = (int8_t*)data;
+      TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "int32") {
+      int32_t* src_dat = npy_data.data<int32_t>();
+      int32_t* dst_dat = (int32_t*)data;
+      TENSOR_TRANSPOSE(int32_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "int64") {
+      int64_t* src_dat = npy_data.data<int64_t>();
+      int64_t* dst_dat = (int64_t*)data;
+      TENSOR_TRANSPOSE(int64_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    }
+    break;
+  }
+  case RKNN_TENSOR_UNDEFINED: {
+    if (input_attr->n_dims == 4) {
+      int32_t perm[4] = {0, 3, 1, 2};
+      int32_t dims[4] = {(int32_t)input_attr->dims[0], req_height, req_width, req_channel};
+      int32_t order   = 4;
+      if (typeName == "int8") {
+        int8_t* src_dat = npy_data.data<int8_t>();
+        int8_t* dst_dat = (int8_t*)data;
+        TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "uint8") {
+        uint8_t* src_dat = npy_data.data<uint8_t>();
+        uint8_t* dst_dat = (uint8_t*)data;
+        TENSOR_TRANSPOSE(uint8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "float16") {
+        uint16_t* src_dat = npy_data.data<uint16_t>();
+        uint16_t* dst_dat = (uint16_t*)data;
+        TENSOR_TRANSPOSE(uint16_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "float32") {
+        float* src_dat = npy_data.data<float>();
+        float* dst_dat = (float*)data;
+        TENSOR_TRANSPOSE(float, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "8") { // bool
+        int8_t* src_dat = npy_data.data<int8_t>();
+        int8_t* dst_dat = (int8_t*)data;
+        TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "int32") {
+        int32_t* src_dat = npy_data.data<int32_t>();
+        int32_t* dst_dat = (int32_t*)data;
+        TENSOR_TRANSPOSE(int32_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "int64") {
+        int64_t* src_dat = npy_data.data<int64_t>();
+        int64_t* dst_dat = (int64_t*)data;
+        TENSOR_TRANSPOSE(int64_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      }
+      break;
+    } else {
+      memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+    }
+
+    break;
+  }
+  default: {
+    printf("meet unsupported layout\n");
+    return NULL;
+  }
+  }
 
   *input_size = npy_data.num_bytes();
 
@@ -393,11 +489,13 @@ int main(int argc, char* argv[])
   int            input_type[io_num.n_input];
   int            input_layout[io_num.n_input];
   int            input_size[io_num.n_input];
+  int            type_bytes[io_num.n_input];
   for (int i = 0; i < io_num.n_input; i++) {
     input_data[i]   = NULL;
     input_type[i]   = RKNN_TENSOR_UINT8;
-    input_layout[i] = RKNN_TENSOR_NHWC;
+    input_layout[i] = input_attrs[i].fmt;
     input_size[i]   = input_attrs[i].size;
+    type_bytes[i]   = 1;
   }
 
   // Load input
@@ -408,7 +506,8 @@ int main(int argc, char* argv[])
     if (strstr(input_paths_split[i].c_str(), ".npy")) {
 // Load npy
 #if NPY_SUPPORT
-      input_data[i] = load_npy(input_paths_split[i].c_str(), &input_attrs[i], &input_type[i], &input_size[i]);
+      input_data[i] =
+        load_npy(input_paths_split[i].c_str(), &input_attrs[i], &input_type[i], &input_size[i], &type_bytes[i]);
 #else
       return -1;
 #endif
@@ -429,11 +528,11 @@ int main(int argc, char* argv[])
   for (int i = 0; i < io_num.n_input; i++) {
     // default input type is int8 (normalize and quantize need compute in outside)
     // if set uint8, will fuse normalize and quantize to npu
-    input_attrs[i].type = RKNN_TENSOR_UINT8;
+    input_attrs[i].type = (rknn_tensor_type)input_type[i];
     // default fmt is NHWC, npu only support NHWC in zero copy mode
-    input_attrs[i].fmt = RKNN_TENSOR_NHWC;
+    input_attrs[i].fmt = (rknn_tensor_format)input_layout[i];
 
-    input_mems[i] = rknn_create_mem(ctx, input_attrs[i].size_with_stride);
+    input_mems[i] = rknn_create_mem(ctx, input_attrs[i].size_with_stride * type_bytes[i]);
 
     // Copy input data to input tensor memory
     int width  = input_attrs[i].dims[2];
@@ -448,8 +547,8 @@ int main(int argc, char* argv[])
       uint8_t* src_ptr = input_data[i];
       uint8_t* dst_ptr = (uint8_t*)input_mems[i]->virt_addr;
       // width-channel elements
-      int src_wc_elems = width * channel;
-      int dst_wc_elems = stride * channel;
+      int src_wc_elems = width * channel * type_bytes[i];
+      int dst_wc_elems = stride * channel * type_bytes[i];
       for (int b = 0; b < input_attrs[i].dims[0]; b++) {
         for (int h = 0; h < height; ++h) {
           memcpy(dst_ptr, src_ptr, src_wc_elems);
@@ -465,7 +564,7 @@ int main(int argc, char* argv[])
   for (uint32_t i = 0; i < io_num.n_output; ++i) {
     // default output type is depend on model, this require float32 to compute top5
     // allocate float32 output tensor
-    int output_size = output_attrs[i].n_elems * sizeof(float);
+    int output_size = output_attrs[i].size * sizeof(float);
     output_mems[i]  = rknn_create_mem(ctx, output_size);
   }
 
@@ -483,9 +582,9 @@ int main(int argc, char* argv[])
   start_us = getCurrentTimeUs();
   // Set output tensor memory
   for (uint32_t i = 0; i < io_num.n_output; ++i) {
-    // default output type is depend on model
-    // output_attrs[i].type = RKNN_TENSOR_FLOAT32;
-    output_attrs[i].fmt = RKNN_TENSOR_NCHW;
+    // default output type is depend on model, this require float32 to compute top5
+    output_attrs[i].type = RKNN_TENSOR_FLOAT32;
+    output_attrs[i].fmt  = RKNN_TENSOR_NCHW;
     // set output memory and attribute
     ret = rknn_set_io_mem(ctx, output_mems[i], &output_attrs[i]);
     if (ret < 0) {

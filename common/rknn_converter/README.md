@@ -3,44 +3,60 @@
 ### 1.主要功能
 
 - 以配置yml文件的形式，方便用户将其他模型转为 RKNN 模型
-- 兼容 RKNN-Toolkit1/RKNN-Toolkit2(暂不支持rv1106,rv1103)
+- 兼容 RKNN-Toolkit1/RKNN-Toolkit2
 - 包含 模型转换、模型预编译、RKNN模型与原模型结果比对、记录 rknn api 耗时、生成测试结果记录。
 
 
 
 ### 2.推荐使用方法
 
-以 https://github.com/rockchip-linux/rknn-toolkit/tree/master/examples/onnx/yolov5 、linux 系统为例
+如果不熟悉 vscode/ pycharm 等代码编辑器的调试功能，可以参考以下方式在命令行中使用 rknn_converter 工具
+
+1. 执行 rknn_model_zoo/common/rknn_converter/regist_rkcvt.sh, 获取注册代码, 会显示类似以下字段
+
+   ```
+   Please execute the following command to set environment variables:
+   export RKCVT=/home/xz/Documents/rknn_model_zoo/common/rknn_converter/rknn_convert.py
+   
+   Optional:
+   export RKCVT_INIT=/home/xz/Documents/rknn_model_zoo/common/rknn_converter/config_init.py
+   Example config: 
+   /home/xz/Documents/rknn_model_zoo/common/rknn_converter/example_model/shufflenet_config.yml
+   ```
+
+2. 执行 `export RKCVT={path}/rknn_convert.py` 语句将 rknn_converter.py 定义为环境变量以便后续使用
+
+3. 利用上述的 测试 RKCVT 功能各项功能，并在当前目录下生成测试报告 report.yml
+
+   ```
+   python $RKCVT --yml_path {Example config path} --eval_all --target_platform {platform name} --report --generate_random_input
+   ```
+
+4. 如需生成基础配置文件，参考以下方式生成
 
 ```
-cd rknn-toolkit/examples/onnx/yolov5
-
-(regist_rkcvt.sh文件手动拖入cmd窗口即可，获取准确的文件路径)
-{path}/regist_rkcvt.sh
-
+export RKCVT_INIT={path}/config_init.py
 (python $RKCVT_INIT	--help 可看到输入选项，这里以onnx模型、rv1126平台，u8量化为例)
 python $RKCVT_INIT onnx rv1126 u8
-
-vi model_config.yml
-(修改 model_file_path 指向模型路径)
-(根据模型修改输入 shape/mean/std/color_type)
-
-python $RKCVT --yml_path model_config.yml --eval_perf --eval_memory --python_api_test --capi_test --capi_zero_copy_test --report
 ```
 
 
 
-执行参数说明
+### 3.rknn_converter执行参数说明
 
-| 参数名                | 作用                                                         |
-| --------------------- | ------------------------------------------------------------ |
-| --yml_path(必填)      | 指定yml配置文件路径                                          |
-| --eval_perf           | 评估性能(基于rknn.eval_perf)                                 |
-| --eval_memory         | 评估内存(基于rknn.eval_memory)                               |
-| --python_api_test     | 测试 rknn-toolkit.run 与 framework.run 结果的余弦值          |
-| --capi_test           | 设定 CPU/DDR/NPU 频率，测试 capi 与 framework.run结果余弦值，记录 input_set, run, output_get 耗时 |
-| --capi_zero_copy_test | 设定 CPU/DDR/NPU 频率，测试 capi 与 framework.run结果余弦值，记录耗时（目前可能有bug） |
-| --report              | 生成报告                                                     |
+| 参数名                  | 作用                                                         |
+| ----------------------- | ------------------------------------------------------------ |
+| --yml_path(必填)        | 指定yml配置文件路径                                          |
+| --eval_perf             | 评估性能(基于rknn.eval_perf)                                 |
+| --eval_memory           | 评估内存(基于rknn.eval_memory)                               |
+| --python_api_test       | 测试 rknn-toolkit.run 与 framework.run 结果的余弦值          |
+| --capi_test             | 测试 capi 与 framework.run结果余弦值，记录 input_set, run, output_get 耗时 |
+| --capi_zero_copy_test   | 测试 capi 与 framework.run结果余弦值，记录耗时（目前可能有bug） |
+| --eval_all              | 测试所有测试项目                                             |
+|                         |                                                              |
+| --target_platform       | 指定平台，不设置时会以 yml 文件中的指定平台为主              |
+| --generate_random_input | 生成随机输入，方便在缺失输入数据的时候进行测试               |
+| --report                | 生成报告                                                     |
 
 
 

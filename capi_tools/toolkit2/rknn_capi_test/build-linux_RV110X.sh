@@ -2,7 +2,7 @@ set -e
 
 TARGET_SOC="rv110x"
 
-export TOOL_CHAIN="/home/xz/Documents/git_rk/compile_tools/1106/arm-rockchip830-linux-uclibcgnueabihf"
+TOOL_CHAIN=~/opt/arm-rockchip830-linux-uclibcgnueabihf
 GCC_COMPILER=${TOOL_CHAIN}/bin/arm-rockchip830-linux-uclibcgnueabihf
 
 export LD_LIBRARY_PATH=${TOOL_CHAIN}/lib:$LD_LIBRARY_PATH

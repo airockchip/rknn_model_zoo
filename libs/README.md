@@ -4,21 +4,21 @@ libs 文件夹存放 C demo 编译时依赖的库，目前分为以下子文件�
 
 
 
-## common
+## ./common
 
 存放无需区分使用平台的依赖库
 
 
 
-## platform
+## ./platform
 
 存放需区分使用平台的依赖库
 
 
 
-## rklibs
+## ./rklibs
 
-存放 Rockchip 维护的依赖库，编译任意 C demo 前需执行以下指令进行初始化
+存放 Rockchip 维护的依赖库，编译 C demo 前，请根据使用的NPU平台，执行以下指令进行初始化
 
 ```
 cd rklibs

@@ -23,6 +23,11 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+// #if (TARGET_SOC==RK3399PRO)
+#include <pthread.h>
+// #endif
+
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #define STB_IMAGE_RESIZE_IMPLEMENTATION

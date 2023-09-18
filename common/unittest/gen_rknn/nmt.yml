@@ -1,0 +1,42 @@
+hyper_config:
+    NPU_V1_0: &NPU_V1_0 ['RK3399PRO', 'RK1808']
+    NPU_V1_1: &NPU_V1_1 ['RV1109', 'RV1126']
+    NPU_1_ALL: &NPU_1_ALL
+      - *NPU_V1_0
+      - *NPU_V1_1
+
+    NPU_V2_0: &NPU_V2_0 ['RK3566', 'RK3568']
+    NPU_V2_1: &NPU_V2_1 ['RK3588']
+    NPU_V2_2: &NPU_V2_2 ['RV1106', 'RV1103']
+    NPU_V2_3: &NPU_V2_3 ['RK3562']
+    NPU_2_ALL: &NPU_2_ALL
+      - *NPU_V2_0
+      - *NPU_V2_1
+      - *NPU_V2_2
+      - *NPU_V2_3
+
+    NPU_ALL:  &NPU_ALL
+      - *NPU_1_ALL
+      - *NPU_2_ALL
+
+    NPU_ALL_EXCEPT_RV1106:  &NPU_ALL_EXCEPT_RV1106
+      - *NPU_1_ALL
+      - *NPU_V2_0
+      - *NPU_V2_1
+      - *NPU_V2_3
+
+    WEIGHT_ZOOM_PATH: &WEIGHT_ZOOM_PATH "/home/xz/Documents/gitlab_model_zoo/weight_zoom/models/NLP/NMT/lite-transformer/deploy_models/nvc15"
+
+
+mmt_encoder:
+    exec_path: *WEIGHT_ZOOM_PATH
+    yml_path: "./model_config_encoder.yml"
+    model: ["./model_file/lite-transformer-encoder-16.onnx"]
+    platform: *NPU_ALL_EXCEPT_RV1106
+
+
+mmt_decoder:
+    exec_path: *WEIGHT_ZOOM_PATH
+    yml_path: "./model_config_decoder.yml"
+    model: ["./model_file/lite-transformer-decoder-16.onnx"]
+    platform: *NPU_ALL_EXCEPT_RV1106

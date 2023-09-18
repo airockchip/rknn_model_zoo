@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
@@ -28,16 +29,42 @@
 
 #define NPY_SUPPORT 1
 #if NPY_SUPPORT
-#include "cnpy.h"
+#include "cnpy/cnpy.h"
+#include "transpose_utils.h"
 using namespace cnpy;
 #endif
 
 #define LOAD_FROM_PATH
 
-
 /*-------------------------------------------
                   Functions
 -------------------------------------------*/
+
+static void physical_memory_used_by_process(size_t result[]){
+  FILE* file   = fopen("/proc/self/status", "r");
+  char  line[128];
+  while (fgets(line, 128, file) != nullptr) {
+  if (strncmp(line, "VmPeak:", 6) == 0) {
+    int len = strlen(line);
+    const char* p = line;
+    for (; std::isdigit(*p) == false; ++p) {
+    }
+    line[len - 3] = 0; //去除kB
+    result[0]        = atoi(p);
+  }
+  if (strncmp(line, "VmRSS:", 5) == 0) {
+    int len = strlen(line);
+    const char* p = line;
+    for (; std::isdigit(*p) == false; ++p) {
+    }
+    line[len - 3] = 0; //去除kB
+    result[1]        = atoi(p);
+    break;
+  }
+}
+fclose(file);
+}
+
 static inline int64_t getCurrentTimeUs()
 {
   struct timeval tv;
@@ -108,6 +135,11 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
     req_channel = input_attr->dims[1];
     break;
   case RKNN_TENSOR_UNDEFINED:
+    if (input_attr->n_dims == 4) {
+      req_channel = input_attr->dims[1];
+      req_height  = input_attr->dims[2];
+      req_width   = input_attr->dims[3];
+    }
     break;
   default:
     printf("meet unsupported layout\n");
@@ -131,6 +163,8 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
     *input_type = RKNN_TENSOR_FLOAT32;
   } else if (typeName == "8") {
     *input_type = RKNN_TENSOR_BOOL;
+  } else if (typeName == "int32") {
+    *input_type = RKNN_TENSOR_INT32;
   } else if (typeName == "int64") {
     *input_type = RKNN_TENSOR_INT64;
   }
@@ -159,8 +193,95 @@ static unsigned char* load_npy(const char* input_path, rknn_tensor_attr* input_a
     return NULL;
   }
 
-  // TODO: copy
-  memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+  // // TODO: copy
+  // memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+
+  switch (input_attr->fmt) {
+  case RKNN_TENSOR_NHWC: {
+    memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+    break;
+  }
+  case RKNN_TENSOR_NCHW: {
+    int32_t perm[4] = {0, 3, 1, 2};
+    int32_t dims[4] = {(int32_t)input_attr->dims[0], req_height, req_width, req_channel};
+    int32_t order   = 4;
+    if (typeName == "int8") {
+      int8_t* src_dat = npy_data.data<int8_t>();
+      int8_t* dst_dat = (int8_t*)data;
+      TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "uint8") {
+      uint8_t* src_dat = npy_data.data<uint8_t>();
+      uint8_t* dst_dat = (uint8_t*)data;
+      TENSOR_TRANSPOSE(uint8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "float16") {
+      uint16_t* src_dat = npy_data.data<uint16_t>();
+      uint16_t* dst_dat = (uint16_t*)data;
+      TENSOR_TRANSPOSE(uint16_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "float32") {
+      float* src_dat = npy_data.data<float>();
+      float* dst_dat = (float*)data;
+      TENSOR_TRANSPOSE(float, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "8") { // bool
+      int8_t* src_dat = npy_data.data<int8_t>();
+      int8_t* dst_dat = (int8_t*)data;
+      TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "int32") {
+      int32_t* src_dat = npy_data.data<int32_t>();
+      int32_t* dst_dat = (int32_t*)data;
+      TENSOR_TRANSPOSE(int32_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    } else if (typeName == "int64") {
+      int64_t* src_dat = npy_data.data<int64_t>();
+      int64_t* dst_dat = (int64_t*)data;
+      TENSOR_TRANSPOSE(int64_t, int32_t, dst_dat, src_dat, perm, dims, order);
+    }
+    break;
+  }
+  case RKNN_TENSOR_UNDEFINED: {
+    if (input_attr->n_dims == 4) {
+      int32_t perm[4] = {0, 3, 1, 2};
+      int32_t dims[4] = {(int32_t)input_attr->dims[0], req_height, req_width, req_channel};
+      int32_t order   = 4;
+      if (typeName == "int8") {
+        int8_t* src_dat = npy_data.data<int8_t>();
+        int8_t* dst_dat = (int8_t*)data;
+        TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "uint8") {
+        uint8_t* src_dat = npy_data.data<uint8_t>();
+        uint8_t* dst_dat = (uint8_t*)data;
+        TENSOR_TRANSPOSE(uint8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "float16") {
+        uint16_t* src_dat = npy_data.data<uint16_t>();
+        uint16_t* dst_dat = (uint16_t*)data;
+        TENSOR_TRANSPOSE(uint16_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "float32") {
+        float* src_dat = npy_data.data<float>();
+        float* dst_dat = (float*)data;
+        TENSOR_TRANSPOSE(float, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "8") { // bool
+        int8_t* src_dat = npy_data.data<int8_t>();
+        int8_t* dst_dat = (int8_t*)data;
+        TENSOR_TRANSPOSE(int8_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "int32") {
+        int32_t* src_dat = npy_data.data<int32_t>();
+        int32_t* dst_dat = (int32_t*)data;
+        TENSOR_TRANSPOSE(int32_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      } else if (typeName == "int64") {
+        int64_t* src_dat = npy_data.data<int64_t>();
+        int64_t* dst_dat = (int64_t*)data;
+        TENSOR_TRANSPOSE(int64_t, int32_t, dst_dat, src_dat, perm, dims, order);
+      }
+      break;
+    } else {
+      memcpy(data, npy_data.data<unsigned char>(), npy_data.num_bytes());
+    }
+
+    break;
+  }
+  default: {
+    printf("meet unsupported layout\n");
+    return NULL;
+  }
+  }
 
   *input_size = npy_data.num_bytes();
 
@@ -334,10 +455,17 @@ int main(int argc, char* argv[])
   rknn_context ctx = 0;
   double model_init_time = 0;
   start_us  = getCurrentTimeUs();
+  size_t mem_result[2];
+  physical_memory_used_by_process(mem_result);
+  printf("Before model init VmPeak used by process: %ld\n", mem_result[0]);
+  printf("Before model init VmRSS used by process: %ld\n", mem_result[1]);
+
   // Load RKNN Model
+  uint32_t flag = 0;
+  // flag          = flag | RKNN_FLAG_EXECUTE_FALLBACK_PRIOR_DEVICE_GPU;
 #ifdef LOAD_FROM_PATH
   // Init rknn from model path
-  int ret = rknn_init(&ctx, model_path, 0, 0, NULL);
+  int ret = rknn_init(&ctx, model_path, 0, flag, NULL);
 #else
   // Init rknn from model data
   size_t model_size;
@@ -354,6 +482,11 @@ int main(int argc, char* argv[])
     return -1;
   }
   model_init_time = (getCurrentTimeUs() - start_us)/1000;
+  printf("model init time: %.2f ms\n", model_init_time);
+
+  physical_memory_used_by_process(mem_result);
+  printf("After model init VmPeak used by process: %ld\n", mem_result[0]);
+  printf("After model init VmRSS used by process: %ld\n", mem_result[1]);
 
   // Get sdk and driver version
   rknn_sdk_version sdk_ver;
@@ -371,7 +504,7 @@ int main(int argc, char* argv[])
     printf("rknn_query fail! ret=%d\n", ret);
     return -1;
   }
-  printf("total weight size: %d, total internal size: %d\n", mem_size.total_weight_size, mem_size.total_internal_size);
+  printf("total weight size: %u, total internal size: %u\n", mem_size.total_weight_size, mem_size.total_internal_size);
   printf("total dma used size: %zu\n", (size_t)mem_size.total_dma_allocated_size);
 
   // Get Model Input Output Info
@@ -426,20 +559,15 @@ int main(int argc, char* argv[])
   int            input_size[io_num.n_input];
   for (int i = 0; i < io_num.n_input; i++) {
     input_data[i]   = NULL;
-    if (input_attrs[i].type==RKNN_TENSOR_BOOL){
-      input_type[i]   = RKNN_TENSOR_BOOL;
-      input_size[i]   = input_attrs[i].n_elems * sizeof(bool);
-    }
-    else{
-      input_type[i]   = RKNN_TENSOR_UINT8;
-      input_size[i]   = input_attrs[i].n_elems * sizeof(uint8_t);
-    }
-    input_layout[i] = RKNN_TENSOR_NHWC;
+    input_type[i]   = RKNN_TENSOR_UINT8;
+    input_layout[i] = input_attrs[i].fmt;
+    input_size[i]   = input_attrs[i].n_elems * sizeof(uint8_t);
   }
 
   if (input_paths_split.size() > 0) {
     // Load input
     if (io_num.n_input != input_paths_split.size()) {
+      printf("input missing!, need input number: %d\n", io_num.n_input);
       return -1;
     }
     for (int i = 0; i < io_num.n_input; i++) {
@@ -476,7 +604,52 @@ int main(int argc, char* argv[])
     inputs[i].size         = input_size[i];
   }
 
+  // Set input
+  start_us  = getCurrentTimeUs();
+  ret = rknn_inputs_set(ctx, io_num.n_input, inputs);
+  if (ret < 0) {
+    printf("rknn_input_set fail! ret=%d\n", ret);
+    return -1;
+  }
+  double input_set_time = (getCurrentTimeUs() - start_us)/1000;
+
   rknn_set_core_mask(ctx, (rknn_core_mask)core_mask);
+
+  // Run
+  printf("Begin perf ...\n");
+  double total_time = 0;
+  for (int i = 0; i < loop_count; ++i) {
+    start_us  = getCurrentTimeUs();
+    ret               = rknn_run(ctx, NULL);
+    elapse_us = getCurrentTimeUs() - start_us;
+    if (ret < 0) {
+      printf("rknn run error %d\n", ret);
+      return -1;
+    }
+    total_time += elapse_us / 1000.f;
+    printf("%4d: Elapse Time = %.2fms, FPS = %.2f\n", i, elapse_us / 1000.f, 1000.f * 1000.f / elapse_us);
+  }
+  printf("Avg elapse Time = %.3fms\n", total_time / loop_count);
+  printf("Avg FPS = %.3f\n", loop_count * 1000.f / total_time);
+  double inference_time = total_time / loop_count;
+
+  // Get perf detail
+  rknn_perf_detail perf_detail;
+  ret = rknn_query(ctx, RKNN_QUERY_PERF_DETAIL, &perf_detail, sizeof(perf_detail));
+  if (ret != RKNN_SUCC) {
+    printf("rknn_query fail! ret=%d\n", ret);
+    return -1;
+  }
+  printf("rknn run perf detail is:\n%s", perf_detail.perf_data);
+
+  // Get run duration time
+  rknn_perf_run perf_run;
+  ret = rknn_query(ctx, RKNN_QUERY_PERF_RUN, &perf_run, sizeof(perf_run));
+  if (ret != RKNN_SUCC) {
+    printf("rknn_query fail! ret=%d\n", ret);
+    return -1;
+  }
+  printf("rknn run perf time is %ldus\n", perf_run.run_duration);
 
   // Get output
   rknn_output outputs[io_num.n_output];
@@ -487,71 +660,15 @@ int main(int argc, char* argv[])
     outputs[i].is_prealloc = 0;
   }
 
-  // Run
-  printf("Begin perf ...\n");
-  printf("Loop count %d\n", loop_count);
-  double input_set_time = 0;
-  double inference_time = 0;
-  double output_get_time= 0;
-
-  for (int i = 0; i < loop_count; ++i) {
-    // Set input
-    start_us  = getCurrentTimeUs();
-    ret = rknn_inputs_set(ctx, io_num.n_input, inputs);
-    if (ret < 0) {
-      printf("rknn_input_set fail! ret=%d\n", ret);
-      return -1;
-    }
-    elapse_us = getCurrentTimeUs() - start_us;
-    input_set_time += elapse_us / 1000.f;
-
-    start_us  = getCurrentTimeUs();
-    ret               = rknn_run(ctx, NULL);
-    elapse_us = getCurrentTimeUs() - start_us;
-    if (ret < 0) {
-      printf("rknn run error %d\n", ret);
-      return -1;
-    }
-    inference_time += elapse_us / 1000.f;
-
-    start_us  = getCurrentTimeUs();
-    ret = rknn_outputs_get(ctx, io_num.n_output, outputs, NULL);
-    if (ret < 0) {
-      printf("rknn_outputs_get fail! ret=%d\n", ret);
-      return ret;
-    }
-    elapse_us = getCurrentTimeUs() - start_us;
-    output_get_time += elapse_us / 1000.f;
-
+  start_us  = getCurrentTimeUs();
+  ret = rknn_outputs_get(ctx, io_num.n_output, outputs, NULL);
+  if (ret < 0) {
+    printf("rknn_outputs_get fail! ret=%d\n", ret);
+    return ret;
   }
-  input_set_time = input_set_time / loop_count;
-  inference_time = inference_time / loop_count;
-  output_get_time = output_get_time/loop_count;
+  double output_get_time = (getCurrentTimeUs() - start_us)/1000;
 
-  printf("Avg input set time  = %.3f\n", input_set_time);
-  printf("Avg rknn run time   = %.3f\n", inference_time);
-  printf("Avg output get time = %.3f\n", output_get_time);
-  
-  // // Get perf detail
-  // rknn_perf_detail perf_detail;
-  // ret = rknn_query(ctx, RKNN_QUERY_PERF_DETAIL, &perf_detail, sizeof(perf_detail));
-  // if (ret != RKNN_SUCC) {
-  //   printf("rknn_query fail! ret=%d\n", ret);
-  //   return -1;
-  // }
-  // printf("rknn run perf detail is:\n%s", perf_detail.perf_data);
-
-  // // Get run duration time
-  // rknn_perf_run perf_run;
-  // ret = rknn_query(ctx, RKNN_QUERY_PERF_RUN, &perf_run, sizeof(perf_run));
-  // if (ret != RKNN_SUCC) {
-  //   printf("rknn_query fail! ret=%d\n", ret);
-  //   return -1;
-  // }
-  // printf("rknn run perf time is %ldus\n", perf_run.run_duration);
-
-
-#  if NPY_SUPPORT
+#if NPY_SUPPORT
   // save output
   for (uint32_t i = 0; i < io_num.n_output; i++) {
     char output_path[PATH_MAX];

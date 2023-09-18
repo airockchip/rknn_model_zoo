@@ -1,0 +1,90 @@
+hyper_config:
+    NPU_V1_0: &NPU_V1_0 ['RK3399PRO', 'RK1808']
+    NPU_V1_1: &NPU_V1_1 ['RV1109', 'RV1126']
+    NPU_1_ALL: &NPU_1_ALL
+      - *NPU_V1_0
+      - *NPU_V1_1
+
+    NPU_V2_0: &NPU_V2_0 ['RK3566', 'RK3568']
+    NPU_V2_1: &NPU_V2_1 ['RK3588']
+    NPU_V2_2: &NPU_V2_2 ['RV1106', 'RV1103']
+    NPU_V2_3: &NPU_V2_3 ['RK3562']
+    NPU_2_ALL: &NPU_2_ALL
+      - *NPU_V2_0
+      - *NPU_V2_1
+      - *NPU_V2_2
+      - *NPU_V2_3
+
+    NPU_ALL:  &NPU_ALL
+      - *NPU_1_ALL
+      - *NPU_2_ALL
+
+    WEIGHT_ZOOM_PATH: &WEIGHT_ZOOM_PATH "/home/xz/Documents/gitlab_model_zoo/weight_zoom/models/CV/object_detection/yolo/"
+
+    CAPI_TEST: &CAPI_TEST
+      remote_dir: /data/rknn_yolo_demo
+      cmd_0: ['rknn_yolo_demo', 'v6', 'q8', 'RKNN', 'model/bus.jpg']
+
+yolov6:
+    exec_path: !str_join
+      - *WEIGHT_ZOOM_PATH
+      - "yolov6/deploy_models"
+    yml_path: "./yolo_ppyolo.yml"
+    model:
+        - "yolov6n.onnx"
+        - "yolov6s.onnx"
+        - "yolov6m.onnx"
+    platform: *NPU_ALL
+
+    capi_test:
+      normal_capi:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo', 'v6', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+      zero_copy:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo_zero_copy', 'v6', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+
+
+yolov8:
+    exec_path: !str_join
+      - *WEIGHT_ZOOM_PATH
+      - "yolov8/deploy_models"
+    yml_path: "./yolo_ppyolo.yml"
+    model:
+        - "yolov8n_rknnopt.torchscript"
+        - "yolov8s_rknnopt.torchscript"
+        - "yolov8m_rknnopt.torchscript"
+    platform: *NPU_ALL
+
+    capi_test:
+      normal_capi:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo', 'v8', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+      zero_copy:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo_zero_copy', 'v8', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+
+
+ppyoloe:
+    exec_path: !str_join
+      - *WEIGHT_ZOOM_PATH
+      - "ppyoloe/deploy_models"
+    yml_path: "./yolo_ppyolo.yml"
+    model:
+        - "ppyoloe_s_ext_sum.onnx"
+        - "ppyoloe_m_ext_sum.onnx"
+    platform: *NPU_ALL
+
+    capi_test:
+      normal_capi:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo', 'ppyoloe_plus', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']
+      zero_copy:
+        remote_dir: /data/rknn_yolo_demo
+        cmd: ['./rknn_yolo_demo_zero_copy', 'ppyoloe_plus', 'q8', 'RKNN', 'model/bus.jpg']
+        save_file: ['out.bmp']

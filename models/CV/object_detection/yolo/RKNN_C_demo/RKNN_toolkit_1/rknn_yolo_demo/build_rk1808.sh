@@ -2,7 +2,14 @@
 
 set -e
 
-RK1808_TOOL_CHAIN="/home/xz/Documents/git_rk/compile_tools/1808/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu"
+if [ -z $RK1808_TOOL_CHAIN ]; then
+  echo "Please set the RK1808_TOOL_CHAIN environment variable!"
+  echo "example:"
+  echo "  export RK1808_TOOL_CHAIN=<path-to-your-dir/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu>"
+  exit
+fi
+
+# RK1808_TOOL_CHAIN="/home/xz/Documents/git_rk/compile_tools/1808/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu"
 
 # for rk1808 aarch64
 GCC_COMPILER=${RK1808_TOOL_CHAIN}/bin/aarch64-linux-gnu

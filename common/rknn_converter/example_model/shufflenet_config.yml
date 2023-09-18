@@ -1,0 +1,9 @@
+RK_device_platform: RK3566
+model_framework: onnx
+model_file_path: ./shufflenet-v2.onnx
+quantize: True
+dataset: ./dataset.txt
+
+graph:
+  in_0:
+    shape: 1,3,224,224

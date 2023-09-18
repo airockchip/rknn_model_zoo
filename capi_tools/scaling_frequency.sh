@@ -2,20 +2,6 @@
 chip_name=0
 freq_set_status=0
 
-# order
-# rk1808 0
-# rk3399pro 1
-# rv1109 2
-# rv1126 3
-# rk3566 4
-# rk3568 5
-# rk3588 6
-
-### rv1103/rv1106 do not have bash command, not support now
-# rv1103 7
-# rv1106 8
-
-
 usage()
 {
     echo "USAGE: ./fixed_frequency.sh -c {chip_name} [-h]"
@@ -76,23 +62,28 @@ if [ $chip_name == 'rv1126' ]; then
     seting_strategy=1
     CPU_freq=1512000
     NPU_freq=934000000
-    DDR_freq=934000000
+    DDR_freq=924000000
 elif [ $chip_name == 'rv1109' ]; then
     seting_strategy=1
     CPU_freq=1512000
     NPU_freq=594000000
-    DDR_freq=934000000
+    DDR_freq=924000000
 elif [ $chip_name == 'rk1808' ]; then
     seting_strategy=1
     # CPU_freq=1512000
     CPU_freq=1200000
     NPU_freq=792000000
-    DDR_freq=934000000
+    DDR_freq=924000000
 elif [ $chip_name == 'rk3399pro' ]; then
     seting_strategy=2
     CPU_freq=1512000
     NPU_freq=792000000
     DDR_freq=934000000
+elif [ $chip_name == 'rk3562' ]; then
+    seting_strategy=6
+    CPU_freq=2016000
+    NPU_freq=1000000000
+    DDR_freq=1560000000
 elif [ $chip_name == 'rk3566' ]; then
     seting_strategy=3
     CPU_freq=1800000
@@ -105,18 +96,18 @@ elif [ $chip_name == 'rk3568' ]; then
     DDR_freq=1560000000
 elif [ $chip_name == 'rk3588' ]; then
     seting_strategy=4
-    CPU_freq=2400000
+    CPU_freq=2256000
     NPU_freq=1000000000
     DDR_freq=2112000000
 elif [ $chip_name == 'rv1106' ]; then
     seting_strategy=5
     CPU_freq=1608000
-    NPU_freq=420000000
+    NPU_freq=500000000
     DDR_freq=924000000
 elif [ $chip_name == 'rv1103' ]; then
     seting_strategy=5
     CPU_freq=1608000
-    NPU_freq=420000000
+    NPU_freq=500000000
     DDR_freq=924000000
 else 
     echo "$chip_name not recognize"
@@ -126,6 +117,7 @@ fi
 
 
 echo "Try seting frequency for "${chip_name}
+echo "    Setting strategy as $seting_strategy"
 echo "    NPU seting to "$NPU_freq
 echo "    CPU seting to "$CPU_freq
 echo "    DDR seting to "$DDR_freq
@@ -151,13 +143,18 @@ case $seting_strategy in
         print_and_compare_result $NPU_freq $cur_freq
 
         echo "DDR: seting frequency"
-        print_not_support_adjust DDR $DDR_freq
-        cat /sys/kernel/debug/clk/clk_summary | grep dpll
+        if [ $chip_name == 'rk1808' ]; then
+            cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep pll_dpll | awk '{split($0,a," "); print a[4]}')
+        else
+            cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep pll_dpll | awk '{split($0,a," "); print a[5]}')
+        fi
+        cur_freq="`expr $cur_freq \* 2`"
+        print_not_support_adjust DDR $DDR_freq $cur_freq
         ;;
 
     # for rk3399pro
     2)
-        echo "seting strategy not implement now"
+        echo "seting strategy not implement for rk3399pro now"
         ;;
 
     # for rk3566, rk3568
@@ -186,9 +183,11 @@ case $seting_strategy in
         echo "CPU: seting frequency"
         echo "  Core0"
         echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
-        echo $CPU_freq > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+        # echo $CPU_freq > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+        echo 1800000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
         cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq)
-        print_and_compare_result $CPU_freq $cur_freq
+        # print_and_compare_result $CPU_freq $cur_freq
+        print_and_compare_result 1800000 $cur_freq
 
         echo "  Core4"
         echo userspace > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
@@ -209,6 +208,10 @@ case $seting_strategy in
             echo $NPU_freq > /sys/class/devfreq/fdab0000.npu/userspace/set_freq 
             cur_freq=$(cat /sys/class/devfreq/fdab0000.npu/cur_freq)
             print_and_compare_result $NPU_freq $cur_freq
+        elif [ -e /sys/class/devfreq/devfreq0/governor ];then
+            echo performance > /sys/class/devfreq/devfreq0/governor 
+            cur_freq=$(cat /sys/class/devfreq/devfreq0/cur_freq)
+            print_and_compare_result $NPU_freq $cur_freq   
         else
             cur_freq=$(cat /sys/kernel/debug/clk/scmi_clk_npu/clk_rate)
             print_not_support_adjust NPU $NPU_freq $cur_freq
@@ -236,7 +239,9 @@ case $seting_strategy in
         print_and_compare_result $CPU_freq $cur_freq
 
         echo "NPU: seting frequency"
-        echo "  no strategy to seting DDR frequency"
+        # echo "  no strategy to seting DDR frequency"
+        # echo $NPU_freq > /sys/kernel/debug/clk/aclk_npu_root/clk_rate
+        echo $NPU_freq > /sys/kernel/debug/clk/clk_500m_src/clk_rate
         cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep aclk_npu_root | awk '{split($0,a," "); print a[5]}')
         print_and_compare_result $NPU_freq $cur_freq
 
@@ -246,6 +251,33 @@ case $seting_strategy in
         cur_freq="`expr $cur_freq \* 2`"
         print_and_compare_result $DDR_freq $cur_freq
         ;;
+
+    # rk3562
+    6)
+        echo "CPU: seting frequency"
+        echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+        echo $CPU_freq > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+        cur_freq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq)
+        print_and_compare_result $CPU_freq $cur_freq
+
+        echo "NPU: seting frequency"
+        echo userspace > /sys/devices/platform/ff300000.npu/devfreq/ff300000.npu/governor
+        echo $NPU_freq > /sys/devices/platform/ff300000.npu/devfreq/ff300000.npu/userspace/set_freq
+        cur_freq=$(cat /sys/class/devfreq/ff300000.npu/cur_freq)
+        print_and_compare_result $NPU_freq $cur_freq
+
+        echo "DDR: seting frequency"
+        if [ -e /sys/class/devfreq/dmc/governor ];then
+            echo userspace > /sys/class/devfreq/dmc/governor
+            echo $DDR_freq > /sys/class/devfreq/dmc/userspace/set_freq
+            cur_freq=$(cat /sys/class/devfreq/dmc/cur_freq)
+            print_and_compare_result $DDR_freq $cur_freq
+        else
+            cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep scmi_clk_ddr | awk '{split($0,a," "); print a[5]}')
+            print_not_support_adjust DDR $DDR_freq $cur_freq
+        fi
+        ;;
+
     *)
         echo "seting strategy not implement now"
         ;;

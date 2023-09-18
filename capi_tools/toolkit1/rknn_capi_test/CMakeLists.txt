@@ -6,19 +6,25 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # for linux
-if (CMAKE_C_COMPILER MATCHES "aarch64")
-  set(LIB_ARCH lib64)
-  add_definitions(-DRK1808=1)
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  if (CMAKE_C_COMPILER MATCHES "aarch64")
+    set(LIB_ARCH lib64)
+    add_definitions(-DRK1808=1)
+  else()
+    set(LIB_ARCH lib)
+    add_definitions(-DRK1808=0)
+  endif()
+  set(PTHREAD pthread)
 else()
-  set(LIB_ARCH lib)
-  add_definitions(-DRK1808=0)
-endif()
-
-# for android
-if (${TARGET_SOC} STREQUAL "RK3399PRO")
   set(LIB_ARCH lib64)
   add_definitions(-DRK1808=1)
+  set(PTHREAD "")
 endif()
+# for android
+# if (${TARGET_SOC} STREQUAL "RK3399PRO")
+#   set(LIB_ARCH lib64)
+#   add_definitions(-DRK1808=1)
+# endif()
 
 
 # stb
@@ -72,6 +78,7 @@ if (${ZERO_COPY})
 			# ${LIBPNG_LIB}
 			${ZLIB_LIB}
 			dl
+			${PTHREAD}
 	)
 else()
 	message("Build rknn_capi_test")
@@ -88,6 +95,7 @@ else()
 			# ${LIBPNG_LIB}
 			${ZLIB_LIB}
 			dl
+			${PTHREAD}
 	)
 endif()
 

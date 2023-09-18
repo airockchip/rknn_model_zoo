@@ -27,7 +27,7 @@ cmake .. \
     -DMZ_ROOT=${MZ_ROOT} \
     -DTARGET_SOC=RK3399PRO \
     -DCMAKE_SYSTEM_NAME=Linux \
-    -DZERO_COPY=0 \
+    -DZERO_COPY=0
 make -j4
 make install
 

@@ -3,9 +3,10 @@
 
 #include <stdint.h>
 #include "rknn_api.h"
-#include "rga_func.h"
+#include "rknn_demo_utils.h"
+// #include "rga_func.h"
 
-#define OBJ_NAME_MAX_SIZE 16
+#define OBJ_NAME_MAX_SIZE 64
 #define OBJ_NUMB_MAX_SIZE 200
 #define OBJ_CLASS_NUM     80
 #define PROP_BOX_SIZE     (5+OBJ_CLASS_NUM)
@@ -14,15 +15,19 @@
 
 typedef enum
 {
+    MODEL_TYPE_ERROR = -1,
     YOLOX = 0,
     YOLOV5,
-    YOLOV7
+    YOLOV6,
+    YOLOV7,
+    YOLOV8,
+    PPYOLOE_PLUS
 } MODEL_TYPE;
-
+MODEL_TYPE string_to_model_type(char* model_type_str);
 
 typedef enum
 {
-    U8 = 0,
+    Q8 = 0,
     FP = 1,
 } POST_PROCESS_TYPE;
 
@@ -32,43 +37,24 @@ typedef enum
     MULTI_IMG
 } INPUT_SOURCE;
 
-
-typedef struct _MODEL_INFO{
+typedef struct _YOLO_INFO{
     MODEL_TYPE m_type;
     POST_PROCESS_TYPE post_type;
+    char* in_path;
     INPUT_SOURCE in_source;
-
-    char* m_path = nullptr;
-    char* in_path = nullptr;
 
     int channel;
     int height; 
     int width;
-    RgaSURF_FORMAT color_expect;
 
     int anchors[18];
     int anchor_per_branch;
+    int strides[3];
 
-    int in_nodes;
-    rknn_tensor_attr* in_attr = nullptr;
+    int dfl_len;
+    bool score_sum_available;
+} YOLO_INFO;
 
-    int out_nodes = 3;
-    rknn_tensor_attr* out_attr = nullptr;
-
-    int strides[3] = {8,16,32};
-
-} MODEL_INFO;
-
-typedef struct _LETTER_BOX{
-    int in_width, in_height;
-    int target_width, target_height;
-
-    float img_wh_ratio, target_wh_ratio, resize_scale;
-    int resize_width, resize_height;
-    int h_pad, w_pad;
-    bool add_extra_sz_h_pad = false;
-    bool add_extra_sz_w_pad = false;
-} LETTER_BOX;
 
 
 typedef struct _BOX_RECT
@@ -94,13 +80,14 @@ typedef struct _detect_result_group_t
     detect_result_t results[OBJ_NUMB_MAX_SIZE];
 } detect_result_group_t;
 
-
 int readLines(const char *fileName, char *lines[], int max_line);
 
-int compute_letter_box(LETTER_BOX* lb);
-
-int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_result_group_t* group);
+// int post_process(rknn_output* rk_outputs, MODEL_INFO* m, LETTER_BOX* lb, detect_result_group_t* group);
+int post_process(void** rk_outputs, MODEL_INFO* m, YOLO_INFO* y, detect_result_group_t* group);
 
 int readFloats(const char *fileName, float *result, int max_line, int* valid_number);
+
+double __get_us(struct timeval t);
+
 
 #endif //_RKNN_ZERO_COPY_DEMO_POSTPROCESS_H_

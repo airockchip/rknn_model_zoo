@@ -25,10 +25,7 @@ class numpy_preprocessor():
         self.data = self.data.astype(np.float32)
 
     def check_and_reshape(self, _shape):
-        if len(_shape) == 3:
-            # chw -> hwc
-            _shape = [_shape[1], _shape[2], _shape[0]]
-        self.data = self.data.reshape(1,*_shape)
+        pass
 
     def get_input(self, framework, rknn_passthrough=False):
         def rknn_type():
@@ -36,14 +33,12 @@ class numpy_preprocessor():
             if output.dtype != np.float32:
                 print('force data from {} to float32'.format(output.dtype))
                 output = output.astype(np.float32)
-            return output 
+            if len(output.shape) == 4:
+                output = output.transpose(0, 2, 3, 1)   # nchw -> nhwc
+            return output
         
         def pytorch_type():
-            if len(self.data.shape)==4:
-                output = self.data.transpose(0, 3, 1, 2)
-            else:
-                output = self.data
-            return output
+            return self.data
         
         def tf_type():
             output = self.data.reshape(1,*self.data.shape)

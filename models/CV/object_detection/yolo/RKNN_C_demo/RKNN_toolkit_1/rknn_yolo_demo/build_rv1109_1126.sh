@@ -2,7 +2,14 @@
 
 set -e
 
-RV1109_TOOL_CHAIN="/home/xz/Documents/git_rk/compile_tools/1109/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf"
+if [ -z $RV1109_TOOL_CHAIN ]; then
+  echo "Please set the RV1109_TOOL_CHAIN environment variable!"
+  echo "example:"
+  echo "  export RV1109_TOOL_CHAIN=<path-to-your-dir/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf>"
+  exit
+fi
+
+# RV1109_TOOL_CHAIN="/home/xz/Documents/git_rk/compile_tools/1109/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf"
 
 
 # for rv1109/rv1126 armhf
