@@ -296,6 +296,11 @@ if __name__ == '__main__':
     if args.model not in SUPPORT_MODEL:
         print('ERROR: {} model type is not support.'.format(args.model))
         exit()
+    if args.coco_map_test:
+        print(' \n Warning!!!!!!!!!!!!!!!!!Test coco,be careful that OBJ_THRESH would be set to 0.001 ,img_show and img_save would be disabled \n')
+        OBJ_THRESH = 0.001
+        args.img_show = False
+        args.img_save = False
 
     # seting defualt hyperparam
     if args.model == 'yolox':

@@ -33,8 +33,8 @@ def coco_eval_with_json(anno_json, pred_json):
     print('map  --> ', map)
     print('map50--> ', map50)
     print('map75--> ', eval.stats[2])
-    print('map85--> ', eval.stats[-2])
-    print('map95--> ', eval.stats[-1])
+    # print('map85--> ', eval.stats[-2])
+    # print('map95--> ', eval.stats[-1])
 
 class COCO_test_helper():
     def __init__(self, enable_letter_box = False) -> None:
