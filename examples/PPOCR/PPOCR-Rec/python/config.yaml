@@ -1,0 +1,7 @@
+mean:
+std:
+model_path: ./model/ch_PP-OCRv4_rec_infer/ppocrv4_rec.onnx
+outputs_nodes:
+do_quantization: False
+dataset:
+output_folder: "./model/ch_PP-OCRv4_rec_infer"

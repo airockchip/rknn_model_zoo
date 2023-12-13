@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(rknn_model_zoo_3rdparty_libs)
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+    set (TARGET_LIB_ARCH ${CMAKE_ANDROID_ARCH_ABI})
+else()
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set (TARGET_LIB_ARCH aarch64)
+    else()
+        set (TARGET_LIB_ARCH armhf)
+    endif()
+    if (CMAKE_C_COMPILER MATCHES "uclibc")
+        set (TARGET_LIB_ARCH ${TARGET_LIB_ARCH}_uclibc)
+    endif()
+endif()
+
+# stb image
+set(STB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/stb_image)
+set(STB_INCLUDES ${STB_PATH} PARENT_SCOPE)
+
+# jpeg turbo
+set(JPEG_PATH ${CMAKE_CURRENT_SOURCE_DIR}/jpeg_turbo)
+set(LIBJPEG ${JPEG_PATH}/${CMAKE_SYSTEM_NAME}/${TARGET_LIB_ARCH}/libturbojpeg.a PARENT_SCOPE)
+set(LIBJPEG_INCLUDES ${JPEG_PATH}/include PARENT_SCOPE)
+
+# rknn runtime
+if (TARGET_SOC STREQUAL "rk3588" OR TARGET_SOC STREQUAL "rk356x" OR TARGET_SOC STREQUAL "rv1106" OR TARGET_SOC STREQUAL "rv1103")
+    set(RKNN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/rknpu2)
+    if (TARGET_SOC STREQUAL "rk3588" OR TARGET_SOC STREQUAL "rk356x")
+        set(LIBRKNNRT ${RKNN_PATH}/${CMAKE_SYSTEM_NAME}/${TARGET_LIB_ARCH}/librknnrt.so)
+    endif()
+    if (TARGET_SOC STREQUAL "rv1106" OR TARGET_SOC STREQUAL "rv1103")
+        set(LIBRKNNRT ${RKNN_PATH}/${CMAKE_SYSTEM_NAME}/armhf-uclibc/librknnmrt.so)
+    endif()
+    set(LIBRKNNRT_INCLUDES ${RKNN_PATH}/include PARENT_SCOPE)
+endif()
+install(PROGRAMS ${LIBRKNNRT} DESTINATION lib)
+set(LIBRKNNRT ${LIBRKNNRT} PARENT_SCOPE)
+
+# rga
+set(RGA_PATH ${CMAKE_CURRENT_SOURCE_DIR}/librga)
+set(LIBRGA ${RGA_PATH}/${CMAKE_SYSTEM_NAME}/${TARGET_LIB_ARCH}/librga.a PARENT_SCOPE)
+set(LIBRGA_INCLUDES ${RGA_PATH}/include PARENT_SCOPE)
+install(PROGRAMS ${RGA_PATH}/${CMAKE_SYSTEM_NAME}/${TARGET_LIB_ARCH}/librga.so DESTINATION lib)
+
+

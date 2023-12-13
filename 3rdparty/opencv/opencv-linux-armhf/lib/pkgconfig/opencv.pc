@@ -1,0 +1,14 @@
+# Package Information for pkg-config
+
+prefix=/data/chifred/git/UtilsLib/opencv/armhf_install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir_old=${prefix}/include/opencv
+includedir_new=${prefix}/include
+
+Name: OpenCV
+Description: Open Source Computer Vision Library
+Version: 3.4.5
+Libs: -L${exec_prefix}/lib -lopencv_calib3d -lopencv_features2d -lopencv_imgcodecs -lopencv_video -lopencv_imgproc -lopencv_core
+Libs.private: -L${exec_prefix}/share/OpenCV/3rdparty/lib -lzlib -llibjpeg-turbo -llibwebp -llibpng -llibtiff -llibjasper -lIlmImf -ltegra_hal -ldl -lm -lpthread -lrt
+Cflags: -I${includedir_old} -I${includedir_new}

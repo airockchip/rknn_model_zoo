@@ -1,1 +1,0 @@
-model_file/encoder_fake_input/encoder_input.npy model_file/encoder_fake_input/encoder_padding_mask.npy
