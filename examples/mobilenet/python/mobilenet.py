@@ -47,7 +47,7 @@ def check_and_download_origin_model():
     global start_time
     if not os.path.exists(MODEL_PATH):
         print('--> Download {}'.format(MODEL_PATH))
-        url = 'https://ftrg.zbox.filez.com/v2/delivery/data/ec1c6f44f8c24155875ac5bce7aa6b3c/examples/MobileNet/mobilenetv2-12.onnx'
+        url = 'https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/MobileNet/mobilenetv2-12.onnx'
         download_file = MODEL_PATH
         try:
             start_time = time.time()
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     parser.add_argument('--dtype', type=str, default='i8', help='dtype of model, i8/fp32')
     args = parser.parse_args()
 
-    # Download model if not exist (from https://ftrg.zbox.filez.com/v2/delivery/data/ec1c6f44f8c24155875ac5bce7aa6b3c/examples/MobileNet/mobilenetv2-12.onnx)
+    # Download model if not exist (from https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/MobileNet/mobilenetv2-12.onnx)
     check_and_download_origin_model()
 
     # Create RKNN object
