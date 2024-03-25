@@ -76,6 +76,8 @@ int main(int argc, char** argv)
     dma_sync_cpu_to_device(rknn_app_ctx.img_dma_buf.dma_buf_fd);
     free(src_image.virt_addr);
     src_image.virt_addr = (unsigned char *)rknn_app_ctx.img_dma_buf.dma_buf_virt_addr;
+    src_image.fd = rknn_app_ctx.img_dma_buf.dma_buf_fd;
+    rknn_app_ctx.img_dma_buf.size = src_image.size;
 #endif
     
     int topk = 5;

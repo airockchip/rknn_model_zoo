@@ -9,17 +9,17 @@
 #include "file_utils.h"
 #include "image_utils.h"
 
-// 定义颜色的类型
+// Define the type of color
 using Color = std::tuple<int, int, int>;
 
-// 定义一个结构体，表示表的一行
+//Define a structure to represent a row of the table
 struct Entry {
     int id;
     const char* name;
     Color color;
 };
 
-// 定义一个全局的表
+//Define a global table
 Entry cityscapes_label[] = {
     {0, "road", Color(128, 64, 128)},
     {1, "sidewalk", Color(244, 35, 232)},
@@ -177,10 +177,6 @@ int init_ppseg_model(const char* model_path, rknn_app_context_t* app_ctx)
 
 int release_ppseg_model(rknn_app_context_t* app_ctx)
 {
-    if (app_ctx->rknn_ctx != 0) {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL) {
         free(app_ctx->input_attrs);
         app_ctx->input_attrs = NULL;
@@ -188,6 +184,10 @@ int release_ppseg_model(rknn_app_context_t* app_ctx)
     if (app_ctx->output_attrs != NULL) {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0) {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }
@@ -255,7 +255,7 @@ int inference_ppseg_model(rknn_app_context_t* app_ctx, image_buffer_t* src_img, 
     }
 
     // Post Process
-    // outputs -> 逐像素取top1 -> 分配颜色
+    // outputs -> take top1 pixel by pixel -> assign color
     ret = draw_segment_image((float* )outputs[0].buf, result_img);
     // Remeber to release rknn output
     rknn_outputs_release(app_ctx->rknn_ctx, 1, outputs);

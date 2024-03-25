@@ -119,7 +119,7 @@ namespace gpu_postprocess
                                 std::string src_name, float *src_img_ptr, std::string res_name, unsigned char *res, 
                                 const int srcHeight, const int srcWidth,
                                 const int dstHeight, const int dstWidth, const int dstChannel, 
-                                const float scale_h_inv, const float scale_w_inv, const int img_arr_size) {
+                                const float scale_h_inv, const float scale_w_inv, const int src_stride) {
         if (workspace_->kernel_maps.find(kernel_name) == workspace_->kernel_maps.end())
         {
             LOGE("kernel: '%s' kernel not found\n", kernel_name.c_str());
@@ -150,7 +150,7 @@ namespace gpu_postprocess
         OPENCL_CALL(clSetKernelArg(kernel, arg_idx++, sizeof(int), &dstChannel));
         OPENCL_CALL(clSetKernelArg(kernel, arg_idx++, sizeof(float), &scale_h_inv));
         OPENCL_CALL(clSetKernelArg(kernel, arg_idx++, sizeof(float), &scale_w_inv));
-        OPENCL_CALL(clSetKernelArg(kernel, arg_idx++, sizeof(int), &img_arr_size));
+        OPENCL_CALL(clSetKernelArg(kernel, arg_idx++, sizeof(int), &src_stride));
 
 
         // LOGI("dst_height = %d, dst_width = %d, dstChannel = %d, srcHeight = %d, srcWidth = %d, scale_h_inv = %f, scale_w_inv = %f, wf->global_ws_len_ = %d,  wf->global_ws_[0] = %d,  wf->global_ws_[1] = %d\n",

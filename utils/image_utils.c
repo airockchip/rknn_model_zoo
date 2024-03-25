@@ -434,7 +434,7 @@ static int convert_image_cpu(image_buffer_t *src, image_buffer_t *dst, image_rec
             src_box_x, src_box_y, src_box_w, src_box_h,
             dst->virt_addr, dst->width, dst->height,
             dst_box_x, dst_box_y, dst_box_w, dst_box_h);
-    } else if (src->format == IMAGE_FORMAT_YUV420SP_NV12 || src->format == IMAGE_FORMAT_YUV420SP_NV12) {
+    } else if (src->format == IMAGE_FORMAT_YUV420SP_NV12 || src->format == IMAGE_FORMAT_YUV420SP_NV21) {
         reti = crop_and_scale_image_yuv420sp(src->virt_addr, src->width, src->height,
             src_box_x, src_box_y, src_box_w, src_box_h,
             dst->virt_addr, dst->width, dst->height,

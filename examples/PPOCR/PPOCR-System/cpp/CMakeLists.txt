@@ -37,13 +37,20 @@ message(STATUS OpenCV_LIBS=${OpenCV_LIBS})
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(ppocr_system_file rknpu1/ppocr_system.cc)
+else()
+    set(ppocr_system_file rknpu2/ppocr_system.cc)
+endif()
+
+
 file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
 add_executable(${PROJECT_NAME}
     main.cc
     postprocess.cc
     clipper.cc
-    rknpu2/ppocr_system.cc
+    ${ppocr_system_file}
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -71,7 +78,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION .)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/test1.jpg DESTINATION model)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/test.jpg DESTINATION model)
 set(file_path ${CMAKE_CURRENT_SOURCE_DIR}/../../PPOCR-Det/model/ppocrv4_det.rknn)
 if (EXISTS ${file_path})
     install(FILES ${file_path} DESTINATION model)

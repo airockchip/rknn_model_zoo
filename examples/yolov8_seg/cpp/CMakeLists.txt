@@ -43,19 +43,38 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/allocator/dma)
 #drm
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/allocator/drm)
 
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(postprocess_file rknpu1/postprocess.cc)
+    set(yolov8_seg_file rknpu1/yolov8_seg.cc)
+    #matmul
+else()
+    set(postprocess_file rknpu2/postprocess.cc)
+    set(yolov8_seg_file rknpu2/yolov8_seg.cc)
+endif()
+
 add_executable(${PROJECT_NAME}
     main.cc
-    postprocess.cc
-    rknpu2/yolov8_seg.cc
+    ${postprocess_file}
+    ${yolov8_seg_file}
 )
 
-target_link_libraries(${PROJECT_NAME}
-    fileutils
-    imageutils
-    imagedrawing
-    ${OpenCV_LIBS}    
-    ${LIBRKNNRT}
-)
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+  target_link_libraries(${PROJECT_NAME}
+      fileutils
+      imageutils
+      imagedrawing
+      ${OpenCV_LIBS}    
+      ${LIBRKNNRT}
+  )
+else()
+  target_link_libraries(${PROJECT_NAME}
+      fileutils
+      imageutils
+      imagedrawing
+      ${OpenCV_LIBS}    
+      ${LIBRKNNRT}
+  )
+endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")
     target_link_libraries(${PROJECT_NAME}

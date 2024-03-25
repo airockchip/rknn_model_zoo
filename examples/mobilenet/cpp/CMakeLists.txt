@@ -9,12 +9,15 @@ if (ENABLE_ASAN)
 	set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 endif ()
 
-set(rknpu2_mobilenet_file rknpu2/mobilenet.cc)
+set(mobilenet_file rknpu2/mobilenet.cc)
 if (TARGET_SOC STREQUAL "rv1106" OR TARGET_SOC STREQUAL "rv1103")
-    set(rknpu2_mobilenet_file rknpu2/mobilenet_rv1106_1103.cc)
+    set(mobilenet_file rknpu2/mobilenet_rv1106_1103.cc)
     add_definitions(-DRV1106_1103)
     #dma
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/allocator/dma)
+endif()
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(mobilenet_file rknpu1/mobilenet.cc)
 endif()
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ 3rdparty.out)
@@ -26,14 +29,14 @@ file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
 add_executable(${PROJECT_NAME}
     main.cc
-    ${rknpu2_mobilenet_file}
+    ${mobilenet_file}
 )
 
 target_link_libraries(${PROJECT_NAME}
     fileutils
     imageutils
-    imagedrawing
     ${LIBRKNNRT}
+    dl
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")

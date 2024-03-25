@@ -21,13 +21,13 @@ typedef struct {
     int index;
 } element_t;
 
-void swap(element_t *a, element_t *b) {
+static void swap(element_t *a, element_t *b) {
     element_t temp = *a;
     *a = *b;
     *b = temp;
 }
 
-int partition(element_t arr[], int low, int high) {
+static int partition(element_t arr[], int low, int high) {
     float pivot = arr[high].value;
     int i = low - 1;
 
@@ -42,7 +42,7 @@ int partition(element_t arr[], int low, int high) {
     return (i + 1);
 }
 
-void quick_sort(element_t arr[], int low, int high) {
+static void quick_sort(element_t arr[], int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
         quick_sort(arr, low, pi - 1);
@@ -50,7 +50,7 @@ void quick_sort(element_t arr[], int low, int high) {
     }
 }
 
-void softmax(float *array, int size) {
+static void softmax(float *array, int size) {
     // Find the maximum value in the array
     float max_val = array[0];
     for (int i = 1; i < size; i++) {
@@ -77,19 +77,19 @@ void softmax(float *array, int size) {
     }
 }
 
-void get_topk_with_indices(float arr[], int size, int k, mobilenet_result *result) {
+static void get_topk_with_indices(float arr[], int size, int k, mobilenet_result *result) {
 
-    // 创建元素数组，保存值和索引号
+    // Create an array of elements, saving values ​​and index numbers
     element_t *elements = (element_t *)malloc(size * sizeof(element_t));
     for (int i = 0; i < size; i++) {
         elements[i].value = arr[i];
         elements[i].index = i;
     }
 
-    // 对元素数组进行快速排序
+    // Quick sort an array of elements
     quick_sort(elements, 0, size - 1);
 
-    // 获取前K个最大值和它们的索引号
+    // Get the top K maximum values ​​and their index numbers
     for (int i = 0; i < k; i++) {
         result[i].score = elements[i].value;
         result[i].cls = elements[i].index;
@@ -98,9 +98,10 @@ void get_topk_with_indices(float arr[], int size, int k, mobilenet_result *resul
     free(elements);
 }
 
-// 量化模型的npu输出结果为int8数据类型，后处理要按照int8数据类型处理
-// 如下提供了int8排布的NC1HWC2转换成float的nchw转换代码
-int NC1HWC2_int8_to_NCHW_float(const int8_t *src, float *dst, int *dims, int channel, int h, int w, int zp, float scale) {
+// The npu output result of the quantization model is of int8 data type,
+// and the post-processing must be processed according to the int8 data type.
+// The following provides the nchw conversion code for converting NC1HWC2 arranged in int8 into float.
+static int NC1HWC2_int8_to_NCHW_float(const int8_t *src, float *dst, int *dims, int channel, int h, int w, int zp, float scale) {
     int batch = dims[0];
     int C1 = dims[1];
     int C2 = dims[4];
@@ -224,10 +225,6 @@ int init_mobilenet_model(const char *model_path, rknn_app_context_t *app_ctx) {
 }
 
 int release_mobilenet_model(rknn_app_context_t *app_ctx) {
-    if (app_ctx->rknn_ctx != 0) {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL) {
         free(app_ctx->input_attrs);
         app_ctx->input_attrs = NULL;
@@ -239,14 +236,16 @@ int release_mobilenet_model(rknn_app_context_t *app_ctx) {
     for (int i = 0; i < app_ctx->io_num.n_input; i++) {
         if (app_ctx->input_mems[i] != NULL) {
             rknn_destroy_mem(app_ctx->rknn_ctx, app_ctx->input_mems[i]);
-            free(app_ctx->input_mems[i]);
         }
     }
     for (int i = 0; i < app_ctx->io_num.n_output; i++) {
         if (app_ctx->output_mems[i] != NULL) {
             rknn_destroy_mem(app_ctx->rknn_ctx, app_ctx->output_mems[i]);
-            free(app_ctx->output_mems[i]);
         }
+    }
+    if (app_ctx->rknn_ctx != 0) {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }
@@ -261,8 +260,8 @@ int inference_mobilenet_model(rknn_app_context_t *app_ctx, image_buffer_t *src_i
     img.height = app_ctx->model_height;
     img.format = IMAGE_FORMAT_RGB888;
     img.size = get_image_size(&img);
-    img.virt_addr = (unsigned char *)app_ctx->input_mems[0]->virt_addr;
-    if (img.virt_addr == NULL) {
+    img.fd = app_ctx->input_mems[0]->fd;
+    if (img.virt_addr == NULL && img.fd == 0) {
         printf("malloc buffer size:%d fail!\n", img.size);
         return -1;
     }

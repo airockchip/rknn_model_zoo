@@ -29,7 +29,7 @@ https://github.com/airockchip/yolov7
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
 
 
 
@@ -46,6 +46,18 @@ cd model
 ./download_model.sh
 ```
 
+**Note**: The model provided here is an optimized model, which is different from the official original model. Take yolov7-tiny.onnx as an example to show the difference between them.
+1. The comparison of their output information is as follows. The left is the official original model, and the right is the optimized model. The three colored boxes in the figure represent the changes of the three outputs.
+
+<div align=center>
+  <img src="./model_comparison/yolov7_output_comparison.jpg" alt="Image">
+</div>
+
+2. Taking the output change [1,3,20,20,85]->[1,255,20,20] as an example, we remove the subgraphs behind the convolution node in the model (the framed part in the figure), and keep the output of the convolution ([1,255,20,20]).
+
+<div align=center>
+  <img src="./model_comparison/yolov7_graph_comparison.jpg" alt="Image">
+</div>
 
 
 ## 4. Convert to RKNN
@@ -65,7 +77,7 @@ python convert.py ../model/yolov7-tiny.onnx rk3588
 
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `i8`.
+- `<dtype>(optional)`: Specify as `i8`, `u8` or `fp`. `i8`/`u8` for doing quantization, `fp` for no quantization. Default is `i8`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yolov7.rknn`
 
 
@@ -93,29 +105,12 @@ python yolov7.py --model_path <rknn_model> --target <TARGET_PLATFORM> --img_show
 
 ## 6. Android Demo
 
+**Note: RK1808, RV1109, RV1126 does not support Android.**
+
 #### 6.1 Compile and Build
 
-*Usage:*
-
-```sh
-# go back to the rknn_model_zoo root directory
-cd ../../
-export ANDROID_NDK_PATH=<android_ndk_path>
-
-./build-android.sh -t <TARGET_PLATFORM> -a <ARCH> -d yolov7
-
-# such as 
-./build-android.sh -t rk3588 -a arm64-v8a -d yolov7
-```
-
-*Description:*
-- `<android_ndk_path>`: Specify Android NDK path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
-	```shell
-	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
-	adb shell cat /proc/version
-	```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `yolov7`.**
 
 #### 6.2 Push demo files to device
 
@@ -151,31 +146,8 @@ export LD_LIBRARY_PATH=./lib
 
 #### 7.1 Compile and Build
 
-*Usage:*
-
-```shell
-# go back to the rknn_model_zoo root directory
-cd ../../
-
-# if GCC_COMPILER not found while building, please set GCC_COMPILER path
-(optional)export GCC_COMPILER=<GCC_COMPILER_PATH>
-
-./build-linux.sh -t <TARGET_PLATFORM> -a <ARCH> -d yolov7
-
-# such as 
-./build-linux.sh -t rk3588 -a aarch64 -d yolov7
-```
-
-*Description:*
-
-- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
-- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
-  
-  ```shell
-  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
-  adb shell cat /proc/version
-  ```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `yolov7`.**
 
 #### 7.2 Push demo files to device
 

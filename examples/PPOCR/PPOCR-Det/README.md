@@ -1,5 +1,9 @@
 # PPOCR-Det
 
+## Current Support Platform
+
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+
 
 ## Download ONNX model
 
@@ -37,8 +41,8 @@ python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588 according to board SOC version.
-- <dtype\> is *optional*, could be specified as `i8` or `fp`, `i8` means to do quantization, `fp` means no to do quantization, default is `i8`.
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
+- <dtype\> is *optional*, could be specified as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`/`u8`.
 - <output_rknn_path> is **optional**, used to specify the saving path of the RKNN model, default save path is `../model/ppocrv4_det.rknn`
 
 *Attention:*
@@ -48,32 +52,29 @@ python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_
 - Our experiment show mmse can bring +0.7%@precision / +1.7%recall / +1.2%@hmean improvement compared to normal quantized_algorithm.
 
 
-## Script Usage
+## Python Demo
 
-Install libs:
+*Usage:*
 
-```bash
-pip install -r python/requirements.txt
+```shell
+cd python
+
+# Inference with ONNX model
+python ppocr_det.py --model_path <onnx_model>
+# such as: python ppocr_det.py --model_path ../model/ppocrv4_det.onnx 
+
+# Inference with RKNN model
+python ppocr_det.py --model_path <rknn_model> --target <TARGET_PLATFORM>
+# such as: python ppocr_det.py --model_path ../model/ppocrv4_det.rknn --target rk3588
 ```
+*Description:*
+- <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
 
-For ONNX:
+- <onnx_model / rknn_model>: specified as the model path.
 
-```bash
-python python/ppocr_det.py \
-    --image_dir model/test.jpg \
-    --det_model_dir model/ppocrv4_det.onnx \
-    --use_gpu false --use_onnx true
-```
-
-For RKNN:
-```bash
-python python/ppocr_det.py \
-    --image_dir model/test.jpg \
-    --det_model_dir model/ppocrv4_det.rknn \
-    --use_gpu false --use_rknn true --platform rk3568 --det_image_shape 480 480
-```
 
 ## Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 

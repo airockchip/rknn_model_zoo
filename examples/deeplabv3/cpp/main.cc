@@ -56,9 +56,7 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    deeplabv3_result results{};
-
-    ret = inference_deeplabv3_model(&rknn_app_ctx, &src_image, &results);
+    ret = inference_deeplabv3_model(&rknn_app_ctx, &src_image);
     if (ret != 0) {
         printf("init_deeplabv3_model fail! ret=%d\n", ret);
         goto out;
@@ -66,7 +64,6 @@ int main(int argc, char** argv)
 
     //show image
     write_image("out.png", &src_image);
-
 
 out:
     ret = release_deeplabv3_model(&rknn_app_ctx);

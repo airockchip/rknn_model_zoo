@@ -138,11 +138,6 @@ int init_yolov7_model(const char *model_path, rknn_app_context_t *app_ctx)
 
 int release_yolov7_model(rknn_app_context_t *app_ctx)
 {
-    if (app_ctx->rknn_ctx != 0)
-    {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL)
     {
         free(app_ctx->input_attrs);
@@ -152,6 +147,11 @@ int release_yolov7_model(rknn_app_context_t *app_ctx)
     {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0)
+    {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }

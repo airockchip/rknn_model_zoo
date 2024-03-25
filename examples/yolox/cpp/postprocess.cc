@@ -194,7 +194,73 @@ static int8_t qnt_f32_to_affine(float f32, int32_t zp, float scale)
     return res;
 }
 
+static uint8_t qnt_f32_to_affine_u8(float f32, int32_t zp, float scale)
+{
+    float dst_val = (f32 / scale) + zp;
+    uint8_t res = (uint8_t)__clip(dst_val, 0, 255);
+    return res;
+}
+
 static float deqnt_affine_to_f32(int8_t qnt, int32_t zp, float scale) { return ((float)qnt - (float)zp) * scale; }
+
+static float deqnt_affine_u8_to_f32(uint8_t qnt, int32_t zp, float scale) { return ((float)qnt - (float)zp) * scale; }
+
+static int process_u8(uint8_t *input, int grid_h, int grid_w, int height, int width, int stride,
+                      std::vector<float> &boxes, std::vector<float> &objProbs, std::vector<int> &classId, float threshold,
+                      int32_t zp, float scale)
+{
+    int validCount = 0;
+    int grid_len = grid_h * grid_w;
+    uint8_t thres_u8 = qnt_f32_to_affine_u8(threshold, zp, scale);
+
+    for (int i = 0; i < grid_h; ++i)
+    {
+        for (int j = 0; j < grid_w; ++j)
+        {
+            uint8_t box_confidence = input[4 * grid_len + i * grid_w + j];
+            if (box_confidence >= thres_u8)
+            {
+                int offset = i * grid_w + j;
+                uint8_t *in_ptr = input + offset;
+
+                uint8_t maxClassProbs = in_ptr[5 * grid_len];
+                int maxClassId = 0;
+                for (int k = 1; k < OBJ_CLASS_NUM; ++k)
+                {
+                    uint8_t prob = in_ptr[(5 + k) * grid_len];
+                    if (prob > maxClassProbs)
+                    {
+                        maxClassId = k;
+                        maxClassProbs = prob;
+                    }
+                }
+
+                if (maxClassProbs > thres_u8)
+                {
+                    float box_x = (deqnt_affine_u8_to_f32(*in_ptr, zp, scale));
+                    float box_y = (deqnt_affine_u8_to_f32(in_ptr[grid_len], zp, scale));
+                    float box_w = (deqnt_affine_u8_to_f32(in_ptr[2 * grid_len], zp, scale));
+                    float box_h = (deqnt_affine_u8_to_f32(in_ptr[3 * grid_len], zp, scale));
+                    box_x = (box_x + j) * (float)stride;
+                    box_y = (box_y + i) * (float)stride;
+                    box_w = exp(box_w) * stride;
+                    box_h = exp(box_h) * stride;
+                    box_x -= (box_w / 2.0);
+                    box_y -= (box_h / 2.0);
+
+                    objProbs.push_back((deqnt_affine_u8_to_f32(maxClassProbs, zp, scale)) * (deqnt_affine_u8_to_f32(box_confidence, zp, scale)));
+                    classId.push_back(maxClassId);
+                    validCount++;
+                    boxes.push_back(box_x);
+                    boxes.push_back(box_y);
+                    boxes.push_back(box_w);
+                    boxes.push_back(box_h);
+                }
+            }
+        }
+    }
+    return validCount;
+}
 
 static int process_i8(int8_t *input, int grid_h, int grid_w, int height, int width, int stride,
                       std::vector<float> &boxes, std::vector<float> &objProbs, std::vector<int> &classId, float threshold,
@@ -229,6 +295,60 @@ static int process_i8(int8_t *input, int grid_h, int grid_w, int height, int wid
                     float box_y = (deqnt_affine_to_f32(in_ptr[grid_len], zp, scale));
                     float box_w = (deqnt_affine_to_f32(in_ptr[2 * grid_len], zp, scale));
                     float box_h = (deqnt_affine_to_f32(in_ptr[3 * grid_len], zp, scale));
+                    box_x = (box_x + j) * (float)stride;
+                    box_y = (box_y + i) * (float)stride;
+                    box_w = exp(box_w) * stride;
+                    box_h = exp(box_h) * stride;
+                    box_x -= (box_w / 2.0);
+                    box_y -= (box_h / 2.0);
+
+                    objProbs.push_back((deqnt_affine_to_f32(maxClassProbs, zp, scale)) * (deqnt_affine_to_f32(box_confidence, zp, scale)));
+                    classId.push_back(maxClassId);
+                    validCount++;
+                    boxes.push_back(box_x);
+                    boxes.push_back(box_y);
+                    boxes.push_back(box_w);
+                    boxes.push_back(box_h);
+                }
+            }
+        }
+    }
+    return validCount;
+}
+
+static int process_i8_rv1106(int8_t *input, int grid_h, int grid_w, int height, int width, int stride,
+                      std::vector<float> &boxes, std::vector<float> &objProbs, std::vector<int> &classId, float threshold,
+                      int32_t zp, float scale)
+{
+    int validCount = 0;
+    int grid_len = grid_h * grid_w;
+    int8_t thres_i8 = qnt_f32_to_affine(threshold, zp, scale);
+
+    for (int i = 0; i < grid_h; ++i) {
+        for (int j = 0; j < grid_w; ++j) {
+            int8_t box_confidence = input[4 + (i * grid_w + j) * PROP_BOX_SIZE];
+            if (box_confidence >= thres_i8) {
+                int offset = (i * grid_w + j)*PROP_BOX_SIZE;
+                int8_t *in_ptr = input + offset;
+
+                int8_t maxClassProbs = input[5 + (i * grid_w + j) * PROP_BOX_SIZE];
+                int maxClassId = 0;
+                for (int k = 1; k < OBJ_CLASS_NUM; ++k)
+                {
+                    int8_t prob = input[(5 + k) + (i * grid_w + j) * PROP_BOX_SIZE];
+                    if (prob > maxClassProbs)
+                    {
+                        maxClassId = k;
+                        maxClassProbs = prob;
+                    }
+                }
+
+                if (maxClassProbs > thres_i8)
+                {
+                    float box_x = (deqnt_affine_to_f32(*in_ptr, zp, scale));
+                    float box_y = (deqnt_affine_to_f32(in_ptr[1], zp, scale));
+                    float box_w = (deqnt_affine_to_f32(in_ptr[2], zp, scale));
+                    float box_h = (deqnt_affine_to_f32(in_ptr[3], zp, scale));
                     box_x = (box_x + j) * (float)stride;
                     box_y = (box_y + i) * (float)stride;
                     box_w = exp(box_w) * stride;
@@ -303,8 +423,13 @@ static int process_fp32(float *input, int grid_h, int grid_w, int height, int wi
     return validCount;
 }
 
-int post_process(rknn_app_context_t *app_ctx, rknn_output *outputs, letterbox_t *letter_box, float conf_threshold, float nms_threshold, object_detect_result_list *od_results)
+int post_process(rknn_app_context_t *app_ctx, void *outputs, letterbox_t *letter_box, float conf_threshold, float nms_threshold, object_detect_result_list *od_results)
 {
+#if defined(RV1106_1103) 
+    rknn_tensor_mem **_outputs = (rknn_tensor_mem **)outputs;
+#else
+    rknn_output *_outputs = (rknn_output *)outputs;
+#endif
     std::vector<float> filterBoxes;
     std::vector<float> objProbs;
     std::vector<int> classId;
@@ -319,20 +444,46 @@ int post_process(rknn_app_context_t *app_ctx, rknn_output *outputs, letterbox_t 
 
     for (int i = 0; i < 3; i++)
     {
+#if defined(RV1106_1103) 
+        grid_h = app_ctx->output_attrs[i].dims[1];
+        grid_w = app_ctx->output_attrs[i].dims[2];
+        stride = model_in_h / grid_h;
+        //RV1106 only support i8
+        if (app_ctx->is_quant) {
+            validCount += process_i8_rv1106((int8_t *)_outputs[i]->virt_addr, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
+                                     classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale);
+        }
+#elif defined(RKNPU1)
+        grid_h = app_ctx->output_attrs[i].dims[1];
+        grid_w = app_ctx->output_attrs[i].dims[0];
+        stride = model_in_h / grid_h;
+
+        if (app_ctx->is_quant)
+        {
+            validCount += process_u8((uint8_t *)_outputs[i].buf, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
+                                     classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale);
+        }
+        else
+        {
+            validCount += process_fp32((float *)_outputs[i].buf, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
+                                       classId, conf_threshold);
+        }
+#else
         grid_h = app_ctx->output_attrs[i].dims[2];
         grid_w = app_ctx->output_attrs[i].dims[3];
         stride = model_in_h / grid_h;
 
         if (app_ctx->is_quant)
         {
-            validCount += process_i8((int8_t *)outputs[i].buf, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
+            validCount += process_i8((int8_t *)_outputs[i].buf, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
                                      classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale);
         }
         else
         {
-            validCount += process_fp32((float *)outputs[i].buf, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
+            validCount += process_fp32((float *)_outputs[i].buf, grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
                                        classId, conf_threshold);
         }
+#endif
     }
 
     // no object detect

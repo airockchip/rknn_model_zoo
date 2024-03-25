@@ -1,14 +1,14 @@
 #ifndef _RKNN_DEMO_DEEPLABV3_KERNEL_H_
 #define _RKNN_DEMO_DEEPLABV3_KERNEL_H_
 
+//"#define SRC_STRIDE 1365 //65*21\n" 
 const char* CL_kernel_string_src = 
 
 "#define INC(x,l) min(x+1,l-1)\n"
-"#define SRC_STRIDE 1365 //65*21\n" 
 "__kernel void UpsampleSoftmax(__global const float* src_buf, __global uchar* index_buf, "
 "                              const int srcHeight, const int srcWidth, "
 "                              const int dstHeight, const int dstWidth, const int dstChannel,"
-"                              const float scale_h_inv, const float scale_w_inv, const int img_array_size) {\n"
+"                              const float scale_h_inv, const float scale_w_inv, const int SRC_STRIDE) {\n"
 "  int dx = get_global_id(0);//dst width \n"
 "  int dy = get_global_id(1);//dst height \n"
 "  float sx = ((dx) * scale_w_inv), sy = ((dy) * scale_h_inv); //resize\n"

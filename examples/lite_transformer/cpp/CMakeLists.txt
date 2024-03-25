@@ -20,18 +20,31 @@ file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 include_directories(${CMAKE_SOURCE_DIR}/utils)
 include_directories(${CMAKE_SOURCE_DIR}/utils/cnpy)
 include_directories(${CMAKE_SOURCE_DIR}/utils/bpe_tools)
-include_directories(${CMAKE_SOURCE_DIR}/rknpu2/rkdemo_utils)
+
+
+if(TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(lite_transformer_file rknpu1/lite_transformer.cc)
+    set(rkdemo_utils rknpu1/rkdemo_utils/rknn_demo_utils.cc)
+    include_directories(${CMAKE_SOURCE_DIR}/rknpu1/rkdemo_utils)
+    add_definitions("-DRKNPU1")
+else()
+    set(lite_transformer_file rknpu2/lite_transformer.cc)
+    set(rkdemo_utils rknpu2/rkdemo_utils/rknn_demo_utils.cc)
+    include_directories(${CMAKE_SOURCE_DIR}/rknpu2/rkdemo_utils)
+endif()
+
 
 add_executable(${PROJECT_NAME}
     main.cc
-    rknpu2/lite_transformer.cc
-    rknpu2/rkdemo_utils/rknn_demo_utils.cc
+    ${lite_transformer_file}
+    ${rkdemo_utils}
     utils/bpe_tools/bpe_tools.cc
 )
 
 target_link_libraries(${PROJECT_NAME}
     fileutils
     ${LIBRKNNRT}
+    dl
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")

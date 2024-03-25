@@ -1,16 +1,14 @@
 import sys
-import os
-
 from rknn.api import RKNN
 
 DEFAULT_QUANT = False
 
-
 def parse_arg():
     if len(sys.argv) < 3:
         print("Usage: python3 {} onnx_model_path [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]));
-        print("       platform choose from [rk3562,rk3566,rk3568,rk3588]")
-        print("       dtype choose from    [i8, fp]")
+        print("       platform choose from [rk3562,rk3566,rk3568,rk3588,rk1808,rv1109,rv1126]")
+        print("       dtype choose from [fp] for [rk3562,rk3566,rk3568,rk3588]")
+        print("       dtype choose from [fp] for [rk1808,rv1109,rv1126]")
         exit(1)
 
     model_path = sys.argv[1]
@@ -19,14 +17,9 @@ def parse_arg():
     do_quant = DEFAULT_QUANT
     if len(sys.argv) > 3:
         model_type = sys.argv[3]
-        if model_type not in ['i8', 'fp']:
+        if model_type not in ['fp']:
             print("ERROR: Invalid model type: {}".format(model_type))
             exit(1)
-        elif model_type == 'i8':
-            do_quant = True
-            assert False, "i8 quantization is not supported yet"
-        else:
-            do_quant = False
 
     if len(sys.argv) > 4:
         output_path = sys.argv[4]

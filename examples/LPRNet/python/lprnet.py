@@ -2,11 +2,8 @@ import os
 import sys
 import cv2
 import numpy as np
+import argparse
 from rknn.api import RKNN
-
-DATASET_PATH = '../../../datasets/LPRNET/datasets.txt'
-DEFAULT_RKNN_PATH = '../model/lprnet.rknn'
-DEFAULT_QUANT = True
 
 CHARS = ['京', '沪', '津', '渝', '冀', '晋', '蒙', '辽', '吉', '黑',
      '苏', '浙', '皖', '闽', '赣', '鲁', '豫', '鄂', '湘', '粤',
@@ -45,83 +42,40 @@ def decode(preds, CHARS):
         labels.append(lb)
     return labels, pred_labels
 
-
-def parse_arg():
-    if len(sys.argv) < 3:
-        print("Usage: python3 {} onnx_model_path [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]));
-        print("       platform choose from [rk3562,rk3566,rk3568,rk3588]")
-        print("       dtype choose from    [i8, fp]")
-        exit(1)
-
-    model_path = sys.argv[1]
-    platform = sys.argv[2]
-
-    do_quant = DEFAULT_QUANT
-    if len(sys.argv) > 3:
-        model_type = sys.argv[3]
-        if model_type not in ['i8', 'fp']:
-            print("ERROR: Invalid model type: {}".format(model_type))
-            exit(1)
-        elif model_type == 'i8':
-            do_quant = True
-        else:
-            do_quant = False
-
-    if len(sys.argv) > 4:
-        output_path = sys.argv[4]
-    else:
-        output_path = DEFAULT_RKNN_PATH
-
-    return model_path, platform, do_quant, output_path
-
 if __name__ == '__main__':
-    model_path, platform, do_quant, output_path = parse_arg()
+    parser = argparse.ArgumentParser(description='LPRNet Python Demo', add_help=True)
+    # basic params
+    parser.add_argument('--model_path', type=str, required=True,
+                        help='model path, could be .rknn file')
+    parser.add_argument('--target', type=str,
+                        default='rk3566', help='target RKNPU platform')
+    parser.add_argument('--device_id', type=str,
+                        default=None, help='device id')
+    args = parser.parse_args()
 
     # Create RKNN object
-    rknn = RKNN()
+    rknn = RKNN(verbose=True)
 
-    # Pre-process config
-    print('--> Config model')
-    rknn.config(mean_values=[127.5, 127.5, 127.5], std_values=[127.5, 127.5, 127.5], target_platform=platform)
-    print('done')
-
-    # Load model
-    print('--> Loading model')
-    ret = rknn.load_onnx(model=model_path,
-                         inputs=['input'],
-                         input_size_list=[[1, 3, 24, 94]])
+    # Load RKNN model
+    ret = rknn.load_rknn(args.model_path)
     if ret != 0:
-        print('Load model failed!')
+        print('Load RKNN model \"{}\" failed!'.format(args.model_path))
         exit(ret)
     print('done')
 
-    # Build model
-    print('--> Building model')
-    ret = rknn.build(do_quantization=do_quant, dataset=DATASET_PATH)
-    if ret != 0:
-        print('Build model failed!')
-        exit(ret)
-    print('done')
+    print(args.target)
 
-    # Export rknn model
-    print('--> Export rknn model')
-    ret = rknn.export_rknn(output_path)
+    # Init runtime environment
+    print('--> Init runtime environment')
+    ret = rknn.init_runtime(target=args.target, device_id=args.device_id)
     if ret != 0:
-        print('Export rknn model failed!')
+        print('Init runtime environment failed!')
         exit(ret)
     print('done')
 
     # Set inputs
     img = cv2.imread('../model/test.jpg')
     img = cv2.resize(img, (94, 24))
-    
-    # Init runtime environment
-    print('--> Init runtime environment')
-    ret = rknn.init_runtime()
-    if ret != 0:
-        print('Init runtime environment failed!')
-        exit(ret)
-    print('done')
 
     # Inference
     print('--> Running model')

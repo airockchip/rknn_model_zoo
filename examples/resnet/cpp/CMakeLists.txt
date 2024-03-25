@@ -16,9 +16,14 @@ set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 
 file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
+set(resnet_file rknpu2/resnet.cc)
+if(TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(resnet_file rknpu1/resnet.cc)
+endif()
+
 add_executable(${PROJECT_NAME}
     main.cc
-    rknpu2/resnet.cc
+    ${resnet_file}
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -26,6 +31,7 @@ target_link_libraries(${PROJECT_NAME}
     imageutils
     imagedrawing
     ${LIBRKNNRT}
+    dl
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")

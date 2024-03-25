@@ -137,11 +137,6 @@ int init_yolov5_model(const char *model_path, rknn_app_context_t *app_ctx)
 
 int release_yolov5_model(rknn_app_context_t *app_ctx)
 {
-    if (app_ctx->rknn_ctx != 0)
-    {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL)
     {
         free(app_ctx->input_attrs);
@@ -151,6 +146,11 @@ int release_yolov5_model(rknn_app_context_t *app_ctx)
     {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0)
+    {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }
@@ -162,8 +162,8 @@ int inference_yolov5_model(rknn_app_context_t *app_ctx, image_buffer_t *img, obj
     letterbox_t letter_box;
     rknn_input inputs[app_ctx->io_num.n_input];
     rknn_output outputs[app_ctx->io_num.n_output];
-    const float nms_threshold = NMS_THRESH;      // 默认的NMS阈值
-    const float box_conf_threshold = BOX_THRESH; // 默认的置信度阈值
+    const float nms_threshold = NMS_THRESH;      // Default NMS threshold
+    const float box_conf_threshold = BOX_THRESH; // Default box threshold
     int bg_color = 114;
 
     if ((!app_ctx) || !(img) || (!od_results))

@@ -1,11 +1,16 @@
 # PaddleSeg Model Demo
+
+## Current Support Platform
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+
+
 ## Model Source
 
 Repository: [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg/tree/release/2.8)
 
 Download link: 
 
-[pp_liteseg_cityscapes.onnx](https://ftzr.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/ppseg/pp_liteseg_cityscapes.onnx)
+[pp_liteseg_cityscapes.onnx](https://ftzr.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/ppseg/pp_liteseg_cityscapes.onnx )
 
 Download with shell command:
 
@@ -37,12 +42,13 @@ python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588 according to board SOC version.
-- <dtype\> is *optional*, could be specified as `i8` or `fp`, `i8` means to do quantization, `fp` means no to do quantization, default is `i8`.
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
+- <dtype\> is *optional*, could be specified as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`/`u8`.
 - <output_rknn_path> is *optional*, used to specify the saving path of the RKNN model, default save path is `../model/pp_liteseg.rknn`
 
 
 ## Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 
@@ -85,7 +91,7 @@ export LD_LIBRARY_PATH=./lib
 ### Pull result img
 
 ```
-adb pull /data/ppseg/result.png .
+adb pull /data/rknn_ppseg_demo/result.png .
 ```
 
 
@@ -148,3 +154,8 @@ export LD_LIBRARY_PATH=./lib:<LOCATION_LIBRGA>
 adb pull /data/rknn_ppseg_demo/result.png ./
 ```
 
+## Expected Results
+
+<img src="./result.png">
+
+- Note: Different platforms, different versions of tools and drivers may have slightly different results.

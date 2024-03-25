@@ -32,14 +32,16 @@ python resnet.py ../model/resnet50-v2-7.onnx rk3588
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588 according to board SOC version.
-- <dtype\> is *optional*, could be specified as `i8` or `fp`, `i8` means to do quantization, `fp` means no to do quantization, default is `i8`.
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
+- <dtype\> is *optional*, could be specified as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`.
 - <output_rknn_path> is *optional*, used to specify the saving path of the RKNN model, default save path is `../model/resnet50-v2-7.rknn`
 
 
 
 
 ## Android Demo
+
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 

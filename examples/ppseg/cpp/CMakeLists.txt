@@ -14,11 +14,17 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ utils.out)
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(ppseg_file rknpu1/ppseg.cc)
+else()
+    set(ppseg_file rknpu2/ppseg.cc)
+endif()
+
 file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
 add_executable(${PROJECT_NAME}
     main.cc
-    rknpu2/ppseg.cc
+    ${ppseg_file}
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -26,6 +32,7 @@ target_link_libraries(${PROJECT_NAME}
     imageutils
     imagedrawing
     ${LIBRKNNRT}
+    dl
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")

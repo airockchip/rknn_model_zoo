@@ -20,14 +20,12 @@ cd model
 ```
 
 
-
 ## Script Usage
 
 *Usage:*
 ```shell
 cd python
-python mobilenet.py --model <onnx_model> --target <TARGET_PLATFORM>
-
+python mobilenet.py --model <onnx_model> --target <TARGET_PLATFORM> --output_path <output_path> --dtype <data_type>
 # such as: 
 python mobilenet.py --model ../model/mobilenetv2-12.onnx --target rk3588
 # output model will be saved as ../model/mobilenetv2-12.rknn
@@ -35,12 +33,14 @@ python mobilenet.py --model ../model/mobilenetv2-12.onnx --target rk3588
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RV1103, RV1106 according to board SOC version.
-
-
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RV1103, RV1106, RK1808, RV1109, RV1126 according to board SOC version. Case insensitive.
+- <output_path> export path of RKNN model. **Optional, default is `mobilenet_v2.rknn`.**
+- <data_type> quantized data type. **Optional, defaul is `i8`.** `i8`/`u8` means do quantization, `fp32` means not do quantization.
 
 
 ## Android Demo
+
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 
@@ -103,8 +103,12 @@ cd ../../
 
 # such as 
 ./build-linux.sh -t rk3588 -a aarch64 -d mobilenet
-# such as 
+# such as
 ./build-linux.sh -t rv1106 -a armhf -d mobilenet
+# such as
+./build-linux.sh -t rk1808 -a aarch64 -d mobilenet
+# such as
+./build-linux.sh -t rv1126 -a armhf -d mobilenet
 ```
 - <GCC_COMPILER_PATH>: Specified as GCC_COMPILER path.
 

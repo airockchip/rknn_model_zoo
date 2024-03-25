@@ -14,6 +14,10 @@
 #define BOX_THRESH 0.25
 #define PROP_BOX_SIZE (5 + OBJ_CLASS_NUM)
 
+#define PROTO_CHANNEL 32
+#define PROTO_HEIGHT 160
+#define PROTO_WEIGHT 160
+
 // class rknn_app_context_t;
 
 typedef struct

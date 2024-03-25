@@ -41,11 +41,18 @@ message(STATUS OpenCV_LIBS=${OpenCV_LIBS})
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(lprnet_file rknpu1/lprnet.cc)
+else()
+    set(lprnet_file rknpu2/lprnet.cc)
+endif()
+
+
 file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
 add_executable(${PROJECT_NAME}
     main.cc
-    rknpu2/lprnet.cc
+    ${lprnet_file}
 )
 
 target_link_libraries(${PROJECT_NAME}

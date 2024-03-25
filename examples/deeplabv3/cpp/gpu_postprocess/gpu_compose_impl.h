@@ -61,7 +61,7 @@ namespace gpu_postprocess
                             std::string src_name, float *src_img_ptr, std::string res_name, unsigned char *res,
                             const int srcHeight, const int srcWidth,
                             const int dstHeight, const int dstWidth, const int dstChannel,
-                            const float scale_h_inv, const float scale_w_inv, const int img_arr_size);
+                            const float scale_h_inv, const float scale_w_inv, const int src_stride);
         int UpsampleSoftmaxImage2D(std::string kernel_name,
                                    std::string src_name, float *src_img_ptr, std::string res_name, unsigned char *res,
                                    const int dstHeight, const int dstWidth, const int dstChannel, const int img_array_size);

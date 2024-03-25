@@ -4,7 +4,7 @@ freq_set_status=0
 
 usage()
 {
-    echo "USAGE: ./fixed_frequency.sh -c {chip_name} [-h]"
+    echo "USAGE: ./scaling_frequency.sh -c {chip_name} [-h]"
     echo "  -c:  chip_name, such as rv1126 / rk3588"
     echo "  -h:  Help"
 }
@@ -99,6 +99,11 @@ elif [ $chip_name == 'rk3588' ]; then
     CPU_freq=2256000
     NPU_freq=1000000000
     DDR_freq=2112000000
+elif [ $chip_name == 'rk3576' ]; then
+    seting_strategy=7
+    CPU_freq=2016000
+    NPU_freq=1000000000
+    DDR_freq=2112000000
 elif [ $chip_name == 'rv1106' ]; then
     seting_strategy=5
     CPU_freq=1608000
@@ -190,13 +195,13 @@ case $seting_strategy in
         echo "  Core4"
         echo userspace > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
         echo $CPU_freq > /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed
-        NPU_cur_freq=$(cat /sys/devices/system/cpu/cpu4/cpufreq/cpuinfo_cur_freq)
+        CPU_cur_freq=$(cat /sys/devices/system/cpu/cpu4/cpufreq/cpuinfo_cur_freq)
         print_and_compare_result $CPU_freq $CPU_cur_freq
 
         echo "  Core6"
         echo userspace > /sys/devices/system/cpu/cpufreq/policy6/scaling_governor
         echo $CPU_freq > /sys/devices/system/cpu/cpufreq/policy6/scaling_setspeed
-        DDR_cur_freq=$(cat /sys/devices/system/cpu/cpu6/cpufreq/cpuinfo_cur_freq)
+        CPU_cur_freq=$(cat /sys/devices/system/cpu/cpu6/cpufreq/cpuinfo_cur_freq)
         print_and_compare_result $CPU_freq $CPU_cur_freq
 
         echo "NPU: seting frequency"
@@ -260,6 +265,38 @@ case $seting_strategy in
         echo userspace > /sys/devices/platform/ff300000.npu/devfreq/ff300000.npu/governor
         echo $NPU_freq > /sys/devices/platform/ff300000.npu/devfreq/ff300000.npu/userspace/set_freq
         NPU_cur_freq=$(cat /sys/class/devfreq/ff300000.npu/cur_freq)
+        print_and_compare_result $NPU_freq $NPU_cur_freq
+
+        echo "DDR: seting frequency"
+        if [ -e /sys/class/devfreq/dmc/governor ];then
+            echo userspace > /sys/class/devfreq/dmc/governor
+            echo $DDR_freq > /sys/class/devfreq/dmc/userspace/set_freq
+            DDR_cur_freq=$(cat /sys/class/devfreq/dmc/cur_freq)
+        else
+            DDR_cur_freq=$(cat /sys/kernel/debug/clk/clk_summary | grep scmi_clk_ddr | awk '{split($0,a," "); print a[5]}')
+        fi
+        print_not_support_adjust DDR $DDR_freq $DDR_cur_freq
+        ;;
+
+    # rk3576
+    7)
+        echo "CPU: seting frequency"
+        echo "  Core0"
+        echo userspace > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+        echo 1800000 > /sys/devices/system/cpu/cpufreq/policy0/scaling_setspeed
+        CPU_cur_freq=$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq)
+        print_and_compare_result 1800000 $CPU_cur_freq
+
+        echo "  Core4"
+        echo userspace > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
+        echo $CPU_freq > /sys/devices/system/cpu/cpufreq/policy4/scaling_setspeed
+        CPU_cur_freq=$(cat /sys/devices/system/cpu/cpufreq/policy4/scaling_cur_freq)
+        print_and_compare_result $CPU_freq $CPU_cur_freq
+
+        echo "NPU: seting frequency"
+        echo userspace > /sys/devices/platform/27700000.npu/devfreq/27700000.npu/governor
+        echo $NPU_freq > /sys/class/devfreq/27700000.npu/userspace/set_freq 
+        NPU_cur_freq=$(cat /sys/class/devfreq/27700000.npu/cur_freq)
         print_and_compare_result $NPU_freq $NPU_cur_freq
 
         echo "DDR: seting frequency"

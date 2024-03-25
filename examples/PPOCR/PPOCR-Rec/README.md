@@ -1,5 +1,11 @@
 # PPOCR-Rec
 
+## Current Support Platform
+
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+
+
+
 ## Download ONNX model
 
 Download link: 
@@ -35,36 +41,34 @@ python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588 according to board SOC version.
-- <dtype\> is *optional*, could be specified as `i8` or `fp`, `i8` means to do quantization, `fp` means no to do quantization, default is `fp`.
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
+- <dtype> is *optional*, could be specified as `fp`, `fp` means no to do quantization, default is `fp`.
 - <output_rknn_path> is **optional**, used to specify the saving path of the RKNN model, default save path is `../model/ppocrv4_rec.rknn`
 
 
+## Python Demo
 
-## Script Usage
+*Usage:*
 
-For ONNX:
+```shell
+cd python
 
-```bash
-pip install -r python/requirements.txt
-python python/ppocr_rec.py \
-    --image_dir model/word_1.png \
-    --rec_model_dir model/ch_PP-OCRv4_rec_infer/ppocrv4_rec.onnx \
-    --rec_char_dict_path model/ppocr_keys_v1.txt \
-    --use_gpu false --use_onnx true --rec_image_shape "3, 48, 320"
+# Inference with ONNX model
+python ppocr_rec.py --model_path <onnx_model>
+# such as: python ppocr_rec.py --model_path ../model/ppocrv4_rec.onnx 
+
+# Inference with RKNN model
+python ppocrv4_rec.py --model_path <rknn_model> --target <TARGET_PLATFORM>
+# such as: python ppocrv4_rec.py --model_path ../model/ppocrv4_rec.rknn --target rk3588
 ```
+*Description:*
+- <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
 
-For RKNN:
+- <onnx_model / rknn_model>: specified as the model path.
 
-```bash
-python python/ppocr_rec.py \
-    --image_dir model/word_1.png \
-    --rec_model_dir model/ch_PP-OCRv4_rec_infer/ppocrv4_rec.rknn \
-    --rec_char_dict_path model/ppocr_keys_v1.txt \
-    --use_gpu false --use_rknn true --platform rk3568 --rec_image_shape "3, 48, 320"
-```
 
 ## Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 
@@ -100,7 +104,7 @@ adb shell
 cd /data/rknn_PPOCR-Rec_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_ppocr_rec_demo model/ppocrv4_rec.rknn model/word_1.png
+./rknn_ppocr_rec_demo model/ppocrv4_rec.rknn model/test.png
 ```
 
 ## Aarch64 Linux Demo
@@ -143,7 +147,7 @@ adb shell
 cd /data/rknn_PPOCR-Rec_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_ppocr_rec_demo model/ppocrv4_rec.rknn model/word_1.png
+./rknn_ppocr_rec_demo model/ppocrv4_rec.rknn model/test.png
 ```
 
 Note: Try searching the location of librga.so and add it to LD_LIBRARY_PATH if the librga.so is not found in the lib folder.

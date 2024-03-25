@@ -13,6 +13,8 @@
 #include "gpu_compose_impl.h"
 #include "cl_kernels/kernel_upsampleSoftmax.h"
 
+
+
 using namespace gpu_postprocess;
 
 namespace {
@@ -20,6 +22,7 @@ namespace {
     const constexpr char UP_SOFTMAX_IN0[] =  "UP_SOFTMAX_IN";
     const constexpr char UP_SOFTMAX_OUT0[] =  "UP_SOFTMAX_OUT";
 
+    const size_t NUM_LABEL = 21;
     std::shared_ptr<gpu_compose_impl> Gpu_Impl = nullptr;
     
 }  
@@ -46,54 +49,50 @@ static int Dump_bin_to_file(void *pBuffer, const char *fileName, const size_t sz
     return 0;
 }
 
+static constexpr int FULL_COLOR_MAP[NUM_LABEL][3] = {
+    {0, 0, 0},
 
-static constexpr int FULL_COLOR_MAP[NUM_LABEL][3]= {
-  {  0  ,0 ,  0},
+    {128, 0, 0},
 
-  {128, 0 ,0},
+    {0, 128, 0},
 
-  { 0, 128, 0},
+    {128, 128, 0},
 
-  {128, 128, 0},
+    {0, 0, 128},
 
- {  0 , 0, 128},
+    {128, 0, 128},
 
- {128, 0, 128},
+    {0, 128, 128},
 
- {0, 128 , 128},
+    {128, 128, 128},
 
- {128, 128, 128},
+    {64, 0, 0},
 
- { 64  ,0  ,0},
+    {192, 0, 0},
 
- {192,   0  ,0},
+    {64, 128, 0},
 
- { 64, 128  , 0},
+    {192, 128, 0},
 
- {192, 128 , 0},
+    {64, 0, 128},
 
- {64  ,0  , 128},
+    {192, 0, 128},
 
- {192,  0 , 128},
+    {64, 128, 128},
 
- { 64 ,128 ,128},
+    {192, 128, 128},
 
- {192, 128, 128},
+    {0, 64, 0},
 
- {  0 , 64 , 0},
+    {128, 64, 0},
 
- {128 , 64  , 0},
+    {0, 192, 0},
 
- { 0, 192, 0},
+    {128, 192, 0},
 
- {128, 192  ,0},
-
-{0, 64, 128}
+    {0, 64, 128}
 
 };
-
-
-
 
 static void dump_tensor_attr(rknn_tensor_attr* attr)
 {
@@ -285,11 +284,6 @@ int init_deeplabv3_model(const char* model_path, rknn_app_context_t* app_ctx)
 
 int release_deeplabv3_model(rknn_app_context_t* app_ctx)
 {
-
-    if (app_ctx->rknn_ctx != 0) {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL) {
         free(app_ctx->input_attrs);
         app_ctx->input_attrs = NULL;
@@ -298,10 +292,14 @@ int release_deeplabv3_model(rknn_app_context_t* app_ctx)
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
     }
+    if (app_ctx->rknn_ctx != 0) {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
+    }
     return 0;
 }
 
-int inference_deeplabv3_model(rknn_app_context_t* app_ctx, image_buffer_t* src_img, deeplabv3_result* out_result)
+int inference_deeplabv3_model(rknn_app_context_t* app_ctx, image_buffer_t* src_img)
 {
     using namespace std;
 
@@ -309,6 +307,21 @@ int inference_deeplabv3_model(rknn_app_context_t* app_ctx, image_buffer_t* src_i
     image_buffer_t img;
 
     memset(&img, 0, sizeof(image_buffer_t));
+    //fetch model IO info according to NHWC layout !!!
+    //OUT_SIZE is only for square output size 
+    size_t OUT_SIZE=0;
+    size_t MASK_SIZE=0;
+
+    if (app_ctx->input_attrs[0].fmt == RKNN_TENSOR_NCHW) {
+        printf("model is NCHW input fmt\n");
+        OUT_SIZE = app_ctx->output_attrs[0].dims[2]; //65  
+        MASK_SIZE = app_ctx->input_attrs[0].dims[3]; //513  
+    }
+    else {
+        printf("model is NHWC input fmt\n");
+        OUT_SIZE = app_ctx->output_attrs[0].dims[2]; //65  
+        MASK_SIZE = app_ctx->input_attrs[0].dims[2]; //513  
+    }
 
     // Pre Process
     img.width = app_ctx->model_width;
@@ -392,8 +405,6 @@ int inference_deeplabv3_model(rknn_app_context_t* app_ctx, image_buffer_t* src_i
             return -1;
         }
     }
-
-    rknn_set_core_mask(app_ctx->rknn_ctx, RKNN_NPU_CORE_0_1_2);
     
     rknn_tensor_mem *post_buf_mem[1];
     post_buf_mem[0] = rknn_create_mem(app_ctx->rknn_ctx, MASK_SIZE * MASK_SIZE);
@@ -427,13 +438,13 @@ int inference_deeplabv3_model(rknn_app_context_t* app_ctx, image_buffer_t* src_i
         return -1;
     }
 
+    const auto SRC_STRIDE = OUT_SIZE * NUM_LABEL;
+
     // Post Process
     Gpu_Impl->UpsampleSoftmax(UPSAMPLE_SOFTMAX_KERNEL_NAME, UP_SOFTMAX_IN0, nullptr,
-                           UP_SOFTMAX_OUT0, nullptr, OUT_SIZE, OUT_SIZE, MASK_SIZE, MASK_SIZE, NUM_LABEL, scale_h_inv, scale_w_inv, NUM_LABEL);
+                           UP_SOFTMAX_OUT0, nullptr, OUT_SIZE, OUT_SIZE, MASK_SIZE, MASK_SIZE, NUM_LABEL, scale_h_inv, scale_w_inv, SRC_STRIDE);
     
     compose_img((unsigned char *)post_buf_mem[0]->virt_addr, src_img->virt_addr, MASK_SIZE, MASK_SIZE);
-
-    memcpy(out_result->out_mask, post_buf_mem[0]->virt_addr, MASK_SIZE*MASK_SIZE*sizeof(uint8_t));
 
     //For debugging purpose
     //Dump_bin_to_file(out_result->img, "test_img_out.bin", MASK_SIZE*MASK_SIZE*3*sizeof(uint8_t));

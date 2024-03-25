@@ -22,13 +22,13 @@ typedef struct {
     int index;
 } element_t;
 
-void swap(element_t* a, element_t* b) {
+static void swap(element_t* a, element_t* b) {
     element_t temp = *a;
     *a = *b;
     *b = temp;
 }
 
-int partition(element_t arr[], int low, int high) {
+static int partition(element_t arr[], int low, int high) {
     float pivot = arr[high].value;
     int i = low - 1;
 
@@ -43,7 +43,7 @@ int partition(element_t arr[], int low, int high) {
     return (i + 1);
 }
 
-void quick_sort(element_t arr[], int low, int high) {
+static void quick_sort(element_t arr[], int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
         quick_sort(arr, low, pi - 1);
@@ -51,7 +51,7 @@ void quick_sort(element_t arr[], int low, int high) {
     }
 }
 
-void softmax(float* array, int size) {
+static void softmax(float* array, int size) {
     // Find the maximum value in the array
     float max_val = array[0];
     for (int i = 1; i < size; i++) {
@@ -78,19 +78,19 @@ void softmax(float* array, int size) {
     }
 }
 
-void get_topk_with_indices(float arr[], int size, int k, resnet_result* result) {
+static void get_topk_with_indices(float arr[], int size, int k, resnet_result* result) {
 
-    // 创建元素数组，保存值和索引号
+    // Create an array of elements, saving values ​​and index numbers
     element_t* elements = (element_t*)malloc(size * sizeof(element_t));
     for (int i = 0; i < size; i++) {
         elements[i].value = arr[i];
         elements[i].index = i;
     }
 
-    // 对元素数组进行快速排序
+    // Quick sort an array of elements
     quick_sort(elements, 0, size - 1);
 
-    // 获取前K个最大值和它们的索引号
+    // Get the top K maximum values ​​and their index numbers
     for (int i = 0; i < k; i++) {
         result[i].score = elements[i].value;
         result[i].cls = elements[i].index;
@@ -184,10 +184,6 @@ int init_resnet_model(const char* model_path, rknn_app_context_t* app_ctx)
 
 int release_resnet_model(rknn_app_context_t* app_ctx)
 {
-    if (app_ctx->rknn_ctx != 0) {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL) {
         free(app_ctx->input_attrs);
         app_ctx->input_attrs = NULL;
@@ -195,6 +191,10 @@ int release_resnet_model(rknn_app_context_t* app_ctx)
     if (app_ctx->output_attrs != NULL) {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0) {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }

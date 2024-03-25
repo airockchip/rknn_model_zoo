@@ -125,11 +125,6 @@ int init_yolov8_seg_model(const char *model_path, rknn_app_context_t *app_ctx)
 
 int release_yolov8_seg_model(rknn_app_context_t *app_ctx)
 {
-    if (app_ctx->rknn_ctx != 0)
-    {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL)
     {
         free(app_ctx->input_attrs);
@@ -139,6 +134,11 @@ int release_yolov8_seg_model(rknn_app_context_t *app_ctx)
     {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0)
+    {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }
@@ -166,6 +166,8 @@ int inference_yolov8_seg_model(rknn_app_context_t *app_ctx, image_buffer_t *img,
     memset(outputs, 0, sizeof(outputs));
 
     // Pre Process
+    app_ctx->input_image_width = img->width;
+    app_ctx->input_image_height = img->height;
     dst_img.width = app_ctx->model_width;
     dst_img.height = app_ctx->model_height;
     dst_img.format = IMAGE_FORMAT_RGB888;

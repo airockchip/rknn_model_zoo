@@ -13,7 +13,7 @@
 #define CONF_THRESHOLD 0.5
 #define VIS_THRESHOLD 0.4
 
-int clamp(int x, int min, int max) {
+static int clamp(int x, int min, int max) {
     if (x > max) return max;
     if (x < min) return min;
     return x;
@@ -130,7 +130,7 @@ static int filterValidResult(float *scores, float *loc, float *landms, const flo
     return validCount;
 }
 
-int post_process_retinaface(rknn_app_context_t *app_ctx, image_buffer_t *src_img, rknn_output outputs[], retinaface_result *result, letterbox_t *letter_box) {
+static int post_process_retinaface(rknn_app_context_t *app_ctx, image_buffer_t *src_img, rknn_output outputs[], retinaface_result *result, letterbox_t *letter_box) {
     float *location = (float *)outputs[0].buf;
     float *scores = (float *)outputs[1].buf;
     float *landms = (float *)outputs[2].buf;
@@ -182,13 +182,13 @@ int post_process_retinaface(rknn_app_context_t *app_ctx, image_buffer_t *src_img
         float y2 = location[n * 4 + 3] * app_ctx->model_height - letter_box->y_pad;
         int model_in_w = app_ctx->model_width;
         int model_in_h = app_ctx->model_height;
-        result->object[last_count].box.left   = (int)(clamp(x1, 0, model_in_w) / letter_box->scale);//人脸框
+        result->object[last_count].box.left   = (int)(clamp(x1, 0, model_in_w) / letter_box->scale); // Face box
         result->object[last_count].box.top    = (int)(clamp(y1, 0, model_in_h) / letter_box->scale);
         result->object[last_count].box.right  = (int)(clamp(x2, 0, model_in_w) / letter_box->scale);
         result->object[last_count].box.bottom = (int)(clamp(y2, 0, model_in_h) / letter_box->scale);
-        result->object[last_count].score = props[i];//置信度
+        result->object[last_count].score = props[i]; // Confidence
 
-        for (int j = 0; j < 5; ++j) { //5点人脸特征点
+        for (int j = 0; j < 5; ++j) { // Facial feature points
             float ponit_x = landms[n * 10 + 2 * j] * app_ctx->model_width - letter_box->x_pad;
             float ponit_y = landms[n * 10 + 2 * j + 1] * app_ctx->model_height - letter_box->y_pad;
             result->object[last_count].ponit[j].x = (int)(clamp(ponit_x, 0, model_in_w) / letter_box->scale);
@@ -285,10 +285,6 @@ int init_retinaface_model(const char *model_path, rknn_app_context_t *app_ctx) {
 }
 
 int release_retinaface_model(rknn_app_context_t *app_ctx) {
-    if (app_ctx->rknn_ctx != 0) {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL) {
         free(app_ctx->input_attrs);
         app_ctx->input_attrs = NULL;
@@ -296,6 +292,10 @@ int release_retinaface_model(rknn_app_context_t *app_ctx) {
     if (app_ctx->output_attrs != NULL) {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0) {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }

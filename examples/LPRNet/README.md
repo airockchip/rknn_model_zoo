@@ -2,19 +2,20 @@
 
 ## Table of contents
 
+- [Table of contents](#table-of-contents)
 - [1. Description](#1-description)
 - [2. Current Support Platform](#2-current-support-platform)
 - [3. Pretrained Model](#3-pretrained-model)
 - [4. Convert to RKNN](#4-convert-to-rknn)
 - [5. Python Demo](#5-python-demo)
 - [6. Android Demo](#6-android-demo)
-  - [6.1 Compile and Build](#61-compile-and-build)
-  - [6.2 Push demo files to device](#62-push-demo-files-to-device)
-  - [6.3 Run demo](#63-run-demo)
+    - [6.1 Compile and Build](#61-compile-and-build)
+    - [6.2 Push demo files to device](#62-push-demo-files-to-device)
+    - [6.3 Run demo](#63-run-demo)
 - [7. Linux Demo](#7-linux-demo)
-  - [7.1 Compile \&\& Build](#71-compile-and-build)
-  - [7.2 Push demo files to device](#72-push-demo-files-to-device)
-  - [7.3 Run demo](#73-run-demo)
+    - [7.1 Compile and Build](#71-compile-and-build)
+    - [7.2 Push demo files to device](#72-push-demo-files-to-device)
+    - [7.3 Run demo](#73-run-demo)
 - [8. Expected Results](#8-expected-results)
 
 
@@ -29,7 +30,7 @@ https://github.com/sirius-ai/LPRNet_Pytorch/
 
 ## 2. Current Support Platform
 
-RK3566, RK3588, RK3568, RK3562
+RK3566, RK3588, RK3568, RK3562, RK1808, RV1109, RV1126
 
 
 
@@ -54,10 +55,9 @@ cd model
 
 ```shell
 cd python
-python lprnet.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
+python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
 
-# such as: 
-python lprnet.py ../model/lprnet.onnx rk3588
+# such as: python convert.py ../model/lprnet.onnx rk3588
 # output model will be saved as ../model/lprnet.rknn
 ```
 
@@ -65,48 +65,35 @@ python lprnet.py ../model/lprnet.onnx rk3588
 
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `i8`.
+- `<dtype>(optional)`: Specify as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`/`u8`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `lprnet.rknn`
 
 
 
 ## 5. Python Demo
 
+*Usage:*
 
+```shell
+cd python
+# Inference with RKNN model
+python lprnet.py --model_path <rknn_model> --target <TARGET_PLATFORM>
+```
+*Description:*
+- <TARGET_PLATFORM>: Specified as the NPU platform name. Such as 'rk3588'.
+- <rknn_model>: Specified as the model path.
 
-Please refer [Convert to RKNN](#4. Convert to RKNN). Executing the `lprnet.py`  will identify the model/test.jpg license plate. The expected results are as follows:
-
+*The expected results are as follows:*
 ```
 车牌识别结果: 湘F6CL03
 ```
 
-
-
 ## 6. Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 #### 6.1 Compile and Build
 
-*Usage:*
-
-```sh
-# go back to the rknn_model_zoo root directory
-cd ../../
-export ANDROID_NDK_PATH=<android_ndk_path>
-
-./build-android.sh -t <TARGET_PLATFORM> -a <ARCH> -d LPRNet
-
-# such as 
-./build-android.sh -t rk3588 -a arm64-v8a -d LPRNet
-```
-
-*Description:*
-- `<android_ndk_path>`: Specify Android NDK path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
-	```shell
-	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
-	adb shell cat /proc/version
-	```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.
 
 #### 6.2 Push demo files to device
 
@@ -133,31 +120,7 @@ export LD_LIBRARY_PATH=./lib
 
 #### 7.1 Compile and Build
 
-*usage*
-
-```shell
-# go back to the rknn_model_zoo root directory
-cd ../../
-
-# if GCC_COMPILER not found while building, please set GCC_COMPILER path
-(optional)export GCC_COMPILER=<GCC_COMPILER_PATH>
-
-./build-linux.sh -t <TARGET_PLATFORM> -a <ARCH> -d LPRNet
-
-# such as 
-./build-linux.sh -t rk3588 -a aarch64 -d LPRNet
-```
-
-*Description:*
-
-- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
-- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
-  
-  ```shell
-  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
-  adb shell cat /proc/version
-  ```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.
 
 #### 7.2 Push demo files to device
 

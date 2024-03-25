@@ -1,5 +1,9 @@
 # yolov5_seg
 
+## Current Support Platform
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+
+
 ## Model Source
 The model used in this example comes from the following open source projects:  
 https://github.com/airockchip/yolov5
@@ -15,6 +19,18 @@ cd model
 ./download_model.sh
 ```
 
+**Note**: The model provided here is an optimized model, which is different from the official original model. Take yolov5n-seg.onnx as an example to show the difference between them.
+1. The comparison of their output information is as follows. The left is the official original model, and the right is the optimized model. The three colored boxes in the figure represent the changes in the three outputs.
+
+<div align=center>
+  <img src="./model_comparison/yolov5_seg_output_comparison.jpg" alt="Image">
+</div>
+
+2. Taking the output change [1,19200,117] -> ([1,255,80,80],[1,96,80,80]) as an example, we split the convolution of [351x64x1x1] into [255x64x1x1] and [96x64x1x1], then we remove the subsequent subgraphs from the model (the framed part in the figure) and put them into post-processing (these subgraphs are not quantification-friendly)
+
+<div align=center>
+  <img src="./model_comparison/yolov5_seg_graph_comparison.jpg" alt="Image">
+</div>
 
 
 ## Model Convert
@@ -25,14 +41,14 @@ cd model
 cd python
 python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
 # such as: python convert.py ../model/yolov5s-seg.onnx rk3566
-# output model will be saved as ../model/yolov5s-seg.rknn
+# output model will be saved as ../model/yolov5_seg.rknn
 ```
 
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588 according to board SOC version.
-- <dtype\> is *optional*, could be specified as `i8` or `fp`, `i8` means to do quantization, `fp` means no to do quantization, default is `i8`.
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
+- <dtype> is *optional*, could be specified as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`/`u8`.
 - <output_rknn_path> is *optional*, used to specify the saving path of the RKNN model.
 
 
@@ -54,7 +70,7 @@ python yolov5_seg.py --model_path {rknn_model} --target {target_platform} --anno
 ```
 *Description:*
 - {onnx_model / rknn_model} should be the model path.
-- {target_platform} could be filled like [RK3566, RK3568, RK3588, RK3562]
+- {target_platform} could be filled like [RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126]
 - {val_annotation} is the path of COCO val annotation.
 - {val_dataset} is the path of COCO val images.
 
@@ -64,24 +80,12 @@ Note: **For more usage, please execute command `python yolov5_seg.py --help.`**
 
 
 ## Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 
-Modify the path of Android NDK in 'build-android.sh'.
-
-For example,
-
-```sh
-ANDROID_NDK_PATH=~/opt/toolchain/android-ndk-r19c
-```
-
-Then, run this script:
-
-```sh
-./build-android.sh -t <TARGET_PLATFORM> -a arm64-v8a -d yolov5_seg
-```
-
-Please use the specific platform instead of <TARGET_PLATFORM> above.
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `yolov5_seg`.**
 
 ### Push all build output file to the board
 
@@ -109,19 +113,8 @@ export LD_LIBRARY_PATH=./lib
 
 ### Compiling && Building
 
-According to the target platform, modify the path of 'GCC_COMPILER' in 'build-linux.sh'.
-
-```sh
-export GCC_COMPILER=/opt/tools/prebuilts/gcc/linux-x86/aarch64/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
-```
-
-Then, run the script:
-
-```sh
-./build-linux.sh  -t <TARGET_PLATFORM> -a aarch64 -d yolov5_seg
-```
-
-Please use the specific platform instead of <TARGET_PLATFORM> above.
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `yolov5_seg`.**
 
 ### Push all build output file to the board
 

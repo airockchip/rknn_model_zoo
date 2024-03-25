@@ -112,11 +112,6 @@ int init_lprnet_model(const char *model_path, rknn_app_context_t *app_ctx)
 
 int release_lprnet_model(rknn_app_context_t *app_ctx)
 {
-    if (app_ctx->rknn_ctx != 0)
-    {
-        rknn_destroy(app_ctx->rknn_ctx);
-        app_ctx->rknn_ctx = 0;
-    }
     if (app_ctx->input_attrs != NULL)
     {
         free(app_ctx->input_attrs);
@@ -126,6 +121,11 @@ int release_lprnet_model(rknn_app_context_t *app_ctx)
     {
         free(app_ctx->output_attrs);
         app_ctx->output_attrs = NULL;
+    }
+    if (app_ctx->rknn_ctx != 0)
+    {
+        rknn_destroy(app_ctx->rknn_ctx);
+        app_ctx->rknn_ctx = 0;
     }
     return 0;
 }
@@ -181,11 +181,11 @@ int inference_lprnet_model(rknn_app_context_t *app_ctx, image_buffer_t *src_img,
     std::vector<int> no_repeat_blank_label{};
     float prebs[18];
     int pre_c;
-    for (int x = 0; x < 18; x++) //遍历十八个车牌位置
+    for (int x = 0; x < 18; x++) // Traverse 18 license plate positions
     {
         float *ptr = (float *)outputs[0].buf;
         float preb[68];
-        for (int y = 0; y < 68; y++) //遍历68个字符串位置
+        for (int y = 0; y < 68; y++) // Traverse 68 string positions
         {
             preb[y] = ptr[x];
             ptr += 18;
@@ -194,7 +194,7 @@ int inference_lprnet_model(rknn_app_context_t *app_ctx, image_buffer_t *src_img,
         prebs[x] = max_num_index;
     }
 
-    //去重复、去空白
+    // Remove duplicates and blanks
     pre_c = prebs[0];
     if (pre_c != 67)
     {
@@ -214,7 +214,7 @@ int inference_lprnet_model(rknn_app_context_t *app_ctx, image_buffer_t *src_img,
         pre_c = value;
     }
 
-    // 车牌按照字典转化为字符串并输出
+    // The license plate is converted into a string according to the dictionary
     out_result->plate_name.clear();
     for (int hh : no_repeat_blank_label)
     {

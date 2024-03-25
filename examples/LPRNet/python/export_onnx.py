@@ -12,7 +12,7 @@ MODEL_DIR = '../model/'
 MODEL_PATH = MODEL_DIR + 'Final_LPRNet_model.pth'
 
 
-# 将maxpool3d转换成maxpool2d的类
+# Convert maxpool3d to the class of maxpool2d
 class maxpool_3d(nn.Module):
     def __init__(self, kernel_size, stride):
         super(maxpool_3d, self).__init__()

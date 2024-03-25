@@ -4,14 +4,12 @@ import urllib
 import urllib.request
 import time
 import numpy as np
+import argparse
 import cv2
 from math import ceil
 from itertools import product as product
 
 from rknn.api import RKNN
-DATASET_PATH = '../model/dataset.txt'
-DEFAULT_RKNN_PATH = '../model/RetinaFace.rknn'
-DEFAULT_QUANT = True
 
 def letterbox_resize(image, size, bg_color):
     """
@@ -27,15 +25,15 @@ def letterbox_resize(image, size, bg_color):
     target_width, target_height = size
     image_height, image_width, _ = image.shape
 
-    # 计算调整后的图像尺寸
+    # Calculate the adjusted image size
     aspect_ratio = min(target_width / image_width, target_height / image_height)
     new_width = int(image_width * aspect_ratio)
     new_height = int(image_height * aspect_ratio)
 
-    # 使用 cv2.resize() 进行等比缩放
+    # Use cv2.resize() for proportional scaling
     image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
 
-    # 创建新的画布并进行填充
+    # Create a new canvas and fill it
     result_image = np.ones((target_height, target_width, 3), dtype=np.uint8) * bg_color
     offset_x = (target_width - new_width) // 2
     offset_y = (target_height - new_height) // 2
@@ -61,7 +59,6 @@ def PriorBox(image_size): #image_size Support (320,320) and (640,640)
     print("image_size:",image_size," num_priors=",output.shape[0])
     return output
 
-
 def box_decode(loc, priors):
     """Decode locations from predictions using priors to undo
     the encoding we did for offset regression at train time.
@@ -81,7 +78,6 @@ def box_decode(loc, priors):
     boxes[:, :2] -= boxes[:, 2:] / 2
     boxes[:, 2:] += boxes[:, :2]
     return boxes
-
 
 def decode_landm(pre, priors):
     """Decode landm from predictions using priors to undo
@@ -104,7 +100,6 @@ def decode_landm(pre, priors):
         priors[:, :2] + pre[:, 8:10] * variances[0] * priors[:, 2:]
     ), axis=1)
     return landmarks
-
 
 def nms(dets, thresh):
     """Pure Python NMS baseline."""
@@ -136,66 +131,32 @@ def nms(dets, thresh):
 
     return keep
 
-def parse_arg():
-    if len(sys.argv) < 3:
-        print("Usage: python3 {} onnx_model_path [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]));
-        print("       platform choose from [rk3562,rk3566,rk3568,rk3588]")
-        print("       dtype choose from    [i8, fp]")
-        exit(1)
-
-    model_path = sys.argv[1]
-    platform = sys.argv[2]
-
-    do_quant = DEFAULT_QUANT
-    if len(sys.argv) > 3:
-        model_type = sys.argv[3]
-        if model_type not in ['i8', 'fp']:
-            print("ERROR: Invalid model type: {}".format(model_type))
-            exit(1)
-        elif model_type == 'i8':
-            do_quant = True
-        else:
-            do_quant = False
-
-    if len(sys.argv) > 4:
-        output_path = sys.argv[4]
-    else:
-        output_path = DEFAULT_RKNN_PATH
-
-    return model_path, platform, do_quant, output_path
-
 if __name__ == '__main__':
-    model_path, platform, do_quant, output_path = parse_arg()
+    parser = argparse.ArgumentParser(description='RetinaFace Python Demo', add_help=True)
+    # basic params
+    parser.add_argument('--model_path', type=str, required=True,
+                        help='model path, could be .rknn file')
+    parser.add_argument('--target', type=str,
+                        default='rk3566', help='target RKNPU platform')
+    parser.add_argument('--device_id', type=str,
+                        default=None, help='device id')
+    args = parser.parse_args()
+
     # Create RKNN object
-    rknn = RKNN()
+    rknn = RKNN(verbose=True)
 
-    # Pre-process config
-    print('--> Config model')
-    rknn.config(mean_values=[[104, 117, 123]], std_values=[[1, 1, 1]], target_platform=platform,
-                quantized_algorithm="normal", quant_img_RGB2BGR=True)  # mmse
-    print('done')
-
-    # Load model
-    print('--> Loading model')
-    ret = rknn.load_onnx(model=model_path)
+    # Load RKNN model
+    ret = rknn.load_rknn(args.model_path)
     if ret != 0:
-        print('Load model failed!')
+        print('Load RKNN model \"{}\" failed!'.format(args.model_path))
         exit(ret)
     print('done')
 
-    # Build model
-    print('--> Building model')
-    ret = rknn.build(do_quantization=do_quant, dataset=DATASET_PATH)
+    # Init runtime environment
+    print('--> Init runtime environment')
+    ret = rknn.init_runtime(target=args.target)
     if ret != 0:
-        print('Build model failed!')
-        exit(ret)
-    print('done')
-
-    # Export rknn model
-    print('--> Export rknn model')
-    ret = rknn.export_rknn(output_path)
-    if ret != 0:
-        print('Export rknn model failed!')
+        print('Init runtime environment failed!')
         exit(ret)
     print('done')
 
@@ -205,14 +166,6 @@ if __name__ == '__main__':
     model_height, model_width = (320, 320)
     letterbox_img, aspect_ratio, offset_x, offset_y = letterbox_resize(img, (model_height,model_width), 114)  # letterbox缩放
     infer_img = letterbox_img[..., ::-1]  # BGR2RGB
-
-    # Init runtime environment
-    print('--> Init runtime environment')
-    ret = rknn.init_runtime()
-    if ret != 0:
-        print('Init runtime environment failed!')
-        exit(ret)
-    print('done')
 
     # Inference
     print('--> Running model')

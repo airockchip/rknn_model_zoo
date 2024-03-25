@@ -23,14 +23,12 @@ endif()
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")
   set(OpenCV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/opencv/opencv-android-sdk-build/sdk/native/jni/abi-${CMAKE_ANDROID_ARCH_ABI})
 else()
-    if (TARGET_SOC STREQUAL "x86-64")
-      # set(OpenCV_DIR ${MZ_ROOT}/libs/common/opencv/opencv-linux-x86_64/share/OpenCV)
-    elseif(TARGET_LIB_ARCH STREQUAL "lib")
+    if(TARGET_LIB_ARCH STREQUAL "lib")
       set(OpenCV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/opencv/opencv-linux-armhf/share/OpenCV)
     else()
       set(OpenCV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/opencv/opencv-linux-aarch64/share/OpenCV)
     endif()
-  endif()
+endif()
 find_package(OpenCV REQUIRED)
 message(STATUS OpenCV_DIR=${OpenCV_DIR})
 message(STATUS OpenCV_LIBS=${OpenCV_LIBS})
@@ -41,23 +39,41 @@ file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
 
 #dma
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/allocator/dma)
-
 #drm
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/allocator/drm)
 
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+    set(postprocess_file rknpu1/postprocess.cc)
+    set(yolov5_seg_file rknpu1/yolov5_seg.cc)
+    #matmul
+else()
+    set(postprocess_file rknpu2/postprocess.cc)
+    set(yolov5_seg_file rknpu2/yolov5_seg.cc)
+endif()
+
 add_executable(${PROJECT_NAME}
     main.cc
-    postprocess.cc
-    rknpu2/yolov5_seg.cc
+    ${postprocess_file}
+    ${yolov5_seg_file}
 )
 
-target_link_libraries(${PROJECT_NAME}
-    fileutils
-    imageutils
-    imagedrawing
-    ${OpenCV_LIBS}    
-    ${LIBRKNNRT}
-)
+if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+  target_link_libraries(${PROJECT_NAME}
+      fileutils
+      imageutils
+      imagedrawing
+      ${OpenCV_LIBS}    
+      ${LIBRKNNRT}
+  )
+else()
+  target_link_libraries(${PROJECT_NAME}
+      fileutils
+      imageutils
+      imagedrawing
+      ${OpenCV_LIBS}    
+      ${LIBRKNNRT}
+  )
+  endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Android")
     target_link_libraries(${PROJECT_NAME}

@@ -31,7 +31,7 @@ https://github.com/PaddlePaddle/PaddleDetection/blob/release/2.6/configs/ppyoloe
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
 
 
 
@@ -67,7 +67,7 @@ python convert.py ../model/ppyoloe_s.onnx rk3588
 
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `i8`.
+- `<dtype>(optional)`: Specify as `i8`, `u8` or `fp`. `i8`/`u8` for doing quantization, `fp` for no quantization. Default is `i8`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `ppyoloe.rknn`
 
 
@@ -95,29 +95,12 @@ python ppyoloe.py --model_path <rknn_model> --target <TARGET_PLATFORM> --img_sho
 
 ## 6. Android Demo
 
+**Note: RK1808, RV1109, RV1126 does not support Android.**
+
 #### 6.1 Compile and Build
 
-*Usage:*
-
-```sh
-# go back to the rknn_model_zoo root directory
-cd ../../
-export ANDROID_NDK_PATH=<android_ndk_path>
-
-./build-android.sh -t <TARGET_PLATFORM> -a <ARCH> -d ppyoloe
-
-# such as 
-./build-android.sh -t rk3588 -a arm64-v8a -d ppyoloe
-```
-
-*Description:*
-- `<android_ndk_path>`: Specify Android NDK path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
-	```shell
-	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
-	adb shell cat /proc/version
-	```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `ppyoloe`.**
 
 #### 6.2 Push demo files to device
 
@@ -151,31 +134,8 @@ export LD_LIBRARY_PATH=./lib
 
 #### 7.1 Compile and Build
 
-*Usage:*
-
-```shell
-# go back to the rknn_model_zoo root directory
-cd ../../
-
-# if GCC_COMPILER not found while building, please set GCC_COMPILER path
-(optional)export GCC_COMPILER=<GCC_COMPILER_PATH>
-
-./build-linux.sh -t <TARGET_PLATFORM> -a <ARCH> -d ppyoloe
-
-# such as 
-./build-linux.sh -t rk3588 -a aarch64 -d ppyoloe
-```
-
-*Description:*
-
-- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
-- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
-  
-  ```shell
-  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
-  adb shell cat /proc/version
-  ```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `ppyoloe`.**
 
 #### 7.2 Push demo files to device
 

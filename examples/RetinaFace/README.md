@@ -1,4 +1,8 @@
 # RetinaFace
+
+## Current Support Platform
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+
 ## Model Source
 The model used in this example comes from the following open source projects:
 https://github.com/biubug6/Pytorch_Retinaface
@@ -26,23 +30,36 @@ python3 convert_to_onnx.py -m ./weights/mobilenet0.25_Final.pth --network mobile
 ## Convert ONNX model to RKNN model
 
 ```
-cd ./python
-python RetinaFace.py <onnx_model> <TARGET_PLATFORM> [dtype(optional)] [output_rknn_path(optional)]
-# such as: python RetinaFace.py ../model/RetinaFace_mobile320.onnx rk3566
+cd python
+python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
+# such as: python convert.py ../model/RetinaFace_mobile320.onnx rk3566
 # output model will be saved as ../model/RetinaFace.rknn
 ```
 *Description:*
 
 - <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588 according to board SOC version.
-- <dtype\> is *optional*, could be specified as `i8` or `fp`, `i8` means to do quantization, `fp` means no to do quantization, default is `i8`.
+- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
+- <dtype\> is *optional*, could be specified as `i8` or `u8`, `i8`/`u8` means to do quantization, default is `i8`/`u8`.
 - <output_rknn_path> is *optional*, used to specify the saving path of the RKNN model, default save path is `../model/RetinaFace.rknn`
 
-After execution, the corresponding rknn model will be generated and rknn will be used to perform connected reasoning on the model. The inference result will be saved as the image result.jpg.
 
+## Python Demo
+
+*Usage:*
+
+```shell
+cd python
+# Inference with RKNN model
+python RetinaFace.py --model_path <rknn_model> --target <TARGET_PLATFORM>
+# The inference result will be saved as the image result.jpg.
+```
+*Description:*
+- <TARGET_PLATFORM>: Specified as the NPU platform name. Such as 'rk3588'.
+- <rknn_model>: Specified as the model path.
 
 
 ## Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 

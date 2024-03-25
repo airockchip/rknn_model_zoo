@@ -34,13 +34,13 @@ done
 if [ -z ${TARGET_SOC} ] || [ -z ${BUILD_DEMO_NAME} ]; then
   echo "$0 -t <target> -a <arch> -d <build_demo_name> [-b <build_type>] [-m]"
   echo ""
-  echo "    -t : target (rk356x/rk3588/rv1106)"
+  echo "    -t : target (rk356x/rk3588/rk3576/rv1106/rk1808/rv1126)"
   echo "    -a : arch (aarch64/armhf)"
   echo "    -d : demo name"
   echo "    -b : build_type(Debug/Release)"
   echo "    -m : enable address sanitizer, build_type need set to Debug"
   echo "such as: $0 -t rk3588 -a aarch64 -d mobilenet"
-  echo "Note: 'rk356x' represents rk3562/rk3566/rk3568, 'rv1106' represents rv1103/rv1106"
+  echo "Note: 'rk356x' represents rk3562/rk3566/rk3568, 'rv1106' represents rv1103/rv1106, 'rv1126' represents rv1109/rv1126"
   echo ""
   exit -1
 fi
@@ -50,6 +50,8 @@ if [[ -z ${GCC_COMPILER} ]];then
         echo "Please set GCC_COMPILER for $TARGET_SOC"
         echo "such as export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf"
         exit
+    elif [[ ${TARGET_SOC} = "rv1109" || ${TARGET_SOC} = "rv1126" ]];then
+        GCC_COMPILER=arm-linux-gnueabihf
     else
         GCC_COMPILER=aarch64-linux-gnu
     fi
@@ -99,7 +101,7 @@ then
             echo "$name"
         fi
     done
-    echo "rv1106_rv1103 only support: mobilenet and yolov5"
+    echo "rv1106_rv1103 only support: mobilenet and yolov5/6/7/8/x"
     exit
 fi
 
@@ -122,9 +124,20 @@ case ${TARGET_SOC} in
     rk3562)
         TARGET_SOC="rk356x"
         ;;
+    rk3576)
+        TARGET_SOC="rk3576"
+        ;;
+    rk1808):
+        TARGET_SOC="rk1808"
+        ;;
+    rv1109)
+        ;;
+    rv1126)
+        TARGET_SOC="rv1126"
+        ;;
     *)
         echo "Invalid target: ${TARGET_SOC}"
-        echo "Valid target: rk3562,rk3566,rk3568,rk3588,rv1106,rv1103"
+        echo "Valid target: rk3562,rk3566,rk3568,rk3588,rk3576,rv1106,rv1103,rk1808,rv1109,rv1126"
         exit -1
         ;;
 esac

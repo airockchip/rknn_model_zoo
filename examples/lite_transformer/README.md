@@ -28,7 +28,7 @@ https://github.com/airockchip/lite-transformer
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
 
 
 
@@ -67,36 +67,19 @@ python convert.py ../model/lite-transformer-decoder-16.onnx rk3588
 
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `fp`. Currently not support `i8` lite transformer model in this version.
+- `<dtype>(optional)`: Specify as `i8`/`u8`, `fp`. `i8`/`u8` for doing quantization, `fp` for no quantization. Default is `fp`. Currently not support `i8`/`u8` lite transformer model in this version.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model name with `rknn` suffix.
 
 
 
 ## 5. Android Demo
 
+**Note: RK1808, RV1109, RV1126 does not support Android.**
+
 #### 5.1 Compile and Build
 
-*Usage:*
-
-```sh
-# go back to the rknn_model_zoo root directory
-cd ../../
-export ANDROID_NDK_PATH=<android_ndk_path>
-
-./build-android.sh -t <TARGET_PLATFORM> -a <ARCH> -d lite_transformer
-
-# such as 
-./build-android.sh -t rk3588 -a arm64-v8a -d lite_transformer
-```
-
-*Description:*
-- `<android_ndk_path>`: Specify Android NDK path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
-	```shell
-	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
-	adb shell cat /proc/version
-	```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `lite_transformer`.**
 
 #### 5.2 Push demo files to device
 
@@ -122,36 +105,12 @@ export LD_LIBRARY_PATH=./lib
 
 
 
-
 ## 6. Linux Demo
 
 #### 6.1 Compile and Build
 
-*Usage:*
-
-```shell
-# go back to the rknn_model_zoo root directory
-cd ../../
-
-# if GCC_COMPILER not found while building, please set GCC_COMPILER path
-(optional)export GCC_COMPILER=<GCC_COMPILER_PATH>
-
-./build-linux.sh -t <TARGET_PLATFORM> -a <ARCH> -d lite_transformer
-
-# such as 
-./build-linux.sh -t rk3588 -a aarch64 -d lite_transformer
-```
-
-*Description:*
-
-- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
-- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
-- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
-  
-  ```shell
-  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
-  adb shell cat /proc/version
-  ```
+Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
+**Note: Please replace the model name with `lite_transformer`.**
 
 #### 6.2 Push demo files to device
 

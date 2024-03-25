@@ -14,6 +14,8 @@ DEFAULT_ONNX_PATH = '../model/resnet50-v2-7.onnx'
 CLASS_LABEL_PATH = '../model/synset.txt'
 DEFAULT_QUANT = True
 
+RKNPU1_TARGET = ['rk1808', 'rv1109', 'rv1126']
+
 def readable_speed(speed):
     speed_bytes = float(speed)
     speed_kbytes = speed_bytes / 1024
@@ -58,9 +60,10 @@ def check_and_download_origin_model():
 
 def parse_arg():
     if len(sys.argv) < 3:
-        print("Usage: python3 {} [onnx_model_path] [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]));
-        print("       platform choose from [rk3562,rk3566,rk3568,rk3588]")
-        print("       dtype choose from    [i8, fp]")
+        print("Usage: python3 {} [onnx_model_path] [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]))
+        print("       platform choose from [rk3562,rk3566,rk3568,rk3588,rk1808,rv1109,rv1126]")
+        print("       dtype choose from [i8, fp] for [rk3562,rk3566,rk3568,rk3588]")
+        print("       dtype choose from [u8, fp] for [rk1808,rv1109,rv1126]")
         exit(1)
 
     model_path = sys.argv[1]
@@ -69,10 +72,10 @@ def parse_arg():
     do_quant = DEFAULT_QUANT
     if len(sys.argv) > 3:
         model_type = sys.argv[3]
-        if model_type not in ['i8', 'fp']:
+        if model_type not in ['u8', 'i8', 'fp']:
             print("ERROR: Invalid model type: {}".format(model_type))
             exit(1)
-        elif model_type == 'i8':
+        elif model_type in ['i8', 'u8']:
             do_quant = True
         else:
             do_quant = False
@@ -96,14 +99,16 @@ if __name__ == '__main__':
 
     # Pre-process config
     print('--> Config model')
-    rknn.config(mean_values=[255*0.485, 255*0.456, 255*0.406], std_values=[255*0.229, 255*0.224, 255*0.225], target_platform=platform)
+    rknn.config(mean_values=[[255*0.485, 255*0.456, 255*0.406]], std_values=[[255*0.229, 255*0.224, 255*0.225]], target_platform=platform)
     print('done')
 
     # Load model
     print('--> Loading model')
-    ret = rknn.load_onnx(model=model_path,
-                        inputs=['data'],
-                        input_size_list=[[1, 3, 224, 224]])
+    if platform.lower() in RKNPU1_TARGET:
+        ret = rknn.load_onnx(model=model_path, inputs=['data'], input_size_list=[[3, 224, 224]])
+    else:
+        ret = rknn.load_onnx(model=model_path, inputs=['data'], input_size_list=[[1, 3, 224, 224]])
+
     if ret != 0:
         print('Load model failed!')
         exit(ret)
@@ -129,10 +134,15 @@ if __name__ == '__main__':
     img = cv2.imread('../model/dog_224x224.jpg')
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (224, 224))
+    img = np.expand_dims(img, 0)
 
     # Init runtime environment
     print('--> Init runtime environment')
-    ret = rknn.init_runtime()
+    if platform.lower() in RKNPU1_TARGET:
+        # For RKNPU1, the simulator has beed disabled since version 1.7.5
+        ret = rknn.init_runtime(target=platform)
+    else:
+        ret = rknn.init_runtime()
     if ret != 0:
         print('Init runtime environment failed!')
         exit(ret)

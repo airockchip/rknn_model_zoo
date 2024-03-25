@@ -1,42 +1,38 @@
 # PPOCR-System
 
+## Current Support Platform
+
+RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+
 
 ## Prepare model
 
 Refer [PPOCR-Det](../PPOCR-Det) and [PPOCR-Rec](../PPOCR-Rec) to get ONNX and RKNN models.
 
-## Script Usage
 
-Install libs:
+## Python Demo
 
-```bash
-pip install -r python/requirements.txt
+*Usage:*
+
+```shell
+cd python
+
+# Inference with ONNX model
+python ppocr_system.py --det_model_path <onnx_model> --rec_model_path <onnx_model>
+# such as: python ppocr_system.py --det_model_path ../../PPOCR-Det/model/ppocrv4_det.onnx --rec_model_path ../../PPOCR-Rec/model/ppocrv4_rec.onnx
+
+# Inference with RKNN model
+python ppocr_system.py --det_model_path <rknn_model> --rec_model_path <rknn_model> --target <TARGET_PLATFORM>
+# such as: python ppocr_system.py --det_model_path ../../PPOCR-Det/model/ppocrv4_det.rknn --rec_model_path ../../PPOCR-Rec/model/ppocrv4_rec.rknn --target rk3588
 ```
+*Description:*
+- <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
 
-For ONNX:
+- <onnx_model / rknn_model>: specified as the model path.
 
-```bash
-python python/ppocr_system.py \
-    --image_dir model/test1.jpg \
-    --det_model_dir ../PPOCR-Det/model/ppocrv4_det.onnx \
-    --rec_model_dir ../PPOCR-Rec/model/ppocrv4_rec.onnx \
-    --rec_char_dict_path ../PPOCR-Rec/model/ppocr_keys_v1.txt \
-    --vis_font_path model/simfang.ttf \
-    --use_gpu false --use_onnx true --rec_image_shape "3, 48, 320"
-```
-
-For RKNN:
-```bash
-python python/ppocr_system.py \
-    --image_dir model/test1.jpg \
-    --det_model_dir ../PPOCR-Det/model/ppocrv4_det.rknn \
-    --rec_model_dir ../PPOCR-Rec/model/ppocrv4_rec.rknn \
-    --rec_char_dict_path ../PPOCR-Rec/model/ppocr_keys_v1.txt \
-    --vis_font_path model/simfang.ttf \
-    --use_gpu false --use_rknn true --platform rk3568 --det_image_shape 480 480 --rec_image_shape "3, 48, 320"
-```
 
 ## Android Demo
+**Note: RK1808, RV1109, RV1126 does not support Android.**
 
 ### Compiling && Building
 
@@ -72,7 +68,7 @@ adb shell
 cd /data/rknn_PPOCR-System_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_ppocr_system_demo model/ppocrv4_det.rknn model/ppocrv4_rec.rknn model/test1.jpg
+./rknn_ppocr_system_demo model/ppocrv4_det.rknn model/ppocrv4_rec.rknn model/test.jpg
 ```
 
 ## Aarch64 Linux Demo
@@ -115,7 +111,7 @@ adb shell
 cd /data/rknn_PPOCR-System_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_ppocr_system_demo model/ppocrv4_det.rknn model/ppocrv4_rec.rknn model/test1.jpg
+./rknn_ppocr_system_demo model/ppocrv4_det.rknn model/ppocrv4_rec.rknn model/test.jpg
 ```
 
 Note: Try searching the location of librga.so and add it to LD_LIBRARY_PATH if the librga.so is not found in the lib folder.

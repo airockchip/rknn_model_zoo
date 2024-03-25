@@ -27,6 +27,8 @@ typedef struct {
     int model_channel;
     int model_width;
     int model_height;
+    int input_image_width;
+    int input_image_height;
     bool is_quant;
 } rknn_app_context_t;
 
