@@ -785,6 +785,7 @@ int post_process(rknn_app_context_t *app_ctx, rknn_output *outputs, letterbox_t 
     od_results->results_seg[0].seg_mask = real_seg_mask;
     free(all_mask_in_one);
     free(cropped_seg_mask);
+    free(real_seg_mask);
     free(seg_mask);
     free(matmul_out);
     timer.tok();
