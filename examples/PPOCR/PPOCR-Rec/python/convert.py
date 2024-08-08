@@ -21,8 +21,8 @@ RKNPU1_PLATFORM = ['rk1808', 'rv1109', 'rv1126']
 def parse_arg():
     if len(sys.argv) < 3:
         print("Usage: python3 {} onnx_model_path [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]));
-        print("       platform choose from [rk3562, rk3566, rk3568, rk3588, rk1808, rv1109, rv1126]")
-        print("       dtype choose from    [fp] for [rk3562,rk3566,rk3568,rk3588]")
+        print("       platform choose from [rk3562, rk3566, rk3568, rk3576, rk3588, rk1808, rv1109, rv1126]")
+        print("       dtype choose from    [fp] for [rk3562,rk3566,rk3568,rk3576,rk3588]")
         print("       dtype choose from    [fp] for [rk1808,rv1109,rv1126]")
         exit(1)
 
@@ -57,8 +57,8 @@ if __name__ == '__main__':
         rknn.config(
             target_platform=platform,
             # In order to improve accuracy, these nodes need to fallback to CPU on RKNPU2 platform.
-            op_target={'p2o.Add.235_shape4':'cpu', 'p2o.Add.245_shape4':'cpu', 'p2o.Add.255_shape4':'cpu',
-                    'p2o.Add.265_shape4':'cpu', 'p2o.Add.275_shape4':'cpu'}
+            # op_target={'p2o.Add.235_shape4':'cpu', 'p2o.Add.245_shape4':'cpu', 'p2o.Add.255_shape4':'cpu',
+            #         'p2o.Add.265_shape4':'cpu', 'p2o.Add.275_shape4':'cpu'}
         )
 
     print('done')

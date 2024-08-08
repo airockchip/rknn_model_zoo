@@ -1,16 +1,45 @@
 # yolov5_seg
 
-## Current Support Platform
-RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+## Table of contents
+
+- [1. Description](#1-description)
+- [2. Current Support Platform](#2-current-support-platform)
+- [3. Pretrained Model](#3-pretrained-model)
+- [4. Convert to RKNN](#4-convert-to-rknn)
+- [5. Python Demo](#5-python-demo)
+- [6. Android Demo](#6-android-demo)
+  - [6.1 Compile and Build](#61-compile-and-build)
+  - [6.2 Push demo files to device](#62-push-demo-files-to-device)
+  - [6.3 Run demo](#63-run-demo)
+- [7. Linux Demo](#7-linux-demo)
+  - [7.1 Compile \&\& Build](#71-compile-and-build)
+  - [7.2 Push demo files to device](#72-push-demo-files-to-device)
+  - [7.3 Run demo](#73-run-demo)
+- [8. Expected Results](#8-expected-results)
 
 
-## Model Source
+
+## 1. Description
+
+YOLOv5 Segmentation is a fast and accurate instance segmentation model.
+
 The model used in this example comes from the following open source projects:  
+
 https://github.com/airockchip/yolov5
+
+
+
+## 2. Current Support Platform
+
+RK3566, RK3568, RK3588, RK3562, RK3576, RV1109, RV1126, RK1808
+
+
+
+## 3. Pretrained Model
 
 Download link: 
 
-[yolov5n-seg.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5_seg/yolov5n-seg.onnx)<br />[yolov5s-seg.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5_seg/yolov5s-seg.onnx)<br />[yolov5m-seg.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5_seg/yolov5m-seg.onnx)
+[./yolov5n-seg.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5_seg/yolov5n-seg.onnx)<br />[./yolov5s-seg.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5_seg/yolov5s-seg.onnx)<br />[./yolov5m-seg.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5_seg/yolov5m-seg.onnx)
 
 Download with shell command:
 
@@ -33,124 +62,163 @@ cd model
 </div>
 
 
-## Model Convert
+## 4. Convert to RKNN
 
 *Usage:*
 
-```
+```shell
 cd python
 python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
-# such as: python convert.py ../model/yolov5s-seg.onnx rk3566
+
+# such as: 
+python convert.py ../model/yolov5s-seg.onnx rk3588
 # output model will be saved as ../model/yolov5_seg.rknn
 ```
 
 *Description:*
 
-- <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RK1808, RV1109, RV1126 according to board SOC version.
-- <dtype> is *optional*, could be specified as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`/`u8`.
-- <output_rknn_path> is *optional*, used to specify the saving path of the RKNN model.
+- `<onnx_model>`: Specify ONNX model path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<dtype>(optional)`: Specify as `i8/u8` or `fp`. `i8/u8` for doing quantization, `fp` for no quantization. Default is `i8/u8`.
+- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yolov5_seg.rknn`
 
 
 
-## Python Demo
+## 5. Python Demo
 
 *Usage:*
 
-```
+```sh
 cd python
 # Inference with ONNX model
-python yolov5_seg.py --model_path {onnx_model} --img_show
+python yolov5_seg.py --model_path <onnx_model> --img_show
 
 # Inference with RKNN model
-python yolov5_seg.py --model_path {rknn_model} --target {target_platform} --img_show
+python yolov5_seg.py --model_path <rknn_model> --target <TARGET_PLATFORM> --img_show
 
 # coco mAP test
-python yolov5_seg.py --model_path {rknn_model} --target {target_platform} --anno_json {val_annotation} --img_folder {val_dataset}  --coco_map_test
+python yolov5_seg.py --model_path <rknn_model> --target <TARGET_PLATFORM> --anno_json <val_annotation> --img_folder <val_dataset> --coco_map_test
 ```
 *Description:*
-- {onnx_model / rknn_model} should be the model path.
-- {target_platform} could be filled like [RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126]
-- {val_annotation} is the path of COCO val annotation.
-- {val_dataset} is the path of COCO val images.
+- <TARGET_PLATFORM>: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- <onnx_model / rknn_model>: Specify model path.
+- <val_annotation>: Specify COCO val annotation path. 
+- <val_dataset>: Specify COCO val images path.
 
 
-Note: **For more usage, please execute command `python yolov5_seg.py --help.`**
-
-
-
-## Android Demo
+## 6. Android Demo
 **Note: RK1808, RV1109, RV1126 does not support Android.**
 
-### Compiling && Building
+#### 6.1 Compile and Build
 
-Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
-**Note: Please replace the model name with `yolov5_seg`.**
-
-### Push all build output file to the board
-
-Connect the USB port to PC, then push all demo files to the board. Take RK3588 as an example:
+*Usage:*
 
 ```sh
+# go back to the rknn_model_zoo root directory
+cd ../../
+export ANDROID_NDK_PATH=<android_ndk_path>
+
+./build-android.sh -t <TARGET_PLATFORM> -a <ARCH> -d yolov5_seg
+
+# such as 
+./build-android.sh -t rk3588 -a arm64-v8a -d yolov5_seg
+```
+
+*Description:*
+- `<android_ndk_path>`: Specify Android NDK path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
+	```shell
+	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
+	adb shell cat /proc/version
+	```
+
+#### 6.2 Push demo files to device
+
+With device connected via USB port, push demo files to devices:
+
+```shell
 adb root
 adb remount
-adb push install/rk3588_android_arm64-v8a/rknn_yolov5_seg_demo/ /data/
+adb push install/<TARGET_PLATFORM>_android_<ARCH>/rknn_yolov5_seg_demo/ /data/
 ```
 
-### Running
+#### 6.3 Run demo
 
 ```sh
 adb shell
-cd /data/rknn_yolov5_seg_demo/
+cd /data/rknn_yolov5_seg_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_yolov5_seg_demo model/yolov5s-seg.rknn model/bus.jpg
+./rknn_yolov5_seg_demo model/yolov5_seg.rknn model/bus.jpg
 ```
 
+- After running, the result was saved as `out.png`. To check the result on host PC, pull back result referring to the following command: 
+
+  ```sh
+  adb pull /data/rknn_yolov5_seg_demo/out.png
+  ```
 
 
-## Aarch64 Linux Demo
 
-### Compiling && Building
+## 7. Linux Demo
 
-Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
-**Note: Please replace the model name with `yolov5_seg`.**
+#### 7.1 Compile and Build
 
-### Push all build output file to the board
+*usage*
 
+```shell
+# go back to the rknn_model_zoo root directory
+cd ../../
 
-Push install/<TARGET_PLATFORM>_linux_aarch64/rknn_yolov5_seg_demo/ to the board,
+# if GCC_COMPILER not found while building, please set GCC_COMPILER path
+(optional)export GCC_COMPILER=<GCC_COMPILER_PATH>
 
-- If use adb via the EVB board:
+./build-linux.sh -t <TARGET_PLATFORM> -a <ARCH> -d yolov5_seg
 
+# such as 
+./build-linux.sh -t rk3588 -a aarch64 -d yolov5_seg
 ```
-adb push install/<TARGET_PLATFORM>_linux_aarch64/rknn_yolov5_seg_demo/ /userdata/
+
+*Description:*
+
+- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
+- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
+  
+  ```shell
+  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
+  adb shell cat /proc/version
+  ```
+
+#### 7.2 Push demo files to device
+
+- If device connected via USB port, push demo files to devices:
+
+```shell
+adb push install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_yolov5_seg_demo/ /data/
 ```
 
-- For other boards, use the scp or other different approaches to push all files under install/<TARGET_PLATFORM>_linux_aarch64/rknn_yolov5_seg_demo/ to '/userdata'.
+- For other boards, use `scp` or other approaches to push all files under `install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_yolov5_seg_demo/` to `data`.
 
-Please use the specific platform instead of <TARGET_PLATFORM> above.
-
-### Running
+#### 7.3 Run demo
 
 ```sh
 adb shell
-cd /userdata/rknn_yolov5_seg_demo/
+cd /data/rknn_yolov5_seg_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_yolov5_seg_demo model/yolov5s-seg.rknn model/bus.jpg
+./rknn_yolov5_seg_demo model/yolov5_seg.rknn model/bus.jpg
 ```
 
-Note: Try searching the location of librga.so and add it to LD_LIBRARY_PATH if the librga.so is not found in the lib folder.
-Use the following command to add it to LD_LIBRARY_PATH.
+- After running, the result was saved as `out.png`. To check the result on host PC, pull back result referring to the following command: 
 
-```sh
-export LD_LIBRARY_PATH=./lib:<LOCATION_LIBRGA>
-```
-
+  ```
+  adb pull /data/rknn_yolov5_seg_demo/out.png
+  ```
 
 
-## Expected Results
+## 8. Expected Results
 
 This example will print the labels and corresponding scores of the test image detect results, as follows:
 ```

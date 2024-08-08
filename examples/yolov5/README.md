@@ -1,16 +1,43 @@
 # yolov5
 
-## Model Source
+## Table of contents
+
+- [1. Description](#1-description)
+- [2. Current Support Platform](#2-current-support-platform)
+- [3. Pretrained Model](#3-pretrained-model)
+- [4. Convert to RKNN](#4-convert-to-rknn)
+- [5. Python Demo](#5-python-demo)
+- [6. Android Demo](#6-android-demo)
+  - [6.1 Compile and Build](#61-compile-and-build)
+  - [6.2 Push demo files to device](#62-push-demo-files-to-device)
+  - [6.3 Run demo](#63-run-demo)
+- [7. Linux Demo](#7-linux-demo)
+  - [7.1 Compile \&\& Build](#71-compile-and-build)
+  - [7.2 Push demo files to device](#72-push-demo-files-to-device)
+  - [7.3 Run demo](#73-run-demo)
+- [8. Expected Results](#8-expected-results)
+
+
+
+## 1. Description
+
 The model used in this example comes from the following open source projects:  
+
 https://github.com/airockchip/yolov5
 
 
 
-## Pretrained Model
+## 2. Current Support Platform
+
+RK3566, RK3568, RK3588, RK3562, RV1106, RV1103, RV1109, RK3576, RV1126, RK1808, RK3399PRO
+
+
+
+## 3. Pretrained Model
 
 Download link: 
 
-[yolov5n.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5n.onnx)<br />[yolov5s_relu.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5s_relu.onnx)<br />[yolov5s.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5n.onnx)<br />[yolov5m.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5m.onnx)
+[./yolov5s_relu.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5s_relu.onnx)<br />[./yolov5n.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5n.onnx)<br />[./yolov5s.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5s.onnx)<br />[./yolov5m.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yolov5/yolov5m.onnx)
 
 Download with shell command:
 
@@ -20,6 +47,7 @@ cd model
 ```
 
 **Note**: The model provided here is an optimized model, which is different from the official original model. Take yolov5n.onnx as an example to show the difference between them.
+
 1. The comparison of their output information is as follows. The left is the official original model, and the right is the optimized model.
 
 <div align=center>
@@ -32,14 +60,9 @@ cd model
   <img src="./model_comparison/yolov5_graph_comparison.jpg" alt="Image">
 </div>
 
-## Current Support Platform
-
-RK3562, RK3566, RK3568, RK3588, RV1103, RV1106, RK1808, RV1109, RV1126
 
 
-
-
-## Convert to RKNN
+## 4. Convert to RKNN
 
 *Usage:*
 
@@ -48,20 +71,20 @@ cd python
 python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
 
 # such as: 
-python convert.py ../model/yolov5s_relu.onnx rk3566
+python convert.py ../model/yolov5s_relu.onnx rk3588
 # output model will be saved as ../model/yolov5.rknn
 ```
 
 *Description:*
 
-- <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>:  Specify NPU platform name. Such as 'rk3588'.
-- <quant_dtype> is *optional*, could be specified as `i8`/`u8` or `fp`. `i8`/`u8` means to do quantization, `fp` means no quantization, default is `i8`.
-- <output_rknn_path> is *optional*, used to specify the saving path of the RKNN model, default save in the same directory as ONNX model with name 'yolov5.rknn'
+- `<onnx_model>`: Specify ONNX model path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `i8`.
+- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yolov5.rknn`
 
 
 
-## Python Demo
+## 5. Python Demo
 
 *Usage:*
 
@@ -73,23 +96,42 @@ python yolov5.py --model_path <pt_model/onnx_model> --img_show
 # Inference with RKNN model
 python yolov5.py --model_path <rknn_model> --target <TARGET_PLATFORM> --img_show
 ```
+
 *Description:*
-- <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
 
-- <pt_model / onnx_model / rknn_model>: specified as the model path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Such as 'rk3588'.
+
+- `<pt_model / onnx_model / rknn_model>`: specified as the model path.
 
 
 
-## Android Demo
+## 6. Android Demo
 
-**Note: RK1808, RV1109, RV1126 does not support Android.**
+#### 6.1 Compile and Build
 
-### Compiling && Building
+*Usage:*
 
-Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#android-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
-**Note: Please replace the model name with `yolov5`.**
+```sh
+# go back to the rknn_model_zoo root directory
+cd ../../
+export ANDROID_NDK_PATH=<android_ndk_path>
 
-### Push demo files to device
+./build-android.sh -t <TARGET_PLATFORM> -a <ARCH> -d yolov5
+
+# such as 
+./build-android.sh -t rk3588 -a arm64-v8a -d yolov5
+```
+
+*Description:*
+- `<android_ndk_path>`: Specify Android NDK path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
+	```shell
+	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
+	adb shell cat /proc/version
+	```
+
+#### 6.2 Push demo files to device
 
 With device connected via USB port, push demo files to devices:
 
@@ -99,7 +141,7 @@ adb remount
 adb push install/<TARGET_PLATFORM>_android_<ARCH>/rknn_yolov5_demo/ /data/
 ```
 
-### Running
+#### 6.3 Run demo
 
 ```sh
 adb shell
@@ -109,54 +151,88 @@ export LD_LIBRARY_PATH=./lib
 ./rknn_yolov5_demo model/yolov5.rknn model/bus.jpg
 ```
 
-- After running. The result was saved as ./out.png. Pull to check the result.
+- After running, the result was saved as `out.png`. To check the result on host PC, pull back result referring to the following command: 
 
+  ```sh
+  adb pull /data/rknn_yolov5_demo/out.png
   ```
-  adb pull /data/rknn_yolov5_demo/out.png .
-  ```
 
 
 
-## Linux Demo
+## 7. Linux Demo
 
-### Compiling && Building
+#### 7.1 Compile and Build
 
-Please refer to the [Compilation_Environment_Setup_Guide](../../docs/Compilation_Environment_Setup_Guide.md#linux-platform) document to setup a cross-compilation environment and complete the compilation of C/C++ Demo.  
-**Note: Please replace the model name with `yolov5`.**
-
-### Push demo files to device
+*usage*
 
 ```shell
-adb push install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_yolov5_demo/ /data/
+# go back to the rknn_model_zoo root directory
+cd ../../
+
+# if GCC_COMPILER not found while building, please set GCC_COMPILER path
+(optional)export GCC_COMPILER=<GCC_COMPILER_PATH>
+
+./build-linux.sh -t <TARGET_PLATFORM> -a <ARCH> -d yolov5
+
+# such as 
+./build-linux.sh -t rk3588 -a aarch64 -d yolov5
+# such as 
+./build-linux.sh -t rv1106 -a armhf -d yolov5
 ```
 
-### Running
+*Description:*
+
+- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
+  - For RV1106, RV1103, GCC_COMPILER version is `arm-rockchip830-linux-uclibcgnueabihf`
+    ```sh
+    export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf
+    ```
+- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
+  
+  ```shell
+  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
+  adb shell cat /proc/version
+  ```
+
+#### 7.2 Push demo files to device
+
+- If device connected via USB port, push demo files to devices:
+
+```shell
+adb push install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_yolov5_demo/ /userdata/
+```
+
+- For other boards, use `scp` or other approaches to push all files under `install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_yolov5_demo/` to `userdata`.
+
+#### 7.3 Run demo
 
 ```sh
 adb shell
-cd /data/rknn_yolov5_demo
+cd /userdata/rknn_yolov5_demo
 
 export LD_LIBRARY_PATH=./lib
 ./rknn_yolov5_demo model/yolov5.rknn model/bus.jpg
 ```
 
-- RV1106/1103 LD_LIBRARY_PATH must fill in an absolute path. such as 
+- RV1106/1103 LD_LIBRARY_PATH must specify as the absolute path. Such as 
 
   ```sh
-  export LD_LIBRARY_PATH=/data/rknn_yolov5_demo/lib
+  export LD_LIBRARY_PATH=/userdata/rknn_yolov5_demo/lib
   ```
 
-- After running. The result was saved as ./out.png. Pull to check the result
+- After running, the result was saved as `out.png`. To check the result on host PC, pull back result referring to the following command: 
 
-  ```sh
-  adb pull /data/rknn_yolov5_demo/out.png .
+  ```
+  adb pull /userdata/rknn_yolov5_demo/out.png
   ```
 
-  
 
-## Expected Results
+
+## 8. Expected Results
 
 This example will print the labels and corresponding scores of the test image detect results, as follows:
+
 ```
 person @ (209 244 286 506) 0.884
 person @ (478 238 559 526) 0.868
@@ -165,7 +241,7 @@ bus @ (94 129 553 468) 0.705
 person @ (79 354 122 516) 0.339
 ```
 
-<img src="result.png">
+<img src="./result.png">
 <br>
-- Note: Different platforms, different versions of tools and drivers may have slightly different results.
 
+- Note: Different platforms, different versions of tools and drivers may have slightly different results.

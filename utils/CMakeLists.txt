@@ -38,3 +38,16 @@ target_include_directories(imageutils PUBLIC
     ${LIBJPEG_INCLUDES}
     ${LIBRGA_INCLUDES}
 )
+
+add_library(audioutils STATIC
+    audio_utils.c
+)
+
+target_link_libraries(audioutils
+    ${LIBSNDFILE}
+)
+
+target_include_directories(audioutils PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${LIBSNDFILE_INCLUDES}
+)

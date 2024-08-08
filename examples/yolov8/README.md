@@ -29,7 +29,7 @@ https://github.com/airockchip/ultralytics_yolov8
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+RK3562, RK3566, RK3568, RK3576, RK3588, RK1808, RV1109, RV1126
 
 
 
@@ -76,7 +76,7 @@ python convert.py ../model/yolov8n.onnx rk3588
 *Description:*
 
 - `<onnx_model>`: Specify ONNX model path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Such as 'rk3588'.
 - `<dtype>(optional)`: Specify as `i8`, `u8` or `fp`. `i8`/`u8` for doing quantization, `fp` for no quantization. Default is `i8`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yolov8.rknn`
 
@@ -97,7 +97,7 @@ python yolov8.py --model_path <rknn_model> --target <TARGET_PLATFORM> --img_show
 
 *Description:*
 
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Such as 'rk3588'.
 
 - `<pt_model / onnx_model / rknn_model>`: Specify the model path.
 

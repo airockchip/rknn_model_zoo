@@ -39,4 +39,16 @@ typedef struct {
     int bottom;
 } image_rect_t;
 
+/**
+ * @brief Image obb rectangle
+ * 
+ */
+typedef struct {
+    int x;
+    int y;
+    int w;
+    int h;
+    float angle;
+} image_obb_box_t;
+
 #endif //_RKNN_MODEL_ZOO_COMMON_H_

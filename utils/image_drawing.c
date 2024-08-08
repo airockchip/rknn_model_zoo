@@ -1525,6 +1525,37 @@ void draw_line(image_buffer_t* image, int x0, int y0, int x1, int y1, unsigned i
     }
 }
 
+void rbbox_to_corners(const float *in_rbbox, int *out_rbbox) {
+    // generate clockwise corners and rotate it clockwise
+    // 顺时针方向返回角点位置
+    float cx = in_rbbox[0] + in_rbbox[2] / 2;
+    float cy = in_rbbox[1] + in_rbbox[3] / 2;
+    float x_d = in_rbbox[2];
+    float y_d = in_rbbox[3];
+    float angle = in_rbbox[4];
+    float a_cos = cos(angle);
+    float a_sin = sin(angle);
+    float corners_x[4] = {-x_d / 2, -x_d / 2, x_d / 2, x_d / 2};
+    float corners_y[4] = {-y_d / 2, y_d / 2, y_d / 2, -y_d / 2};
+    for (int i = 0; i < 4; ++i) {
+        out_rbbox[2 * i] = (int)(a_cos * corners_x[i] - a_sin * corners_y[i] + cx);
+        out_rbbox[2 * i + 1] = (int)(a_sin * corners_x[i] + a_cos * corners_y[i] + cy);
+    }
+}
+
+void draw_obb_rectangle(image_buffer_t *image, int rx, int ry, int rw, int rh, float angle, unsigned int color,
+                        int thickness) {
+    float in_bbox[5] = {(float)(rx), (float)(ry), (float)(rw), (float)(rh), angle};
+    int out_box_corners[8];
+    rbbox_to_corners(in_bbox, out_box_corners);
+    for(int i = 0 ; i < 4; i++) {
+        int index1 = i;
+        int index2 = (i + 1) % 4;
+        draw_line(image, out_box_corners[index1 * 2], out_box_corners[index1 * 2 + 1],
+                  out_box_corners[index2 * 2], out_box_corners[index2 * 2 + 1], color, thickness);
+    }
+}
+
 void draw_text(image_buffer_t* image, const char* text, int x, int y, unsigned int color,
                  int fontsize)
 {

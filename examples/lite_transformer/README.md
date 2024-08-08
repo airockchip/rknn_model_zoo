@@ -28,7 +28,7 @@ https://github.com/airockchip/lite-transformer
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK1808, RV1109, RV1126
+RK3562, RK3566, RK3568, RK3576, RK3588, RK1808, RV1109, RV1126
 
 
 
@@ -66,7 +66,7 @@ python convert.py ../model/lite-transformer-decoder-16.onnx rk3588
 *Description:*
 
 - `<onnx_model>`: Specify ONNX model path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Such as 'rk3588'.
 - `<dtype>(optional)`: Specify as `i8`/`u8`, `fp`. `i8`/`u8` for doing quantization, `fp` for no quantization. Default is `fp`. Currently not support `i8`/`u8` lite transformer model in this version.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model name with `rknn` suffix.
 

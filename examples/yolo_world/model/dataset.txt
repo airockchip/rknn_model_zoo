@@ -1,0 +1,1 @@
+bus.jpg coco_text_outp.npy

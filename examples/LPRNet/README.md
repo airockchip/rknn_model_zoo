@@ -30,7 +30,7 @@ https://github.com/sirius-ai/LPRNet_Pytorch/
 
 ## 2. Current Support Platform
 
-RK3566, RK3588, RK3568, RK3562, RK1808, RV1109, RV1126
+RK3562, RK3566, RK3568, RK3576, RK3588, RK1808, RV1109, RV1126
 
 
 
@@ -64,7 +64,7 @@ python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_
 *Description:*
 
 - `<onnx_model>`: Specify ONNX model path.
-- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2 Current Support Platform).
+- `<TARGET_PLATFORM>`: Specified as the NPU platform name. Such as 'rk3588'.
 - `<dtype>(optional)`: Specify as `i8`, `u8` or `fp`, `i8`/`u8` means to do quantization, `fp` means no to do quantization, default is `i8`/`u8`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `lprnet.rknn`
 

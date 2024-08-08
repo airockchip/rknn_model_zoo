@@ -1,16 +1,43 @@
-# MobileNet
+# mobilenet
 
-## Model Source
-The model used in this example comes from the following open source projects:  
-https://github.com/onnx/models/tree/main/vision/classification/mobilenet
+## Table of contents
+
+- [1. Description](#1-description)
+- [2. Current Support Platform](#2-current-support-platform)
+- [3. Pretrained Model](#3-pretrained-model)
+- [4. Convert to RKNN](#4-convert-to-rknn)
+- [5. Python Demo](#5-python-demo)
+- [6. Android Demo](#6-android-demo)
+  - [6.1 Compile and Build](#61-compile-and-build)
+  - [6.2 Push demo files to device](#62-push-demo-files-to-device)
+  - [6.3 Run demo](#63-run-demo)
+- [7. Linux Demo](#7-linux-demo)
+  - [7.1 Compile \&\& Build](#71-compile-and-build)
+  - [7.2 Push demo files to device](#72-push-demo-files-to-device)
+  - [7.3 Run demo](#73-run-demo)
+- [8. Expected Results](#8-expected-results)
 
 
 
-## Pretrained Model
+## 1. Description
+
+The model used in this example comes from the following open source model zoo:  
+
+https://github.com/onnx/models/tree/8e893eb39b131f6d3970be6ebd525327d3df34ea/vision/classification/mobilenet/model/mobilenetv2-12.onnx
+
+
+
+## 2. Current Support Platform
+
+RK3566, RK3568, RK3588, RK3562, RK3576, RV1106, RV1103, RV1109, RV1126, RK1808, RK3399PRO
+
+
+
+## 3. Pretrained Model
 
 Download link: 
 
-[mobilenetv2-12.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/MobileNet/mobilenetv2-12.onnx)
+[mobilenetv2-12.onnx](https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/mobilenet/mobilenetv2-12.onnx)
 
 Download with shell command:
 
@@ -20,29 +47,40 @@ cd model
 ```
 
 
-## Script Usage
+
+## 4. Convert to RKNN
 
 *Usage:*
+
 ```shell
 cd python
 python mobilenet.py --model <onnx_model> --target <TARGET_PLATFORM> --output_path <output_path> --dtype <data_type>
+
 # such as: 
 python mobilenet.py --model ../model/mobilenetv2-12.onnx --target rk3588
 # output model will be saved as ../model/mobilenetv2-12.rknn
 ```
+
 *Description:*
 
-- <onnx_model> should be the ONNX model path.
-- <TARGET_PLATFORM>  could be specified as RK3562, RK3566, RK3568, RK3588, RV1103, RV1106, RK1808, RV1109, RV1126 according to board SOC version. Case insensitive.
-- <output_path> export path of RKNN model. **Optional, default is `mobilenet_v2.rknn`.**
-- <data_type> quantized data type. **Optional, defaul is `i8`.** `i8`/`u8` means do quantization, `fp32` means not do quantization.
+- `<onnx_model>`: Specify ONNX model path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `i8`.
+- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `mobilenetv2-12.rknn`
 
 
-## Android Demo
 
-**Note: RK1808, RV1109, RV1126 does not support Android.**
+## 5. Python Demo
 
-### Compiling && Building
+Same as [Step4](#4-convert-to-rknn) .
+
+
+
+## 6. Android Demo
+
+#### 6.1 Compile and Build
+
+*Usage:*
 
 ```sh
 # go back to the rknn_model_zoo root directory
@@ -55,44 +93,44 @@ export ANDROID_NDK_PATH=<android_ndk_path>
 ./build-android.sh -t rk3588 -a arm64-v8a -d mobilenet
 ```
 
-- <android_ndk_path>: Specified as Android ndk path.
+*Description:*
+- `<android_ndk_path>`: Specify Android NDK path.
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command:
+	```shell
+	# Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] should shown in log.
+	adb shell cat /proc/version
+	```
 
-- <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
-
-- <ARCH\>: Specify device system architecture.
-
-  ```sh
-  # Query architecture. For Android, ['arm64-v8a' or 'armeabi-v7a'] shown.
-  adb shell cat /proc/version
-  ```
-
-### Push demo files to device
+#### 6.2 Push demo files to device
 
 With device connected via USB port, push demo files to devices:
 
-```sh
+```shell
 adb root
 adb remount
-adb push install/<TARGET_PLATFORM>_android_arm64-v8a/rknn_mobilenet_demo /data/
+adb push install/<TARGET_PLATFORM>_android_<ARCH>/rknn_mobilenet_demo/ /data/
 ```
 
-### Running
+#### 6.3 Run demo
 
 ```sh
 adb shell
 cd /data/rknn_mobilenet_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_mobilenet_demo model/mobilenet_v2.rknn model/bell.jpg
+./rknn_mobilenet_demo model/mobilenetv2-12.rknn model/bell.jpg
 ```
 
 
 
-## Linux Demo
+## 7. Linux Demo
 
-### Compiling && Building
+#### 7.1 Compile and Build
 
-```sh
+*usage*
+
+```shell
 # go back to the rknn_model_zoo root directory
 cd ../../
 
@@ -103,57 +141,58 @@ cd ../../
 
 # such as 
 ./build-linux.sh -t rk3588 -a aarch64 -d mobilenet
-# such as
+# such as 
 ./build-linux.sh -t rv1106 -a armhf -d mobilenet
-# such as
-./build-linux.sh -t rk1808 -a aarch64 -d mobilenet
-# such as
-./build-linux.sh -t rv1126 -a armhf -d mobilenet
 ```
-- <GCC_COMPILER_PATH>: Specified as GCC_COMPILER path.
 
-  - For RV1106, RV1103, GCC_COMPILER version is 'arm-rockchip830-linux-uclibcgnueabihf'
+*Description:*
 
+- `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
+  - For RV1106, RV1103, GCC_COMPILER version is `arm-rockchip830-linux-uclibcgnueabihf`
     ```sh
     export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf
     ```
-
-- <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
-
-- <ARCH\>: Specify device system architecture.
-
-  ```sh
-  # Query architecture. For Linux, ['aarch64' or 'armhf'] shown.
+- `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
+  
+  ```shell
+  # Query architecture. For Linux, ['aarch64' or 'armhf'] should shown in log.
   adb shell cat /proc/version
   ```
 
-### Push demo files to device
+#### 7.2 Push demo files to device
 
-```
-adb push install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_mobilenet_demo/ /data/
+- If device connected via USB port, push demo files to devices:
+
+```shell
+adb push install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_mobilenet_demo/ /userdata/
 ```
 
-### Running
+- For other boards, use `scp` or other approaches to push all files under `install/<TARGET_PLATFORM>_linux_<ARCH>/rknn_mobilenet_demo/` to `userdata`.
+
+#### 7.3 Run demo
 
 ```sh
 adb shell
-cd /data/rknn_mobilenet_demo
+cd /userdata/rknn_mobilenet_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_mobilenet_demo model/mobilenet_v2.rknn model/bell.jpg
+./rknn_mobilenet_demo model/mobilenetv2-12.rknn model/bell.jpg
 ```
 
-- RV1106/1103 LD_LIBRARY_PATH must fill in an absolute path. such as
+- RV1106/1103 LD_LIBRARY_PATH must specify as the absolute path. Such as 
 
   ```sh
-  export LD_LIBRARY_PATH=/data/rknn_mobilenet_demo/lib
+  export LD_LIBRARY_PATH=/userdata/rknn_mobilenet_demo/lib
   ```
 
 
 
-## Expected Results
+
+## 8. Expected Results
 
 This example will print the TOP5 labels and corresponding scores of the test image classification results, as follows:
+
 ```
 -----TOP 5-----
 [494] score=0.990035 class=n03017168 chime, bell, gong
@@ -162,4 +201,5 @@ This example will print the TOP5 labels and corresponding scores of the test ima
 [747] score=0.000945 class=n04023962 punching bag, punch bag, punching ball, punchball
 [442] score=0.000712 class=n02825657 bell cote, bell cot
 ```
+
 - Note: Different platforms, different versions of tools and drivers may have slightly different results.

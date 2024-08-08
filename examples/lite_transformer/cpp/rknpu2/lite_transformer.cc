@@ -30,7 +30,7 @@
 #include "type_half.h"
 
 #include "rknn_api.h"
-#include "cnpy.h"
+// #include "cnpy.h"
 
 #include "easy_timer.h"
 #include "bpe_tools.h"
@@ -41,17 +41,17 @@
                   Functions
 -------------------------------------------*/
 
-static void save_npy(const char* output_path, float* output_data, rknn_tensor_attr* output_attr)
-{
-  std::vector<size_t> output_shape;
+// static void save_npy(const char* output_path, float* output_data, rknn_tensor_attr* output_attr)
+// {
+//   std::vector<size_t> output_shape;
 
-  for (uint32_t i = 0; i < output_attr->n_dims; ++i) {
-    // output_shape.push_back(output_attr->dims[output_attr->n_dims - i - 1]); // toolkit1 is inverse
-    output_shape.push_back(output_attr->dims[i]); // toolkit 2
-  }
+//   for (uint32_t i = 0; i < output_attr->n_dims; ++i) {
+//     // output_shape.push_back(output_attr->dims[output_attr->n_dims - i - 1]); // toolkit1 is inverse
+//     output_shape.push_back(output_attr->dims[i]); // toolkit 2
+//   }
 
-  cnpy::npy_save<float>(output_path, output_data, output_shape);
-}
+//   cnpy::npy_save<float>(output_path, output_data, output_shape);
+// }
 
 
 int token_embeding(float *token_embed, float *position_embed, int *tokens, int len, float *embedding){

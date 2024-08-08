@@ -289,7 +289,7 @@ if __name__ == '__main__':
                     co_helper.add_single_record(image_id = int(img_name.split('.')[0]),
                                                 category_id = coco_id_list[int(classes[i])],
                                                 bbox = boxes[i],
-                                                score = round(scores[i], 5).astype(np.float)
+                                                score = round(scores[i], 5).item()
                                                 )
 
     # calculate maps

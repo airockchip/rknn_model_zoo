@@ -31,6 +31,21 @@ void draw_rectangle(image_buffer_t* image, int rx, int ry, int rw, int rh, unsig
                       int thickness);
 
 /**
+ * @brief Draw obb rotate rectangle
+ * 
+ * @param image [in] Image buffer
+ * @param rx [in] Rectangle top left x
+ * @param ry [in] Rectangle top left y
+ * @param rw [in] Rectangle width
+ * @param rh [in] Rectangle height
+ * @param angle [in] Rectangle angle
+ * @param color [in] Rectangle line color
+ * @param thickness [in] Rectangle line thickness
+ */
+void draw_obb_rectangle(image_buffer_t *image, int rx, int ry, int rw, int rh, float angle, unsigned int color,
+                        int thickness);
+
+/**
  * @brief Draw line
  * 
  * @param image [in] Image buffer
