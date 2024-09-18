@@ -48,6 +48,7 @@ cd model
 ./download_model.sh
 ```
 
+**Note: For exporting whisper onnx models, please refer to [export_onnx.md](./export_onnx.md)**
 
 
 ## 4. Convert to RKNN
@@ -71,7 +72,7 @@ python convert.py ../model/whisper_decoder_base_20s.onnx rk3588
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
 - `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `fp`.
-- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `whisper_encoder_base_20s.rknn`
+- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model.
 
 
 
@@ -82,15 +83,20 @@ python convert.py ../model/whisper_decoder_base_20s.onnx rk3588
 ```shell
 cd python
 # Inference with ONNX model
-python whisper.py --encoder_model_path <onnx_model> -decoder_model_path <onnx_model>
+python whisper.py --encoder_model_path <onnx_model> -decoder_model_path <onnx_model> --task <TASK> --audio_path <AUDIO_PATH>
+# such as:
+python whisper.py --encoder_model_path ../model/whisper_encoder_base_20s.onnx --decoder_model_path ../model/whisper_decoder_base_20s.onnx --task en --audio_path ../model/test_en.wav
 
 # Inference with RKNN model
-python whisper.py --encoder_model_path <rknn_model> -decoder_model_path <rknn_model> --target <TARGET_PLATFORM>
+python whisper.py --encoder_model_path <rknn_model> -decoder_model_path <rknn_model> --task <TASK> --audio_path <AUDIO_PATH> --target <TARGET_PLATFORM>
+# such as:
+python whisper.py --encoder_model_path ../model/whisper_encoder_base_20s.rknn --decoder_model_path ../model/whisper_decoder_base_20s.rknn --task en --audio_path ../model/test_en.wav --target rk3588
 ```
 *Description:*
-- <TARGET_PLATFORM>: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
-- <onnx_model / rknn_model>: Specify model path.
-
+- `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
+- `<onnx_model / rknn_model>`: Specify model path.
+- `<TASK>`: Specify recognition task. Such as `en`, `zh`. `en` is the English recognition task, `zh` is the Chinese recognition task.
+- `<AUDIO_PATH>`: Specify audio path.
 
 
 ## 6. Android Demo
@@ -136,7 +142,7 @@ adb shell
 cd /data/rknn_whisper_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_whisper_demo model/whisper_encoder_base_20s.rknn model/whisper_decoder_base_20s.rknn model/test.wav
+./rknn_whisper_demo model/whisper_encoder_base_20s.rknn model/whisper_decoder_base_20s.rknn en model/test_en.wav
 ```
 
 
@@ -188,15 +194,19 @@ adb shell
 cd /data/rknn_whisper_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_whisper_demo model/whisper_encoder_base_20s.rknn model/whisper_decoder_base_20s.rknn model/test.wav
+./rknn_whisper_demo model/whisper_encoder_base_20s.rknn model/whisper_decoder_base_20s.rknn en model/test_en.wav
 ```
 
 
 ## 8. Expected Results
 
 This example will print the recognized text, as follows:
-```
+```sh
+# TASK_FOR_EN
 Whisper output:  Mr. Quilter is the apostle of the middle classes, and we are glad to welcome his gospel.
+
+# TASK_FOR_ZH
+Whisper output: 对我做了介绍,我想说的是大家如果对我的研究感兴趣
 ```
 
 - Note: Different platforms, different versions of tools and drivers may have slightly different results.

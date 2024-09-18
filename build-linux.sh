@@ -3,7 +3,7 @@
 set -e
 
 echo "$0 $@"
-while getopts ":t:a:d:b:m" opt; do
+while getopts ":t:a:d:b:m:r" opt; do
   case $opt in
     t)
       TARGET_SOC=$OPTARG
@@ -20,6 +20,9 @@ while getopts ":t:a:d:b:m" opt; do
       ;;
     d)
       BUILD_DEMO_NAME=$OPTARG
+      ;;
+    r)
+      DISABLE_RGA=ON
       ;;
     :)
       echo "Option -$OPTARG requires an argument." 
@@ -39,8 +42,10 @@ if [ -z ${TARGET_SOC} ] || [ -z ${BUILD_DEMO_NAME} ]; then
   echo "    -d : demo name"
   echo "    -b : build_type(Debug/Release)"
   echo "    -m : enable address sanitizer, build_type need set to Debug"
+  echo "    -r : disable rga, use cpu resize image"
   echo "such as: $0 -t rk3588 -a aarch64 -d mobilenet"
   echo "Note: 'rk356x' represents rk3562/rk3566/rk3568, 'rv1106' represents rv1103/rv1106, 'rv1126' represents rv1109/rv1126"
+  echo "Note: 'disable rga option is invalid for rv1103/rv1103b/rv1106"
   echo ""
   exit -1
 fi
@@ -77,6 +82,10 @@ fi
 # Build with Address Sanitizer for memory check, BUILD_TYPE need set to Debug
 if [[ -z ${ENABLE_ASAN} ]];then
     ENABLE_ASAN=OFF
+fi
+
+if [[ -z ${DISABLE_RGA} ]];then
+    DISABLE_RGA=OFF
 fi
 
 for demo_path in `find examples -name ${BUILD_DEMO_NAME}`
@@ -159,6 +168,7 @@ echo "TARGET_SOC=${TARGET_SOC}"
 echo "TARGET_ARCH=${TARGET_ARCH}"
 echo "BUILD_TYPE=${BUILD_TYPE}"
 echo "ENABLE_ASAN=${ENABLE_ASAN}"
+echo "DISABLE_RGA=${DISABLE_RGA}"
 echo "INSTALL_DIR=${INSTALL_DIR}"
 echo "BUILD_DIR=${BUILD_DIR}"
 echo "CC=${CC}"
@@ -180,6 +190,7 @@ cmake ../../${BUILD_DEMO_PATH} \
     -DCMAKE_SYSTEM_PROCESSOR=${TARGET_ARCH} \
     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
     -DENABLE_ASAN=${ENABLE_ASAN} \
+    -DDISABLE_RGA=${DISABLE_RGA} \
     -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR}
 make -j4
 make install

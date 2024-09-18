@@ -19,6 +19,8 @@
 #include "rknn_api.h"
 #include "common.h"
 
+#define CROP_SIZE 224
+
 typedef struct {
     rknn_context rknn_ctx;
     rknn_input_output_num io_num;

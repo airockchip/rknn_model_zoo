@@ -8,6 +8,7 @@ from transformers import AutoTokenizer
 IMAGE_SIZE = [224, 224]
 SEQUENCE_LEN = 20
 PAD_VALUE = 49407
+CROP_SIZE = 224
 
 def text_tokenizer(text, model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -20,7 +21,18 @@ def text_tokenizer(text, model_name):
 def img_preprocess(img_path):
     img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (IMAGE_SIZE[0], IMAGE_SIZE[1]), interpolation=cv2.INTER_LANCZOS4)
+    h, w, _ = img.shape
+    if h < CROP_SIZE:
+        padh = (CROP_SIZE - h) // 2
+        img = np.pad(img, ((padh, CROP_SIZE - h - padh), (0, 0), (0, 0)), mode='constant').astype(np.uint8)
+    if w < CROP_SIZE:
+        padw = (CROP_SIZE - w) // 2
+        img = np.pad(img, ((0, 0), (padw, CROP_SIZE - w - padw), (0, 0)), mode='constant').astype(np.uint8)
+    if h > CROP_SIZE and w > CROP_SIZE:
+        start_x = (w - CROP_SIZE) // 2
+        start_y = (h - CROP_SIZE) // 2
+        img = img[start_y:start_y+CROP_SIZE, start_x:start_x+CROP_SIZE]
+    img = cv2.resize(img, (IMAGE_SIZE[0], IMAGE_SIZE[1]),)
     img = np.expand_dims(img, 0)
 
     return img
@@ -50,6 +62,8 @@ class CLIP():
         for i in range(text_num):
             outputs.append(rknn.inference(inputs=[input_data[i:i+1, :]])[0])
 
+        rknn.release()
+
         return np.concatenate(outputs, axis=0)
 
     def clip_img_run(self):
@@ -58,6 +72,8 @@ class CLIP():
         rknn.init_runtime(target=self.target)
         img = img_preprocess(self.img)
         outputs = rknn.inference(inputs=[img])
+
+        rknn.release()
 
         return outputs[0]
 
@@ -88,6 +104,7 @@ if __name__ == '__main__':
     text_index = np.argmax(outputs) % len(args.text[0])
     score = outputs.max()
 
-    print("{:^20} {:^20}  {}".format('images', 'text', 'score'))
-    print('-' * 50)
-    print('{:s} @ {:s}: {:.3f}'.format(args.img, args.text[0][text_index], score))
+    print("--> rknn clip demo result:")
+    print("images: {:s}".format(args.img))
+    print("text  : {:s}".format(args.text[0][text_index]))
+    print("score : {:.3f}".format(score))

@@ -77,8 +77,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION .)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/test.wav DESTINATION ./model)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/vocab.txt DESTINATION ./model)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/test_en.wav DESTINATION ./model)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/test_zh.wav DESTINATION ./model)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/vocab_en.txt DESTINATION ./model)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/vocab_zh.txt DESTINATION ./model)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/mel_80_filters.txt DESTINATION ./model)
 file(GLOB RKNN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/../model/*.rknn")
 install(FILES ${RKNN_FILES} DESTINATION model)

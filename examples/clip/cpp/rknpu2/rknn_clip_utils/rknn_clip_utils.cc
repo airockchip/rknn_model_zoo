@@ -179,7 +179,21 @@ int inference_clip_image_model_utils(rknn_clip_context* clip_ctx, image_buffer_t
         return -1;
     }
 
-    ret = convert_image(img, &dst_img, NULL, NULL, 0);
+    // center crop
+    if (img->width < CROP_SIZE || img->height < CROP_SIZE)
+    {
+        ret = convert_image(img, &dst_img, NULL, NULL, 0);
+    }
+    else
+    {
+        image_rect_t src_box;
+        memset(&src_box, 0, sizeof(image_rect_t));
+        src_box.left = (img->width - CROP_SIZE) / 2;
+        src_box.top = (img->height - CROP_SIZE) / 2;
+        src_box.right = src_box.left + CROP_SIZE - 1;
+        src_box.bottom = src_box.top + CROP_SIZE - 1;
+        ret = convert_image(img, &dst_img, &src_box, NULL, 0);
+    }
     if (ret < 0)
     {
         printf("convert_image fail! ret=%d\n", ret);

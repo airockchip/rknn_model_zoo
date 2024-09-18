@@ -207,6 +207,7 @@ class YOLOWORLD():
         self.target = args.target
         self.img = args.img
         self.text = args.text
+        self.save_text_outputs = args.save_text_outputs
 
     def clip_text_run(self):
         input_ids = text_tokenizer(self.text, "openai/clip-vit-base-patch32")
@@ -225,6 +226,8 @@ class YOLOWORLD():
         for i in range(text_num):
             outputs.append(rknn.inference(inputs=[input_data[i:i+1, :]])[0])
 
+        rknn.release()
+
         return np.concatenate(outputs, axis=0)
 
     def yolo_world_run(self, text_input):
@@ -235,10 +238,17 @@ class YOLOWORLD():
         img = img_preprocess(self.img)
         outputs = rknn.inference(inputs=[img, text_input])
 
+        rknn.release()
+
         return outputs
 
     def run(self):
         text_outputs = self.clip_text_run()
+
+        text_outputs = np.expand_dims(text_outputs, axis=0)
+        if args.save_text_outputs:
+            np.save('../model/coco_text_outp.npy', text_outputs)
+            print('save text outputs success')
 
         yolo_outputs = self.yolo_world_run(text_outputs)
 
@@ -252,6 +262,7 @@ if __name__ == '__main__':
     parser.add_argument('--target', type=str, help="target platform", required=True)
     parser.add_argument('--img', type=str, help="input image", default='../model/bus.jpg')
     parser.add_argument('--text', type=list, help="input text", default=[CLASSES])
+    parser.add_argument('--save_text_outputs', type=bool, help="save text outputs for yolo world quant dataset", default=False)
 
     args = parser.parse_args()
     yoloworld = YOLOWORLD(args)

@@ -29,18 +29,6 @@ yolov8n-pose pt model download link:
 
 [yolov8n-pose.pt](https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n-pose.pt)<br />
 
-pt model convert to onnx:
-```
-from ultralytics import YOLO
-
-# Load a model
-model = YOLO('yolov8n-pose.pt')  # load an official model
-
-# Export the model
-imgsz = (640,640)
-results = model.export(format='onnx',imgsz=imgsz,opset=11)
-```
-
 
 ## 2. Current Support Platform
 

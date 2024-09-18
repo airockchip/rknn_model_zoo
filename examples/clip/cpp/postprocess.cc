@@ -109,55 +109,6 @@ static void matmul_by_cpu(float* A, float* B, float* out, int A_rows, int A_B_co
     }
 }
 
-static void matmul_by_cpu_optimize(float* A, float* B, float* out, int A_rows, int A_B_cols, int B_rows)
-{
-    // A: [M, N]    B: [K, N]    out: [M, K]
-    for (int i = 0; i < A_rows; i++) {
-        int k = 0;
-        for (; k < (A_B_cols & ~3); k += 4) {
-            float a0 = A[i * A_B_cols + k];
-            float a1 = A[i * A_B_cols + k + 1];
-            float a2 = A[i * A_B_cols + k + 2];
-            float a3 = A[i * A_B_cols + k + 3];
-
-            float32x4_t vA0 = vdupq_n_f32(a0);
-            float32x4_t vA1 = vdupq_n_f32(a1);
-            float32x4_t vA2 = vdupq_n_f32(a2);
-            float32x4_t vA3 = vdupq_n_f32(a3);
-
-            int j = 0;
-
-            for (; j < (B_rows & ~3); j += 4) {
-                float32x4_t vB0 = vld1q_f32(B + j * A_B_cols + k);
-                float32x4_t vB1 = vld1q_f32(B + (j + 1) * A_B_cols + k);
-                float32x4_t vB2 = vld1q_f32(B + (j + 2) * A_B_cols + k);
-                float32x4_t vB3 = vld1q_f32(B + (j + 3) * A_B_cols + k);
-
-                float32x4_t vC = vld1q_f32(out + i * B_rows + j);
-                vC = vfmaq_f32(vC, vA0, vB0);
-                vC = vfmaq_f32(vC, vA1, vB1);
-                vC = vfmaq_f32(vC, vA2, vB2);
-                vC = vfmaq_f32(vC, vA3, vB3);
-                vst1q_f32(out + i * B_rows + j, vC);
-            }
-
-            for (; j < B_rows; j++) {
-                out[i * B_rows + j] += a0 * B[j * A_B_cols + k];
-                out[i * B_rows + j] += a1 * B[j * A_B_cols + k + 1];
-                out[i * B_rows + j] += a2 * B[j * A_B_cols + k + 2];
-                out[i * B_rows + j] += a3 * B[j * A_B_cols + k + 3];
-            }
-        }
-        for (; k < A_B_cols; k++) {
-            float a0 = A[i * A_B_cols + k];
-
-            for (int j = 0; j < B_rows; j++) {
-                out[i * B_rows + j] += a0 * B[j * A_B_cols + k];
-            }
-        }
-    }
-}
-
 static void get_result_with_index(float* arr, int size, int text_num, clip_res* res)
 {
     // Create an array of elements, saving values ​​and index numbers
@@ -223,7 +174,7 @@ int post_process(rknn_app_context_t* app_ctx, float* img_output, float* text_out
     float* matmul_out = (float*)malloc(out_size * sizeof(float));
     float logit_scale = 4.605170249938965;
 
-    matmul_by_cpu_optimize(img_output, text_output, matmul_out, app_ctx->input_img_num, app_ctx->text.output_attrs[0].dims[1], app_ctx->input_text_num);
+    matmul_by_cpu(img_output, text_output, matmul_out, app_ctx->input_img_num, app_ctx->text.output_attrs[0].dims[1], app_ctx->input_text_num);
 
     element_multiply(matmul_out, out_size, expf(logit_scale));
 

@@ -197,7 +197,7 @@ typedef struct rknn_matmul_info_t
 */
 int rknn_matmul_create(rknn_matmul_ctx* ctx, rknn_matmul_info* info, rknn_matmul_io_attr* io_attr);
 
-/*  rknn_matmul_create_dyn_shape
+/*  rknn_matmul_create_dynamic_shape
 
     params:
         rknn_matmul_ctx *ctx                the handle of context.
@@ -211,7 +211,7 @@ int rknn_matmul_create(rknn_matmul_ctx* ctx, rknn_matmul_info* info, rknn_matmul
 /*
   原来的info.M, K, N无效
 */
-int rknn_matmul_create_dyn_shape(rknn_matmul_ctx* ctx, rknn_matmul_info* info, int shape_num,
+int rknn_matmul_create_dynamic_shape(rknn_matmul_ctx* ctx, rknn_matmul_info* info, int shape_num,
                                  rknn_matmul_shape dynamic_shapes[], rknn_matmul_io_attr io_attrs[]);
 
 /* rknn_matmul_set_io_mem

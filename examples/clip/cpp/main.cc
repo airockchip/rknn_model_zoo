@@ -78,9 +78,9 @@ int main(int argc, char **argv)
     }
 
     printf("--> rknn clip demo result \n");
-    printf("      images                 text         score  \n");
-    printf("-------------------------------------------------\n");
-    printf("%s @ %s: %.3f\n", img_path, input_texts[out_res.text_index], out_res.score);
+    printf("images: %s  \n", img_path);
+    printf("text  : %s  \n", input_texts[out_res.text_index]);
+    printf("score : %.3f\n", out_res.score);
 
 out:
     ret = release_clip_model(&rknn_app_ctx);

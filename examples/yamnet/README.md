@@ -48,6 +48,7 @@ cd model
 ./download_model.sh
 ```
 
+**Note: For exporting yamnet onnx models, please refer to [export_onnx.md](./export_onnx.md)**
 
 
 ## 4. Convert to RKNN
@@ -68,7 +69,7 @@ python convert.py ../model/yamnet_3s.onnx rk3588
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
 - `<dtype>(optional)`: Specify as `i8/u8` or `fp`. `i8/u8` for doing quantization, `fp` for no quantization. Default is `fp`.
-- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yamnet_3s.rknn`
+- `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model.
 
 
 

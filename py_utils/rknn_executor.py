@@ -18,9 +18,16 @@ class RKNN_model_container():
             exit(ret)
         print('done')
         
-        self.rknn = rknn 
+        self.rknn = rknn
+
+    def __del__(self):
+        self.release()
 
     def run(self, inputs):
+        if self.rknn is None:
+            print("ERROR: rknn has been released")
+            return []
+
         if isinstance(inputs, list) or isinstance(inputs, tuple):
             pass
         else:
@@ -29,3 +36,7 @@ class RKNN_model_container():
         result = self.rknn.inference(inputs=inputs)
     
         return result
+
+    def release(self):
+        self.rknn.release()
+        self.rknn = None

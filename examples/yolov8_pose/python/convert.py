@@ -18,7 +18,7 @@ def parse_arg():
     do_quant = DEFAULT_QUANT
     if len(sys.argv) > 3:
         model_type = sys.argv[3]
-        if model_type not in ['i8', 'u8']:
+        if model_type not in ['i8', 'u8', 'fp']:
             print("ERROR: Invalid model type: {}".format(model_type))
             exit(1)
         elif model_type in ['i8', 'u8']:

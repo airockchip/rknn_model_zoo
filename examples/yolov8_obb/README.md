@@ -30,17 +30,6 @@ yolov8n-obb pt model download link:
 
 [yolov8n-obb.pt](https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8n-obb.pt)
 
-pt model convert to onnx:
-```
-from ultralytics import YOLO
-
-# Load a model
-model = YOLO('yolov8n-obb.pt')  # load an official model
-
-# Export the model
-imgsz = (640,640)
-results = model.export(format='onnx',imgsz=imgsz)
-```
 
 ## 2. Current Support Platform
 

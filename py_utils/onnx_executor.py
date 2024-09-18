@@ -36,7 +36,14 @@ class ONNX_model_container_py:
         self.sess = rt.InferenceSession(model_path, sess_options=sp_options, providers=['CPUExecutionProvider'])
         self.model_path = model_path
 
+    def __del__(self):
+        self.release()
+
     def run(self, input_datas):
+        if self.sess is None:
+            print("ERROR: sess has been released")
+            return []
+
         if len(input_datas) < len(self.sess.get_inputs()):
             assert False,'inputs_datas number not match onnx model{} input'.format(self.model_path)
         elif len(input_datas) > len(self.sess.get_inputs()):
@@ -66,6 +73,10 @@ class ONNX_model_container_py:
         #forward model
         res = self.sess.run(output_list, input_dict)
         return res
+
+    def release(self):
+        del self.sess
+        self.sess = None
 
 
 class ONNX_model_container_cpp:

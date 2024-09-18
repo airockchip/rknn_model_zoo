@@ -665,24 +665,26 @@ err:
 int convert_image(image_buffer_t* src_img, image_buffer_t* dst_img, image_rect_t* src_box, image_rect_t* dst_box, char color)
 {
     int ret;
- 
-    printf("src width=%d height=%d fmt=0x%x virAddr=0x%p fd=%d\n",
-        src_img->width, src_img->height, src_img->format, src_img->virt_addr, src_img->fd);
-    printf("dst width=%d height=%d fmt=0x%x virAddr=0x%p fd=%d\n",
-        dst_img->width, dst_img->height, dst_img->format, dst_img->virt_addr, dst_img->fd);
-    if (src_box != NULL) {
-        printf("src_box=(%d %d %d %d)\n", src_box->left, src_box->top, src_box->right, src_box->bottom);
-    }
-    if (dst_box != NULL) {
-        printf("dst_box=(%d %d %d %d)\n", dst_box->left, dst_box->top, dst_box->right, dst_box->bottom);
-    }
-    printf("color=0x%x\n", color);
+#if defined(DISABLE_RGA) 
+    printf("convert image use cpu\n");
+    ret = convert_image_cpu(src_img, dst_img, src_box, dst_box, color);
+#else
 
-    ret = convert_image_rga(src_img, dst_img, src_box, dst_box, color);
-    if (ret != 0) {
-        printf("try convert image use cpu\n");
+#if defined(RV1106_1103) 
+    if(src_img->width % 4 == 0) {
+#else
+    if(src_img->width % 16 == 0) {
+#endif
+        ret = convert_image_rga(src_img, dst_img, src_box, dst_box, color);
+        if (ret != 0) {
+            printf("try convert image use cpu\n");
+            ret = convert_image_cpu(src_img, dst_img, src_box, dst_box, color);
+        }
+    } else {
+        printf("src width is not 16-aligned, convert image use cpu\n");
         ret = convert_image_cpu(src_img, dst_img, src_box, dst_box, color);
     }
+#endif
     return ret;
 }
 

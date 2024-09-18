@@ -20,9 +20,15 @@ class Torch_model_container:
         #! Backends must be set before load model.
         self.pt_model = torch.jit.load(model_path)
         self.pt_model.eval()
-        holdon = 1
+
+    def __del__(self):
+        self.release()
 
     def run(self, input_datas):
+        if self.pt_model is None:
+            print("ERROR: pt_model has been released")
+            return []
+
         assert isinstance(input_datas, list), "input_datas should be a list, like [np.ndarray, np.ndarray]"
 
         input_datas_torch_type = []
@@ -50,3 +56,7 @@ class Torch_model_container:
             result[i] = result[i].cpu().detach().numpy()
 
         return result
+
+    def release(self):
+        del self.pt_model
+        self.pt_model = None

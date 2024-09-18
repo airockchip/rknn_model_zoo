@@ -37,9 +37,7 @@ typedef struct
 } rknn_whisper_context_t;
 
 int init_whisper_model(const char *model_path, rknn_app_context_t *app_ctx);
-
 int release_whisper_model(rknn_app_context_t *app_ctx);
-
-int inference_whisper_model(rknn_whisper_context_t *app_ctx, audio_buffer_t *audio, float *mel_filters, VocabEntry *vocab, std::vector<std::string> &recognized_text);
+int inference_whisper_model(rknn_whisper_context_t *app_ctx, std::vector<float> audio_data, float *mel_filters, VocabEntry *vocab, int task_code, std::vector<std::string> &recognized_text);
 
 #endif //_RKNN_DEMO_WHISPER_H_

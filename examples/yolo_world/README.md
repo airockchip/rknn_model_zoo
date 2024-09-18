@@ -23,7 +23,7 @@
 
 ## 1. Description
 The model used in this example comes from the following open source projects:
-https://github.com/AILab-CVC/YOLO-World
+https://github.com/airockchip/YOLO-World
 
 
 
@@ -69,6 +69,15 @@ python convert.py ../model/yolo_world_v2s.onnx rk3588
 - `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. yolo_world model default is `i8`, clip_text only support `fp`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yolo_world_v2s.rknn`
 
+*Note:*
+
+The `coco_text_outp.npy` in the yolo_world model quant dataset is the output of the clip_text model. In this example, it is obtained through the `save_text_outputs` parameter in the `yolo_world.py` file.
+
+Regarding the deployment of RKNN and the export of ONNX models， please refer:
+
+[RKNN_README_CN.md](https://github.com/airockchip/YOLO-World/blob/master/RKNN_README_CN.md)
+
+[RKNN_README_EN.md](https://github.com/airockchip/YOLO-World/blob/master/RKNN_README_EN.md)
 
 
 ## 5. Python Demo

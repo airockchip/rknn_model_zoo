@@ -560,6 +560,71 @@ static int process_u8(uint8_t *input, uint8_t *angle_feature, int grid_h, int gr
     return validCount;
 }
 
+static int process_fp32(float *input, float *angle_feature, int grid_h, int grid_w, int stride,
+                      std::vector<float> &boxes, std::vector<float> &boxScores, std::vector<int> &classId, float threshold,
+                      int32_t zp, float scale, int32_t angle_feature_zp, float angle_feature_scale, int index) {
+    int input_loc_len = 64;
+    int tensor_len = input_loc_len + OBJ_CLASS_NUM;
+    int validCount = 0;
+
+    float thres_fp32 = unsigmoid(threshold);
+    for (int h = 0; h < grid_h; h++) {
+        for (int w = 0; w < grid_w; w++) {
+            for (int a = 0; a < OBJ_CLASS_NUM; a++) {
+                if(input[(input_loc_len + a)*grid_w * grid_h + h * grid_w + w ] >= thres_fp32) { //[1,tensor_len,grid_h,grid_w]
+                    float box_conf_f32 = sigmoid(input[(input_loc_len + a) * grid_w * grid_h + h * grid_w + w ]);
+                    float loc[input_loc_len];
+                    for (int i = 0; i < input_loc_len; ++i) {
+                        loc[i] = input[i * grid_w * grid_h + h * grid_w + w];
+                    }
+
+                    for (int i = 0; i < input_loc_len / 16; ++i) {
+                        softmax(&loc[i * 16], 16);
+                    }
+                    float xywh_[4] = {0, 0, 0, 0};
+                    float xywh[4] = {0, 0, 0, 0};
+                    for (int dfl = 0; dfl < 16; ++dfl) {
+                        xywh_[0] += loc[dfl] * dfl;
+                        xywh_[1] += loc[1 * 16 + dfl] * dfl;
+                        xywh_[2] += loc[2 * 16 + dfl] * dfl;
+                        xywh_[3] += loc[3 * 16 + dfl] * dfl;
+                    }
+
+                    float xywh_add[2], xywh_sub[2];
+                    xywh_add[0] = xywh_[0] + xywh_[2];
+                    xywh_add[1] = xywh_[1] + xywh_[3];
+                    xywh_sub[0] = (xywh_[2] - xywh_[0]) / 2;
+                    xywh_sub[1] = (xywh_[3] - xywh_[1]) / 2;
+                    float angle_feature_ = angle_feature[index + (h * grid_w) + w];
+                    angle_feature_ = (angle_feature_ - 0.25) * 3.1415927410125732;
+                    float angle_feature_cos = cos(angle_feature_);
+                    float angle_feature_sin = sin(angle_feature_);
+                    float xy_mul1 = xywh_sub[0] * angle_feature_cos;
+                    float xy_mul2 = xywh_sub[1] * angle_feature_sin;
+                    float xy_mul3 = xywh_sub[0] * angle_feature_sin;
+                    float xy_mul4 = xywh_sub[1] * angle_feature_cos;
+                    xywh_[0] = ((xy_mul1 - xy_mul2) + w + 0.5) * stride;
+                    xywh_[1] = ((xy_mul3 + xy_mul4) + h + 0.5) * stride;
+                    xywh_[2] = xywh_add[0] * stride;
+                    xywh_[3] = xywh_add[1] * stride;
+                    xywh[0] = (xywh_[0] - xywh_[2] / 2);
+                    xywh[1] = (xywh_[1] - xywh_[3] / 2);
+                    xywh[2] = xywh_[2];
+                    xywh[3] = xywh_[3];
+                    boxes.push_back(xywh[0]);//x
+                    boxes.push_back(xywh[1]);//y
+                    boxes.push_back(xywh[2]);//w
+                    boxes.push_back(xywh[3]);//h
+                    boxes.push_back(angle_feature_);//angle
+                    boxScores.push_back(box_conf_f32);
+                    classId.push_back(a);
+                    validCount++;
+                }
+            }
+        }
+    }
+    return validCount;
+}
 
 int post_process(rknn_app_context_t *app_ctx, void *outputs, letterbox_t *letter_box, float conf_threshold, float nms_threshold, object_detect_result_list *od_results) {
 #if defined(RV1106_1103)
@@ -587,6 +652,10 @@ int post_process(rknn_app_context_t *app_ctx, void *outputs, letterbox_t *letter
             validCount += process_u8((uint8_t *)_outputs[i].buf, (uint8_t *)_outputs[3].buf, grid_h, grid_w, stride, filterBoxes, objProbs,
                                      classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale,
                                      app_ctx->output_attrs[3].zp, app_ctx->output_attrs[3].scale, index);
+        } else {
+            validCount += process_fp32((float *)_outputs[i].buf, (float *)_outputs[3].buf, grid_h, grid_w, stride, filterBoxes, objProbs,
+                                     classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale,
+                                     app_ctx->output_attrs[3].zp, app_ctx->output_attrs[3].scale, index);
         }
         index += grid_h * grid_w;
     }
@@ -597,6 +666,10 @@ int post_process(rknn_app_context_t *app_ctx, void *outputs, letterbox_t *letter
         stride = model_in_h / grid_h;
         if (app_ctx->is_quant) {
             validCount += process_i8((int8_t *)_outputs[i].buf, (int8_t *)_outputs[3].buf, grid_h, grid_w, stride, filterBoxes, objProbs,
+                                     classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale,
+                                     app_ctx->output_attrs[3].zp, app_ctx->output_attrs[3].scale, index);
+        } else {
+            validCount += process_fp32((float *)_outputs[i].buf, (float *)_outputs[3].buf, grid_h, grid_w, stride, filterBoxes, objProbs,
                                      classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale,
                                      app_ctx->output_attrs[3].zp, app_ctx->output_attrs[3].scale, index);
         }

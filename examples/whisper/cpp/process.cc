@@ -171,7 +171,7 @@ static void compute_magnitudes(fftwf_complex *stft_result, int num_mel_filters, 
     }
 }
 
-static void clamp_and_log_max(float *mel_spec, int rows, int cols)
+static void clamp_and_log_max(std::vector<float> &mel_spec, int rows, int cols)
 {
     float min_val = 1e-10;
     float scaling_factor = 1.0 / 4.0;
@@ -211,7 +211,7 @@ void transpose(fftwf_complex *input, int input_rows, int input_cols, fftwf_compl
 }
 
 #if ENABLE_NEON
-void matmul_by_neon(float *A, float *B, float *C, int ROWS_A, int COLS_A, int COLS_B)
+void matmul_by_neon(float *A, float *B, std::vector<float> &C, int ROWS_A, int COLS_A, int COLS_B)
 {
     int k_start = COLS_A, k_end = 0;
     for (auto i = 0; i < ROWS_A; i++)
@@ -259,17 +259,17 @@ void matmul_by_neon(float *A, float *B, float *C, int ROWS_A, int COLS_A, int CO
     }
 }
 #else
-void matmul_by_opencv(float *A, float *B, float *C, int ROWS_A, int COLS_A, int COLS_B)
+void matmul_by_opencv(float *A, float *B, std::vector<float> &C, int ROWS_A, int COLS_A, int COLS_B)
 {
     cv::Mat mat_A(ROWS_A, COLS_A, CV_32F, A);
     cv::Mat mat_B(COLS_A, COLS_B, CV_32F, B);
     cv::Mat mat_C(ROWS_A, COLS_B, CV_32F);
     cv::gemm(mat_A, mat_B, 1.0, cv::Mat(), 0.0, mat_C);
-    memcpy(C, mat_C.data, ROWS_A * COLS_B * sizeof(float));
+    memcpy(C.data(), mat_C.data, ROWS_A * COLS_B * sizeof(float));
 }
 #endif
 
-static void log_mel_spectrogram(float *audio_data, int audio_length, int cur_num_frames_of_stfts, float *filters, float *mel_spec)
+static void log_mel_spectrogram(float *audio_data, int audio_length, int cur_num_frames_of_stfts, float *filters, std::vector<float> &mel_spec)
 {
     std::vector<float> window(N_FFT);
     hann_window(window, N_FFT);
@@ -307,7 +307,7 @@ static void log_mel_spectrogram(float *audio_data, int audio_length, int cur_num
     fftwf_free(stfts_result_t);
 }
 
-int audio_preprocess(audio_buffer_t *audio, float *mel_filters, float *x_mel)
+void audio_preprocess(audio_buffer_t *audio, float *mel_filters, std::vector<float> &x_mel)
 {
     int ret;
     int audio_length = audio->num_frames;
@@ -323,17 +323,13 @@ int audio_preprocess(audio_buffer_t *audio, float *mel_filters, float *x_mel)
     else
     {
         int cur_num_frames_of_stfts = audio_length / HOP_LENGTH + 1;
-        log_mel_spectrogram(ori_audio_data.data(), audio_length, cur_num_frames_of_stfts, mel_filters, x_mel);
         int x_mel_rows = N_MELS;
         int x_mel_cols = cur_num_frames_of_stfts - 1;
         int x_mel_cols_pad = MAX_AUDIO_LENGTH / HOP_LENGTH;
-        std::vector<float> input_x_mel(x_mel, x_mel + (x_mel_rows * x_mel_cols));
-        std::vector<float> output_x_mel(x_mel_rows * x_mel_cols_pad, 0.0f);
-        pad_x_mel(input_x_mel, x_mel_rows, x_mel_cols, output_x_mel, x_mel_cols_pad);
-        memcpy(x_mel, output_x_mel.data(), x_mel_rows * x_mel_cols_pad * sizeof(float));
+        std::vector<float> cur_x_mel(x_mel_rows * x_mel_cols, 0.0f);
+        log_mel_spectrogram(ori_audio_data.data(), audio_length, cur_num_frames_of_stfts, mel_filters, cur_x_mel);
+        pad_x_mel(cur_x_mel, x_mel_rows, x_mel_cols, x_mel, x_mel_cols_pad);
     }
-
-    return 0;
 }
 
 int read_vocab(const char *fileName, VocabEntry *vocab)
@@ -388,4 +384,75 @@ int argmax(float *array)
     }
     int relative_index = max_index - start_index;
     return relative_index;
+}
+
+static int32_t get_char_index(char c)
+{
+    if (c >= 'A' && c <= 'Z')
+    {
+        return c - 'A';
+    }
+    else if (c >= 'a' && c <= 'z')
+    {
+        return c - 'a' + ('Z' - 'A') + 1;
+    }
+    else if (c >= '0' && c <= '9')
+    {
+        return c - '0' + ('Z' - 'A') + ('z' - 'a') + 2;
+    }
+    else if (c == '+')
+    {
+        return 62;
+    }
+    else if (c == '/')
+    {
+        return 63;
+    }
+
+    std::cerr << "Unknown character " << static_cast<int>(c) << ", " << c << std::endl;
+    exit(-1);
+}
+
+std::string base64_decode(const std::string &encoded_string)
+{
+    // see
+    // https://github.com/ReneNyffenegger/cpp-base64/blob/master/base64.cpp#L243
+    // https://github.com/k2-fsa/sherpa-onnx/blob/master/sherpa-onnx/csrc/base64-decode.cc
+    if (encoded_string.empty())
+    {
+        std::cerr << "Empty string!" << std::endl;
+        exit(-1);
+    }
+
+    int32_t output_length = static_cast<int32_t>(encoded_string.size()) / 4 * 3;
+
+    std::string decoded_string;
+    decoded_string.reserve(output_length);
+
+    int32_t index = 0;
+    while (index < static_cast<int32_t>(encoded_string.size()))
+    {
+        if (encoded_string[index] == '=')
+        {
+            return " ";
+        }
+
+        int32_t first_byte = (get_char_index(encoded_string[index]) << 2) + ((get_char_index(encoded_string[index + 1]) & 0x30) >> 4);
+        decoded_string.push_back(static_cast<char>(first_byte));
+
+        if (index + 2 < static_cast<int32_t>(encoded_string.size()) && encoded_string[index + 2] != '=')
+        {
+            int32_t second_byte = ((get_char_index(encoded_string[index + 1]) & 0x0f) << 4) + ((get_char_index(encoded_string[index + 2]) & 0x3c) >> 2);
+            decoded_string.push_back(static_cast<char>(second_byte));
+
+            if (index + 3 < static_cast<int32_t>(encoded_string.size()) && encoded_string[index + 3] != '=')
+            {
+                int32_t third_byte = ((get_char_index(encoded_string[index + 2]) & 0x03) << 6) + get_char_index(encoded_string[index + 3]);
+                decoded_string.push_back(static_cast<char>(third_byte));
+            }
+        }
+        index += 4;
+    }
+
+    return decoded_string;
 }

@@ -8,7 +8,7 @@
 #define SAMPLE_RATE 16000
 #define CHUNK_LENGTH 3
 #define N_SAMPLES CHUNK_LENGTH *SAMPLE_RATE // AUDIO_LENGTH
-#define N_ROWS 6                            // Modify this value according to output[2].shape[0]
+#define N_ROWS CHUNK_LENGTH * 2
 #define LABEL_PATH "./model/yamnet_class_map.txt"
 
 typedef struct

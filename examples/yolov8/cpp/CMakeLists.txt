@@ -62,6 +62,45 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${LIBRKNNRT_INCLUDES}
 )
 
+
+# Currently zero copy only supports rknpu2, v1103/rv1103b/rv1106 supports zero copy by default
+if (NOT (TARGET_SOC STREQUAL "rv1106" OR TARGET_SOC STREQUAL "rv1103" OR TARGET_SOC STREQUAL "rk1808" 
+    OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126" OR TARGET_SOC STREQUAL "rv1103b"))
+    add_executable(${PROJECT_NAME}_zero_copy
+        main.cc
+        postprocess.cc
+        rknpu2/yolov8_zero_copy.cc
+    )
+
+    target_compile_definitions(${PROJECT_NAME}_zero_copy PRIVATE ZERO_COPY)
+
+    target_link_libraries(${PROJECT_NAME}_zero_copy
+        imageutils
+        fileutils
+        imagedrawing    
+        ${LIBRKNNRT}
+        dl
+    )
+
+    if (CMAKE_SYSTEM_NAME STREQUAL "Android")
+        target_link_libraries(${PROJECT_NAME}_zero_copy
+        log
+    )
+    endif()
+
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(THREADS_PREFER_PTHREAD_FLAG ON)
+        find_package(Threads REQUIRED)
+        target_link_libraries(${PROJECT_NAME}_zero_copy Threads::Threads)
+    endif()
+
+    target_include_directories(${PROJECT_NAME}_zero_copy PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${LIBRKNNRT_INCLUDES}
+    )
+    install(TARGETS ${PROJECT_NAME}_zero_copy DESTINATION .)
+endif()
+
 install(TARGETS ${PROJECT_NAME} DESTINATION .)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/bus.jpg DESTINATION model)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../model/coco_80_labels_list.txt DESTINATION model)

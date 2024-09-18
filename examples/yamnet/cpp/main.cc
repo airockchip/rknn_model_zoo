@@ -85,9 +85,8 @@ int main(int argc, char **argv)
     // print result
     printf("\nThe main sound is: %s\n", result[0].token);
 
-    infer_time = timer.get_time() / 1000.0;               // sec
-    audio_length = audio.num_frames / (float)SAMPLE_RATE; // sec
-    audio_length = audio_length > (float)CHUNK_LENGTH ? (float)CHUNK_LENGTH : audio_length;
+    infer_time = timer.get_time() / 1000.0; // sec
+    audio_length = (float)CHUNK_LENGTH;     // sec
     rtf = infer_time / audio_length;
     printf("Real Time Factor (RTF): %.3f / %.3f = %.3f\n", infer_time, audio_length, rtf);
 
