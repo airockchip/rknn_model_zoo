@@ -46,6 +46,14 @@ cd model
 ./download_model.sh
 ```
 
+After download onnx model file, should seting fix input shape. If you not install paddle2onnx, install it first.
+```
+python -m paddle2onnx.optimize --input_model model/ch_PP-OCRv4_rec_infer/model.onnx \
+                               --output_model model/ch_PP-OCRv4_rec_infer/ppocrv4_rec.onnx \
+                               --input_shape_dict "{'x':[1,3,48,320]}"
+```
+
+
 **(Optional)PADDLE to ONNX**: Please refer [Paddle_2_ONNX.md](Paddle_2_ONNX.md) 
 
 
