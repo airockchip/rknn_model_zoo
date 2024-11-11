@@ -21,8 +21,8 @@ class Torch_model_container:
         self.pt_model = torch.jit.load(model_path)
         self.pt_model.eval()
 
-    def __del__(self):
-        self.release()
+    # def __del__(self):
+    #     self.release()
 
     def run(self, input_datas):
         if self.pt_model is None:

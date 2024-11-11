@@ -76,24 +76,34 @@ int main(int argc, char **argv)
     memset(&audio, 0, sizeof(audio_buffer_t));
 
     timer.tik();
-    ret = init_whisper_model(encoder_path, &rknn_app_ctx.encoder_context);
+    ret = read_audio(audio_path, &audio);
     if (ret != 0)
     {
-        printf("init_whisper_model fail! ret=%d encoder_path=%s\n", ret, encoder_path);
+        printf("read audio fail! ret=%d audio_path=%s\n", ret, audio_path);
         goto out;
     }
-    timer.tok();
-    timer.print_time("init_whisper_encoder_model");
 
-    timer.tik();
-    ret = init_whisper_model(decoder_path, &rknn_app_ctx.decoder_context);
-    if (ret != 0)
+    if (audio.num_channels == 2)
     {
-        printf("init_whisper_model fail! ret=%d decoder_path=%s\n", ret, decoder_path);
-        goto out;
+        ret = convert_channels(&audio);
+        if (ret != 0)
+        {
+            printf("convert channels fail! ret=%d\n", ret, audio_path);
+            goto out;
+        }
+    }
+
+    if (audio.sample_rate != SAMPLE_RATE)
+    {
+        ret = resample_audio(&audio, audio.sample_rate, SAMPLE_RATE);
+        if (ret != 0)
+        {
+            printf("resample audio fail! ret=%d\n", ret, audio_path);
+            goto out;
+        }
     }
     timer.tok();
-    timer.print_time("init_whisper_decoder_model");
+    timer.print_time("read_audio & convert_channels & resample_audio");
 
     timer.tik();
     ret = read_mel_filters(MEL_FILTERS_PATH, mel_filters, N_MELS * MELS_FILTERS_SIZE);
@@ -113,14 +123,24 @@ int main(int argc, char **argv)
     timer.print_time("read_mel_filters & read_vocab");
 
     timer.tik();
-    ret = read_audio(audio_path, &audio);
+    ret = init_whisper_model(encoder_path, &rknn_app_ctx.encoder_context);
     if (ret != 0)
     {
-        printf("read audio fail! ret=%d audio_path=%s\n", ret, audio_path);
+        printf("init_whisper_model fail! ret=%d encoder_path=%s\n", ret, encoder_path);
         goto out;
     }
     timer.tok();
-    timer.print_time("read_audio");
+    timer.print_time("init_whisper_encoder_model");
+
+    timer.tik();
+    ret = init_whisper_model(decoder_path, &rknn_app_ctx.decoder_context);
+    if (ret != 0)
+    {
+        printf("init_whisper_model fail! ret=%d decoder_path=%s\n", ret, decoder_path);
+        goto out;
+    }
+    timer.tok();
+    timer.print_time("init_whisper_decoder_model");
 
     timer.tik();
     audio_preprocess(&audio, mel_filters, audio_data);

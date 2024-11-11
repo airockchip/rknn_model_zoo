@@ -56,8 +56,28 @@ int main(int argc, char **argv)
         printf("read audio fail! ret=%d audio_path=%s\n", ret, audio_path);
         goto out;
     }
+
+    if (audio.num_channels == 2)
+    {
+        ret = convert_channels(&audio);
+        if (ret != 0)
+        {
+            printf("convert channels fail! ret=%d\n", ret, audio_path);
+            goto out;
+        }
+    }
+
+    if (audio.sample_rate != SAMPLE_RATE)
+    {
+        ret = resample_audio(&audio, audio.sample_rate, SAMPLE_RATE);
+        if (ret != 0)
+        {
+            printf("resample audio fail! ret=%d\n", ret, audio_path);
+            goto out;
+        }
+    }
     timer.tok();
-    timer.print_time("read_audio");
+    timer.print_time("read_audio & convert_channels & resample_audio");
 
     timer.tik();
     audio_preprocess(&audio, audio_data);

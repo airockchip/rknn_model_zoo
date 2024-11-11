@@ -36,8 +36,8 @@ class ONNX_model_container_py:
         self.sess = rt.InferenceSession(model_path, sess_options=sp_options, providers=['CPUExecutionProvider'])
         self.model_path = model_path
 
-    def __del__(self):
-        self.release()
+    # def __del__(self):
+    #     self.release()
 
     def run(self, input_datas):
         if self.sess is None:

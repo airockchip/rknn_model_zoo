@@ -198,7 +198,7 @@ if __name__ == '__main__':
 
     # Init runtime environment
     print('--> Init runtime environment')
-    ret = rknn.init_runtime(target=args.target)
+    ret = rknn.init_runtime(target=args.target, device_id=args.device_id)
     if ret != 0:
         print('Init runtime environment failed!')
         exit(ret)

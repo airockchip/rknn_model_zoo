@@ -20,8 +20,8 @@ class RKNN_model_container():
         
         self.rknn = rknn
 
-    def __del__(self):
-        self.release()
+    # def __del__(self):
+    #     self.release()
 
     def run(self, inputs):
         if self.rknn is None:

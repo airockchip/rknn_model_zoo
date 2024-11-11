@@ -9,9 +9,6 @@ if (ENABLE_ASAN)
 	set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 endif ()
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ 3rdparty.out)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ utils.out)
-
 #opencv
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 message(STATUS "64bit")
@@ -41,7 +38,12 @@ message(STATUS OpenCV_LIBS=${OpenCV_LIBS})
 
 set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
 
-if (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
+if (TARGET_SOC STREQUAL "rv1106" OR TARGET_SOC STREQUAL "rv1103")
+    add_definitions(-DRV1106_1103)
+    set(lprnet_file rknpu2/lprnet_rv1106_1103.cc)
+    #dma
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/allocator/dma)
+elseif (TARGET_SOC STREQUAL "rk1808" OR TARGET_SOC STREQUAL "rv1109" OR TARGET_SOC STREQUAL "rv1126")
     set(lprnet_file rknpu1/lprnet.cc)
 else()
     set(lprnet_file rknpu2/lprnet.cc)
@@ -49,6 +51,9 @@ endif()
 
 
 file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cc)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../3rdparty/ 3rdparty.out)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ utils.out)
 
 add_executable(${PROJECT_NAME}
     main.cc

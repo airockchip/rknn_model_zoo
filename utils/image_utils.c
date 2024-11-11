@@ -671,9 +671,9 @@ int convert_image(image_buffer_t* src_img, image_buffer_t* dst_img, image_rect_t
 #else
 
 #if defined(RV1106_1103) 
-    if(src_img->width % 4 == 0) {
+    if(src_img->width % 4 == 0 && dst_img->width % 4 == 0) {
 #else
-    if(src_img->width % 16 == 0) {
+    if(src_img->width % 16 == 0 && dst_img->width % 16 == 0) {
 #endif
         ret = convert_image_rga(src_img, dst_img, src_box, dst_box, color);
         if (ret != 0) {
@@ -681,7 +681,7 @@ int convert_image(image_buffer_t* src_img, image_buffer_t* dst_img, image_rect_t
             ret = convert_image_cpu(src_img, dst_img, src_box, dst_box, color);
         }
     } else {
-        printf("src width is not 16-aligned, convert image use cpu\n");
+        printf("src width is not 4/16-aligned, convert image use cpu\n");
         ret = convert_image_cpu(src_img, dst_img, src_box, dst_box, color);
     }
 #endif

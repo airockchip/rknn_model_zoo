@@ -344,4 +344,5 @@ if __name__ == '__main__':
         from py_utils.coco_utils import coco_eval_with_json
         coco_eval_with_json(args.anno_json, pred_json)
 
-
+    # release
+    model.release()

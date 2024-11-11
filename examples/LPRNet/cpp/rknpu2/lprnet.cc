@@ -10,11 +10,16 @@
 
 static void dump_tensor_attr(rknn_tensor_attr *attr)
 {
-    printf("  index=%d, name=%s, n_dims=%d, dims=[%d, %d, %d, %d], n_elems=%d, size=%d, fmt=%s, type=%s, qnt_type=%s, "
+    std::string shape_str = attr->n_dims < 1 ? "" : std::to_string(attr->dims[0]);
+    for (int i = 1; i < attr->n_dims; ++i)
+    {
+        shape_str += ", " + std::to_string(attr->dims[i]);
+    }
+
+    printf("  index=%d, name=%s, n_dims=%d, dims=[%s], n_elems=%d, size=%d, fmt=%s, type=%s, qnt_type=%s, "
            "zp=%d, scale=%f\n",
-           attr->index, attr->name, attr->n_dims, attr->dims[0], attr->dims[1], attr->dims[2], attr->dims[3],
-           attr->n_elems, attr->size, get_format_string(attr->fmt), get_type_string(attr->type),
-           get_qnt_type_string(attr->qnt_type), attr->zp, attr->scale);
+           attr->index, attr->name, attr->n_dims, shape_str.c_str(), attr->n_elems, attr->size, get_format_string(attr->fmt),
+           get_type_string(attr->type), get_qnt_type_string(attr->qnt_type), attr->zp, attr->scale);
 }
 
 int init_lprnet_model(const char *model_path, rknn_app_context_t *app_ctx)
@@ -139,18 +144,12 @@ int inference_lprnet_model(rknn_app_context_t *app_ctx, image_buffer_t *src_img,
     memset(inputs, 0, sizeof(inputs));
     memset(outputs, 0, sizeof(outputs));
 
-    // Pre Process
-    cv::Mat img_ori = cv::Mat(src_img->height, src_img->width, CV_8UC3, (uint8_t *)src_img->virt_addr);
-    cv::Mat img_pre;
-    cv::resize(img_ori, img_pre, cv::Size(94, 24));
-    cv::cvtColor(img_pre, img_pre, cv::COLOR_RGB2BGR);
-
     // Set Input Data
     inputs[0].index = 0;
     inputs[0].type = RKNN_TENSOR_UINT8;
     inputs[0].fmt = RKNN_TENSOR_NHWC;
     inputs[0].size = app_ctx->model_width * app_ctx->model_height * app_ctx->model_channel;
-    inputs[0].buf = img_pre.data;
+    inputs[0].buf = (uint8_t *)src_img->virt_addr;
 
     ret = rknn_inputs_set(app_ctx->rknn_ctx, 1, inputs);
     if (ret < 0)
@@ -179,35 +178,31 @@ int inference_lprnet_model(rknn_app_context_t *app_ctx, image_buffer_t *src_img,
 
     // Post Process
     std::vector<int> no_repeat_blank_label{};
-    float prebs[18];
+    float prebs[OUT_COLS];
     int pre_c;
-    for (int x = 0; x < 18; x++) // Traverse 18 license plate positions
+    for (int x = 0; x < OUT_COLS; x++) // Traverse OUT_COLS license plate positions
     {
         float *ptr = (float *)outputs[0].buf;
-        float preb[68];
-        for (int y = 0; y < 68; y++) // Traverse 68 string positions
+        float preb[OUT_ROWS];
+        for (int y = 0; y < OUT_ROWS; y++) // Traverse OUT_ROWS string positions
         {
             preb[y] = ptr[x];
-            ptr += 18;
+            ptr += OUT_COLS;
         }
-        int max_num_index = std::max_element(preb, preb + 68) - preb;
+        int max_num_index = std::max_element(preb, preb + OUT_ROWS) - preb;
         prebs[x] = max_num_index;
     }
 
     // Remove duplicates and blanks
     pre_c = prebs[0];
-    if (pre_c != 67)
+    if (pre_c != OUT_ROWS - 1)
     {
         no_repeat_blank_label.push_back(pre_c);
     }
     for (int value : prebs)
     {
-        if (value == 67 or value == pre_c)
+        if (value == OUT_ROWS - 1 or value == pre_c)
         {
-            if (value == 67 or value == pre_c)
-            {
-                pre_c = value;
-            }
             continue;
         }
         no_repeat_blank_label.push_back(value);

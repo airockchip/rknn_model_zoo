@@ -3,6 +3,7 @@ from rknn.api import RKNN
 import argparse
 import soundfile as sf
 import onnxruntime
+import scipy
 
 CHUNK_LENGTH = 20  # 20 seconds
 MAX_N_SAMPLES = CHUNK_LENGTH * 16000
@@ -10,6 +11,19 @@ MAX_N_SAMPLES = CHUNK_LENGTH * 16000
 tokenizer_dict = {0: "<pad>", 1: "<s>", 2: "</s>", 3: "<unk>", 4: "|", 5: "E", 6: "T", 7: "A", 8: "O", 9: "N", 10: "I", 
                     11: "H", 12: "S", 13: "R", 14: "D", 15: "L", 16: "U", 17: "M", 18: "W", 19: "C", 20: "F", 21: "G", 
                     22: "Y", 23: "P", 24: "B", 25: "V", 26: "K", 27: "'", 28: "X", 29: "J", 30: "Q", 31: "Z"}
+
+def ensure_sample_rate(waveform, original_sample_rate, desired_sample_rate=16000):
+    if original_sample_rate != desired_sample_rate:
+        print("resample_audio: {} HZ -> {} HZ".format(original_sample_rate, desired_sample_rate))
+        desired_length = int(round(float(len(waveform)) / original_sample_rate * desired_sample_rate))
+        waveform = scipy.signal.resample(waveform, desired_length)
+    return waveform, desired_sample_rate
+
+def ensure_channels(waveform, original_channels, desired_channels=1):
+    if original_channels != desired_channels:
+        print("convert_channels: {} -> {}".format(original_channels, desired_channels))
+        waveform = np.mean(waveform, axis=1)
+    return waveform, desired_channels
 
 def init_model(model_path, target=None, device_id=None):
     if model_path.endswith(".rknn"):
@@ -95,16 +109,16 @@ def post_process(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Wav2vec2 Python Demo', add_help=True)
     # basic params
-    parser.add_argument('--model_path', type=str, required=True,
-                        help='model path, could be .rknn file')
-    parser.add_argument('--target', type=str,
-                        default='rk3588', help='target RKNPU platform')
-    parser.add_argument('--device_id', type=str,
-                        default=None, help='device id')
+    parser.add_argument('--model_path', type=str, required=True, help='model path, could be .rknn file')
+    parser.add_argument('--target', type=str, default='rk3588', help='target RKNPU platform')
+    parser.add_argument('--device_id', type=str, default=None, help='device id')
     args = parser.parse_args()
 
     # Set inputs
     audio_data, sample_rate = sf.read("../model/test.wav")
+    channels = audio_data.ndim
+    audio_data, channels = ensure_channels(audio_data, channels)
+    audio_data, sample_rate = ensure_sample_rate(audio_data, sample_rate)
     audio_array = np.array(audio_data, dtype=np.float32)
     audio_array = pre_process(audio_array, MAX_N_SAMPLES)
     audio_array = np.expand_dims(audio_array, axis=0)

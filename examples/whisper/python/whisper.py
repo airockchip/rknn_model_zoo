@@ -5,6 +5,7 @@ import soundfile as sf
 import onnxruntime
 import torch
 import torch.nn.functional as F
+import scipy
 
 SAMPLE_RATE = 16000
 N_FFT = 400
@@ -13,6 +14,20 @@ CHUNK_LENGTH = 20
 N_SAMPLES = CHUNK_LENGTH * SAMPLE_RATE
 MAX_LENGTH = CHUNK_LENGTH * 100
 N_MELS = 80
+
+
+def ensure_sample_rate(waveform, original_sample_rate, desired_sample_rate=16000):
+    if original_sample_rate != desired_sample_rate:
+        print("resample_audio: {} HZ -> {} HZ".format(original_sample_rate, desired_sample_rate))
+        desired_length = int(round(float(len(waveform)) / original_sample_rate * desired_sample_rate))
+        waveform = scipy.signal.resample(waveform, desired_length)
+    return waveform, desired_sample_rate
+
+def ensure_channels(waveform, original_channels, desired_channels=1):
+    if original_channels != desired_channels:
+        print("convert_channels: {} -> {}".format(original_channels, desired_channels))
+        waveform = np.mean(waveform, axis=1)
+    return waveform, desired_channels
 
 def get_char_index(c):
     if 'A' <= c <= 'Z':
@@ -229,6 +244,9 @@ if __name__ == '__main__':
         exit(1)
     vocab = read_vocab(vocab_path)
     audio_data, sample_rate = sf.read(args.audio_path)
+    channels = audio_data.ndim
+    audio_data, channels = ensure_channels(audio_data, channels)
+    audio_data, sample_rate = ensure_sample_rate(audio_data, sample_rate)
     audio_array = np.array(audio_data, dtype=np.float32)
     audio_array= log_mel_spectrogram(audio_array, N_MELS).numpy()
     x_mel = pad_or_trim(audio_array)

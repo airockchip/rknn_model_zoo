@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+#ifndef _DMA_ALLOC_HPP_
+#define _DMA_ALLOC_HPP_
+
 #include <getopt.h>
 #include <sys/mman.h>
 #include <sys/socket.h>
@@ -46,8 +49,15 @@
 #include <memory.h>
 #include <sys/time.h>
 
-#include "dma_alloc.h"
+// #include "dma_alloc.h"
 #include "RgaUtils.h"
+
+#define DMA_HEAP_UNCACHE_PATH           "/dev/dma_heap/system-uncached"
+#define DMA_HEAP_PATH                   "/dev/dma_heap/system"
+#define DMA_HEAP_DMA32_UNCACHE_PATCH    "/dev/dma_heap/system-uncached-dma32"
+#define DMA_HEAP_DMA32_PATCH            "/dev/dma_heap/system-dma32"
+#define CMA_HEAP_UNCACHE_PATH           "/dev/dma_heap/cma-uncached"
+#define RV1106_CMA_HEAP_PATH	        "/dev/rk_dma_heap/rk-dma-heap-cma"
 
 typedef unsigned long long __u64;
 typedef  unsigned int __u32;
@@ -87,21 +97,21 @@ struct dma_buf_sync {
 
 #define CMA_HEAP_SIZE	1024 * 1024
 
-int dma_sync_device_to_cpu(int fd) {
+static int dma_sync_device_to_cpu(int fd) {
     struct dma_buf_sync sync = {0};
 
     sync.flags = DMA_BUF_SYNC_START | DMA_BUF_SYNC_RW;
     return ioctl(fd, DMA_BUF_IOCTL_SYNC, &sync);
 }
 
-int dma_sync_cpu_to_device(int fd) {
+static int dma_sync_cpu_to_device(int fd) {
     struct dma_buf_sync sync = {0};
 
     sync.flags = DMA_BUF_SYNC_END | DMA_BUF_SYNC_RW;
     return ioctl(fd, DMA_BUF_IOCTL_SYNC, &sync);
 }
 
-int dma_buf_alloc(const char *path, size_t size, int *fd, void **va) {
+static int dma_buf_alloc(const char *path, size_t size, int *fd, void **va) {
     int ret;
     int prot;
     void *mmap_va;
@@ -149,7 +159,7 @@ int dma_buf_alloc(const char *path, size_t size, int *fd, void **va) {
     return 0;
 }
 
-void dma_buf_free(size_t size, int *fd, void *va) {
+static void dma_buf_free(size_t size, int *fd, void *va) {
     int len;
 
     len =  size;
@@ -159,5 +169,4 @@ void dma_buf_free(size_t size, int *fd, void *va) {
     *fd = -1;
 }
 
-
-
+#endif // _DMA_ALLOC_HPP_

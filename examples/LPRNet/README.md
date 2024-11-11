@@ -30,8 +30,7 @@ https://github.com/sirius-ai/LPRNet_Pytorch/
 
 ## 2. Current Support Platform
 
-RK3562, RK3566, RK3568, RK3576, RK3588, RK1808, RV1109, RV1126
-
+RV1103, RV1106, RK3562, RK3566, RK3568, RK3576, RK3588, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model
@@ -149,6 +148,12 @@ cd /userdata/rknn_LPRNet_demo
 export LD_LIBRARY_PATH=./lib
 ./rknn_lprnet_demo model/lprnet.rknn model/test.jpg
 ```
+
+- RV1106/1103 LD_LIBRARY_PATH must specify as the absolute path. Such as 
+
+  ```sh
+  export LD_LIBRARY_PATH=/userdata/rknn_LPRNet_demo/lib
+  ```
 
 ## 8. Expected Results
 

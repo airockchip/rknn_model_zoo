@@ -54,7 +54,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Create RKNN object
-    rknn = RKNN(verbose=True)
+    rknn = RKNN(verbose=False)
 
     # Load RKNN model
     ret = rknn.load_rknn(args.model_path)

@@ -3,9 +3,24 @@ from rknn.api import RKNN
 import argparse
 import soundfile as sf
 import onnxruntime
+import scipy
 
 CHUNK_LENGTH = 3  # 3 seconds
 MAX_N_SAMPLES = CHUNK_LENGTH * 16000
+
+
+def ensure_sample_rate(waveform, original_sample_rate, desired_sample_rate=16000):
+    if original_sample_rate != desired_sample_rate:
+        print("resample_audio: {} HZ -> {} HZ".format(original_sample_rate, desired_sample_rate))
+        desired_length = int(round(float(len(waveform)) / original_sample_rate * desired_sample_rate))
+        waveform = scipy.signal.resample(waveform, desired_length)
+    return waveform, desired_sample_rate
+
+def ensure_channels(waveform, original_channels, desired_channels=1):
+    if original_channels != desired_channels:
+        print("convert_channels: {} -> {}".format(original_channels, desired_channels))
+        waveform = np.mean(waveform, axis=1)
+    return waveform, desired_channels
 
 def init_model(model_path, target=None, device_id=None):
     if model_path.endswith(".rknn"):
@@ -69,23 +84,23 @@ def read_txt_to_dict(filename):
         for line in txtfile:
             line = line.strip().split(' ')
             key = line[0]
-            value = ''.join(line[1:])
+            value = ' '.join(line[1:])
             data_dict[key] = value
     return data_dict
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Yamnet Python Demo', add_help=True)
     # basic params
-    parser.add_argument('--model_path', type=str, required=True,
-                        help='model path, could be .rknn/.onnx file')
-    parser.add_argument('--target', type=str,
-                        default='rk3588', help='target RKNPU platform')
-    parser.add_argument('--device_id', type=str,
-                        default=None, help='device id')
+    parser.add_argument('--model_path', type=str, required=True, help='model path, could be .rknn/.onnx file')
+    parser.add_argument('--target', type=str, default='rk3588', help='target RKNPU platform')
+    parser.add_argument('--device_id', type=str, default=None, help='device id')
     args = parser.parse_args()
 
     # Set inputs
     audio_data, sample_rate = sf.read("../model/test.wav")
+    channels = audio_data.ndim
+    audio_data, channels = ensure_channels(audio_data, channels)
+    audio_data, sample_rate = ensure_sample_rate(audio_data, sample_rate)
     audio_array = np.array(audio_data, dtype=np.float32)
     audio = pad_or_trim(audio_array.flatten(), MAX_N_SAMPLES)
     audio = np.expand_dims(audio, 0)

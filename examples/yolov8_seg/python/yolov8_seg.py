@@ -363,4 +363,5 @@ if __name__ == '__main__':
             results.extend(eval.stats[:2])  # update results (mAP@0.5:0.95, mAP@0.5)
         print(results)
 
-
+    # release
+    model.release()

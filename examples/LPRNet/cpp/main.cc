@@ -23,43 +23,56 @@
 #include "lprnet.h"
 #include "image_utils.h"
 #include "file_utils.h"
+#include "opencv2/opencv.hpp"
+
+static void image_preprocess(image_buffer_t src_image)
+{
+    cv::Mat img_ori = cv::Mat(src_image.height, src_image.width, CV_8UC3, (uint8_t *)src_image.virt_addr);
+    cv::resize(img_ori, img_ori, cv::Size(MODEL_WIDTH, MODEL_HEIGHT));
+    cv::cvtColor(img_ori, img_ori, cv::COLOR_RGB2BGR);
+    src_image.virt_addr = img_ori.data;
+}
 
 /*-------------------------------------------
                   Main Function
 -------------------------------------------*/
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    if (argc != 3) {
+    if (argc != 3)
+    {
         printf("%s <model_path> <image_path>\n", argv[0]);
         return -1;
     }
 
-    const char* model_path = argv[1];
-    const char* image_path = argv[2];
-
+    const char *model_path = argv[1];
+    const char *image_path = argv[2];
 
     int ret;
     rknn_app_context_t rknn_app_ctx;
     memset(&rknn_app_ctx, 0, sizeof(rknn_app_context_t));
-
-    ret = init_lprnet_model(model_path, &rknn_app_ctx);
-    if (ret != 0) {
-        printf("init_lprnet_model fail! ret=%d model_path=%s\n", ret, model_path);
-        return -1;
-    }
-
     image_buffer_t src_image;
     memset(&src_image, 0, sizeof(image_buffer_t));
-    ret = read_image(image_path, &src_image);
-    if (ret != 0) {
-        printf("read image fail! ret=%d image_path=%s\n", ret, image_path);
-        return -1;
-    }
-
     lprnet_result result;
 
+    ret = init_lprnet_model(model_path, &rknn_app_ctx);
+    if (ret != 0)
+    {
+        printf("init_lprnet_model fail! ret=%d model_path=%s\n", ret, model_path);
+        goto out;
+    }
+
+    ret = read_image(image_path, &src_image);
+    if (ret != 0)
+    {
+        printf("read image fail! ret=%d image_path=%s\n", ret, image_path);
+        goto out;
+    }
+    // Image preprocessing
+    image_preprocess(src_image);
+
     ret = inference_lprnet_model(&rknn_app_ctx, &src_image, &result);
-    if (ret != 0) {
+    if (ret != 0)
+    {
         printf("init_lprnet_model fail! ret=%d\n", ret);
         goto out;
     }
@@ -68,12 +81,19 @@ int main(int argc, char** argv)
 
 out:
     ret = release_lprnet_model(&rknn_app_ctx);
-    if (ret != 0) {
+    if (ret != 0)
+    {
         printf("release_lprnet_model fail! ret=%d\n", ret);
     }
 
-    if (src_image.virt_addr != NULL) {
+    if (src_image.virt_addr != NULL)
+    {
+#if defined(RV1106_1103)
+        dma_buf_free(rknn_app_ctx.img_dma_buf.size, &rknn_app_ctx.img_dma_buf.dma_buf_fd,
+                     rknn_app_ctx.img_dma_buf.dma_buf_virt_addr);
+#else
         free(src_image.virt_addr);
+#endif
     }
 
     return 0;
