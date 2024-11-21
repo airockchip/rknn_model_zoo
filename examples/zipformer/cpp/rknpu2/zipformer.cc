@@ -441,7 +441,7 @@ int inference_zipformer_model(rknn_zipformer_context_t *app_ctx, audio_buffer_t 
             fbank.AcceptWaveform(SAMPLE_RATE, tail_paddings.data(), tail_paddings.size());
             fbank.InputFinished();
         }
-        ret = get_kbank_frames(&fbank, num_processed_frames, segment, encoder_input);
+        ret = get_fbank_frames(&fbank, num_processed_frames, segment, encoder_input);
         if (ret < 0)
         {
             break;
