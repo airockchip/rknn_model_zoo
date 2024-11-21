@@ -36,7 +36,7 @@ void convert_nchw_to_nhwc(float *src, float *dst, int N, int channels, int heigh
     }
 }
 
-int get_kbank_frames(knf::OnlineFbank *fbank, int frame_index, int segment, float *frames)
+int get_fbank_frames(knf::OnlineFbank *fbank, int frame_index, int segment, float *frames)
 {
     if (frame_index + segment > fbank->NumFramesReady())
     {
