@@ -305,7 +305,7 @@ if __name__ == '__main__':
             input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
             input_data = input_data/255.
         else:
-            input_data = img
+            input_data = np.expand_dims(img,0)
 
         outputs = model.run([input_data])
         boxes, classes, scores, seg_img = post_process(outputs)
