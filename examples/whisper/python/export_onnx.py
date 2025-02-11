@@ -10,11 +10,11 @@ import torch
 import numpy as np
 import argparse
 import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
+#warnings.filterwarnings("ignore", category=UserWarning)
 
 
 def setup_model(model_type):
-    model = whisper.load_model(model_type).to('cpu')
+    model = whisper.load_model(model_type, device='cpu')
     model.requires_grad_(False)
     model.eval()
     return model
@@ -48,12 +48,12 @@ if __name__ == '__main__':
     save_encoder_model_path = "../model/whisper_encoder_{}.onnx".format(args.model_type)
     save_decoder_model_path = "../model/whisper_decoder_{}.onnx".format(args.model_type)
     torch.onnx.export(
-        model.encoder, 
-        (x_mel), 
-        save_encoder_model_path, 
-        input_names=["x"], 
-        output_names=["out"],
-        opset_version=12
+         model.encoder,
+         (x_mel),
+         save_encoder_model_path,
+         input_names=["x"],
+         output_names=["out"],
+         opset_version=12
     )
 
     torch.onnx.export(
