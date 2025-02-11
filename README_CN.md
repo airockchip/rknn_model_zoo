@@ -19,6 +19,7 @@ RKNN Model Zoo基于 RKNPU SDK 工具链开发, 提供了目前主流算法的�
 RKNN Model Zoo依赖 RKNN-Toolkit2 进行模型转换, 编译安卓demo时需要安卓编译工具链, 编译Linux demo时需要Linux编译工具链。这些依赖的安装请参考 https://github.com/airockchip/rknn-toolkit2/tree/master/doc 的 Quick Start 文档.
 
 - 请注意, 安卓编译工具链建议使用 `r18` 或 `r19` 版本. 使用其他版本可能会遇到 Cdemo 编译失败的问题.
+- 请注意, Linux编译工具链建议使用`gcc-linaro-6.3.1(aarch64)/gcc-arm-8.3(armhf)/armhf-uclibcgnueabihf(armhf, 用于RV1106/RV1103系列)`，使用其他版本可能会遇到Cdemo编译失败的问题。详细编译指南请参考 [Compilation_Environment_Setup_Guide_CN.md](./docs/Compilation_Environment_Setup_Guide_CN.md)
 
 
 

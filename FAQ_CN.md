@@ -9,6 +9,8 @@
   - [1.8 为什么其他模型没有demo，是因为不支持吗](#18-为什么其他模型没有demo是因为不支持吗)
   - [1.9 是否有大模型demo](#19-是否有大模型demo)
   - [1.10 为什么RV1103、RV1106能跑的demo较少](#110-为什么rv1103rv1106能跑的demo较少)
+  - [1.11 在 opencv 和 jpeg 库共用时会出现 Segmentation fault 报错](#111-在-opencv-和-jpeg-库共用时会出现-segmentation-fault-报错)
+  - [1.12 在编译阶段报错或者运行时提示找不到某些依赖库](#112-在编译阶段报错或者运行时提示找不到某些依赖库)
 - [2. RGA](#2-rga)
 - [3. YOLO](#3-yolo)
   - [3.1 类别置信度超过1](#31-类别置信度超过1)
@@ -98,6 +100,14 @@
 受限于RV1103、RV1106的内存大小限制，很多模型的内存占用较大，超出板端内存限制，故暂不提供对应的demo 。
 
 
+### 1.11 在 opencv 和 jpeg 库共用时会出现 Segmentation fault 报错
+
+这是因为 opencv 中包含的 jpeg 库和 rknn_model_zoo/3rdparty 中的 jpeg_turbo 库冲突导致。解决办法可以是：  
+1.自己重新编一个不带 jpeg 库的 opencv 库  
+2.如果只想用 opencv 来读取或者保存 jpg 图片的话，可以在 ./build-linux.sh 或者 ./build-android.sh 时指定 '-j' 参数来 disable jpeg_turbo 库  
+
+### 1.12 在编译阶段报错或者运行时提示找不到某些依赖库
+这是因为当前使用的交叉编译器和 rknn_model_zoo 默认使用的交叉编译器不同导致，请按照 [Compilation_Environment_Setup_Guide_CN.md](./docs/Compilation_Environment_Setup_Guide_CN.md) 文档说明使用对应编译器重新编译 (注意:记得删除旧的 build 目录)
 
 ## 2. RGA
 

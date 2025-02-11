@@ -133,7 +133,14 @@ int main(int argc, char **argv)
         draw_rectangle(&src_image, box.x1, box.y1, box.x2 - box.x1, box.y2 - box.y1, COLOR_GREEN, 2);
     }
 
-    write_image("out.png", &src_image);
+    ret = write_image("out.png", &src_image);
+    if (ret < 0) {
+        printf("write out.png fail\n");
+        goto out;
+    }
+    else {
+        printf("result save to out.png");
+    }
 
 
 out:

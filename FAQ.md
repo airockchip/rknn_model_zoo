@@ -9,6 +9,8 @@
   - [1.8 Why are there no demos for other models? Is it because they are not supported](#18-why-are-there-no-demos-for-other-models-is-it-because-they-are-not-supported)
   - [1.9 Is there a LLM model demo?](#19-is-there-a-llm-model-demo)
   - [1.10 Why RV1103 and RV1106 can run fewer demos](#110-why-rv1103-and-rv1106-can-run-fewer-demos)
+  - [1.11 Segmentation fault error will occur when opencv and jpeg libraries are used together](#111-segmentation-fault-error-will-occur-when-opencv-and-jpeg-libraries-are-used-together)
+  - [1.12 Failed during compilation or prompted that some dependent libraries could not be found during runtime](#112-failed-during-compilation-or-prompted-that-some-dependent-libraries-could-not-be-found-during-runtime)
 - [2. RGA](#2-rga)
 - [3. YOLO](#3-yolo)
   - [3.1 Class confidence exceeds 1](#31-class-confidence-exceeds-1)
@@ -97,7 +99,14 @@ Not provided now. Support for the transformer model is still being gradually opt
 
 Due to the memory size limit of **RV1103** and **RV1106**, the **memory** usage of many larger models exceeds the board limit, so corresponding demos are not provided now.
 
+### 1.11 Segmentation fault error will occur when opencv and jpeg libraries are used together
 
+This is because the jpeg library included in opencv conflicts with jpeg_turbo library in rknn_model_zoo/3rdparty. The solution can be:  
+1.Recompile an opencv library without jpeg library  
+2.If you only want to use opencv to read or save jpg images, you can specify the '-j' parameter in ./build-linux.sh or ./build-android.sh to disable jpeg_turbo library  
+
+### 1.12 Failed during compilation or prompted that some dependent libraries could not be found during runtime
+This is because the cross compiler currently used is different from the default cross compiler used by rknn_model_zoo. Please follow the instructions in the [Compilation_Environment_Setup_Guide.md](./docs/Compilation_Environment_Setup_Guide.md) document to recompile using the corresponding compiler (Note: Remember to delete the old build directory)
 
 ## 2. RGA
 

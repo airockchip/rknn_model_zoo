@@ -44,13 +44,13 @@ void resize_by_opencv_fp(float *input_image, int input_height, int input_width, 
     memcpy(output_image, dst_image.data, target_width * target_height * sizeof(float));
 }
 
-void slice_mask(float* ori_mask, float* slice_mask, int slice_height, int slice_width)
+void slice_mask(float* ori_mask, float* slice_mask, int ori_width, int slice_height, int slice_width)
 {
     for (int i = 0; i < slice_height; i++)
     {
         for (int j = 0; j < slice_width; j++)
         {
-            slice_mask[i * slice_width + j] = ori_mask[i * slice_width + j];
+            slice_mask[i * slice_width + j] = ori_mask[i * ori_width + j];
         }
     }
 }
@@ -83,8 +83,8 @@ int post_process(rknn_app_context_t* app_ctx, float* iou_predictions, float* low
 
     float* mask_new_shape = (float*)malloc(new_shape[0] * new_shape[1] * sizeof(float));
     float* mask_ori_img = (float*)malloc(ori_height * ori_width * sizeof(float));
-    slice_mask(mask_img_size, mask_new_shape, new_shape[0], new_shape[1]);
-    resize_by_opencv_fp(mask_new_shape, new_shape[1], new_shape[0], mask_ori_img, ori_height, ori_width);
+    slice_mask(mask_img_size, mask_new_shape, IMG_SIZE, new_shape[0], new_shape[1]);
+    resize_by_opencv_fp(mask_new_shape, new_shape[0], new_shape[1], mask_ori_img, ori_height, ori_width);
 
     uint8_t* res_mask = (uint8_t*)malloc(ori_height * ori_width * sizeof(uint8_t));
     crop_mask(mask_ori_img, ori_height*ori_width, res_mask, MASK_THRESHOLD);

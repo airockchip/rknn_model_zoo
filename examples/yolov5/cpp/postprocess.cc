@@ -305,9 +305,10 @@ static int process_i8(int8_t *input, int *anchor, int grid_h, int grid_w, int he
                             maxClassProbs = prob;
                         }
                     }
-                    if (maxClassProbs > thres_i8)
+                    float limit_score = (deqnt_affine_to_f32(maxClassProbs, zp, scale)) * (deqnt_affine_to_f32(box_confidence, zp, scale));
+                    if (limit_score >= threshold)
                     {
-                        objProbs.push_back((deqnt_affine_to_f32(maxClassProbs, zp, scale)) * (deqnt_affine_to_f32(box_confidence, zp, scale)));
+                        objProbs.push_back(limit_score);
                         classId.push_back(maxClassId);
                         validCount++;
                         boxes.push_back(box_x);
@@ -466,12 +467,12 @@ int post_process(rknn_app_context_t *app_ctx, void *outputs, letterbox_t *letter
     {
 
 #if defined(RV1106_1103) 
-        grid_h = app_ctx->output_attrs[i].dims[1];
-        grid_w = app_ctx->output_attrs[i].dims[2];
+        grid_h = app_ctx->output_attrs[i].dims[2];
+        grid_w = app_ctx->output_attrs[i].dims[3];
         stride = model_in_h / grid_h;
         //RV1106 only support i8
         if (app_ctx->is_quant) {
-            validCount += process_i8_rv1106((int8_t *)(_outputs[i]->virt_addr), (int *)anchor[i], grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
+            validCount += process_i8((int8_t *)(_outputs[i]->virt_addr), (int *)anchor[i], grid_h, grid_w, model_in_h, model_in_w, stride, filterBoxes, objProbs,
                                      classId, conf_threshold, app_ctx->output_attrs[i].zp, app_ctx->output_attrs[i].scale);
         }
 #elif defined(RKNPU1)

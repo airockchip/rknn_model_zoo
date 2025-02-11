@@ -109,3 +109,30 @@ int point_coords_preprocess(float* ori_point_coords, int coords_size, int ori_he
 
     return 0;
 }
+
+int pre_process(image_buffer_t* src_img, image_buffer_t* dst_img)
+{
+    int new_shape[2];
+    int src_height = src_img->height;
+    int src_width = src_img->width;
+    printf("src_height:%d, src_width:%d\n", src_height, src_width);
+    get_preprocess_shape(src_height, src_width, new_shape);
+    int newh = new_shape[0];
+    int neww = new_shape[1];
+
+    int padh = IMG_SIZE - newh;
+    int padw = IMG_SIZE - neww;
+
+    printf("newh:%d neww:%d padh:%d padw:%d\n", newh, neww, padh, padw);
+
+    cv::Mat img(src_height, src_width, CV_8UC3, src_img->virt_addr);
+
+    cv::Mat img1(newh, neww, CV_8UC3);
+    cv::Mat img2(IMG_SIZE, IMG_SIZE, CV_8UC3);
+    cv::resize(img, img1, cv::Size(neww, newh), 0, 0, cv::INTER_LINEAR);
+    cv::copyMakeBorder(img1, img2, 0, padh, 0, padw, cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
+    memcpy(dst_img->virt_addr, img2.data, 3 * IMG_SIZE * IMG_SIZE * sizeof(unsigned char));
+
+    return 0;
+
+}

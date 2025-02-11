@@ -115,7 +115,7 @@ adb shell
 cd /data/rknn_ppseg_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_ppseg_demo model/pp_liteseg_cityscapes.rknn model/test.png
+./rknn_ppseg_demo model/pp_liteseg.rknn model/test.png
 ```
 
 - After running, the result was saved as `result.png`. To check the result on host PC, pull back result referring to the following command: 
@@ -175,7 +175,7 @@ adb shell
 cd /userdata/rknn_ppseg_demo
 
 export LD_LIBRARY_PATH=./lib
-./rknn_ppseg_demo model/pp_liteseg_cityscapes.rknn model/test.png
+./rknn_ppseg_demo model/pp_liteseg.rknn model/test.png
 ```
 
 - After running, the result was saved as `result.png`. To check the result on host PC, pull back result referring to the following command: 

@@ -79,7 +79,7 @@ int init_yolov5_model(const char *model_path, rknn_app_context_t *app_ctx)
     {
         output_attrs[i].index = i;
         //When using the zero-copy API interface, query the native output tensor attribute
-        ret = rknn_query(ctx, RKNN_QUERY_NATIVE_NHWC_OUTPUT_ATTR, &(output_attrs[i]), sizeof(rknn_tensor_attr));
+        ret = rknn_query(ctx, RKNN_QUERY_OUTPUT_ATTR, &(output_attrs[i]), sizeof(rknn_tensor_attr));
         if (ret != RKNN_SUCC)
         {
             printf("rknn_query fail! ret=%d\n", ret);

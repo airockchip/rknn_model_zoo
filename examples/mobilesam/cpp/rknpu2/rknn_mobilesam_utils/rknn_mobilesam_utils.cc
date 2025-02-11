@@ -21,6 +21,7 @@
 #include "common.h"
 #include "file_utils.h"
 #include "image_utils.h"
+#include "preprocess.h"
 
 
 static void dump_tensor_attr(rknn_tensor_attr* attr)
@@ -144,10 +145,8 @@ int inference_mobilesam_encoder_utils(rknn_mobilesam_context* mobilesam_ctx, ima
 {
     int ret;
     image_buffer_t dst_img;
-    letterbox_t letter_box;
     rknn_input inputs[mobilesam_ctx->io_num.n_input];
     rknn_output outputs[mobilesam_ctx->io_num.n_output];
-    int bg_color = 0; // pad color for letterbox
 
     if ((!mobilesam_ctx) || (!img))
     {
@@ -156,7 +155,6 @@ int inference_mobilesam_encoder_utils(rknn_mobilesam_context* mobilesam_ctx, ima
     }
 
     memset(&dst_img, 0, sizeof(image_buffer_t));
-    memset(&letter_box, 0, sizeof(letterbox_t));
     memset(inputs, 0, sizeof(inputs));
     memset(outputs, 0, sizeof(outputs));
 
@@ -172,12 +170,7 @@ int inference_mobilesam_encoder_utils(rknn_mobilesam_context* mobilesam_ctx, ima
         return -1;
     }
 
-    ret = convert_image_with_letterbox(img, &dst_img, &letter_box, bg_color);
-    if (ret < 0)
-    {
-        printf("convert_image_with_letterbox fail! ret=%d\n", ret);
-        goto out;
-    }
+    pre_process(img, &dst_img);
 
     // Set Input Data
     inputs[0].index = 0;

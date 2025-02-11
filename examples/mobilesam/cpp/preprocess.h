@@ -15,11 +15,15 @@
 #ifndef _RKNN_DEMO_MOBILESAM_PREPROCESS_H_
 #define _RKNN_DEMO_MOBILESAM_PREPROCESS_H_
 
+#include "image_utils.h"
+#include <opencv2/opencv.hpp>
+
 #define IMG_SIZE 448
 
 float* read_coords_from_file(const char* path, int* line_count);
 
 int get_preprocess_shape(int ori_heigth, int ori_width, int* new_shape);
 int point_coords_preprocess(float* ori_point_coords, int coords_size, int ori_height, int ori_width, float* cvt_point_coords);
+int pre_process(image_buffer_t* src_img, image_buffer_t* dst_img);
 
 #endif // _RKNN_DEMO_MOBILESAM_PREPROCESS_H_

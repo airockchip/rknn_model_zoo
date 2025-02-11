@@ -28,20 +28,27 @@ endif()
 add_library(imageutils STATIC
     image_utils.c
 )
+
 target_include_directories(imageutils PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${STB_INCLUDES}
+    ${LIBRGA_INCLUDES}
 )
 
 target_link_libraries(imageutils
-    ${LIBJPEG}
     ${LIBRGA}
 )
 
-target_include_directories(imageutils PUBLIC
-    ${STB_INCLUDES}
-    ${LIBJPEG_INCLUDES}
-    ${LIBRGA_INCLUDES}
-)
+if (DISABLE_LIBJPEG)
+    add_definitions(-DDISABLE_LIBJPEG)
+else()
+    target_link_libraries(imageutils
+        ${LIBJPEG}
+    )
+    target_include_directories(imageutils PUBLIC
+        ${LIBJPEG_INCLUDES}
+    )
+endif()
 
 add_library(audioutils STATIC
     audio_utils.c

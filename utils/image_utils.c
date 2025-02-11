@@ -16,8 +16,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#include "turbojpeg.h"
-
 #include "image_utils.h"
 #include "file_utils.h"
 
@@ -32,21 +30,10 @@ static const char* filter_image_names[] = {
     NULL
 };
 
+#ifndef DISABLE_LIBJPEG
+#include "turbojpeg.h"
 static const char* subsampName[TJ_NUMSAMP] = {"4:4:4", "4:2:2", "4:2:0", "Grayscale", "4:4:0", "4:1:1"};
-
 static const char* colorspaceName[TJ_NUMCS] = {"RGB", "YCbCr", "GRAY", "CMYK", "YCCK"};
-
-static int image_file_filter(const struct dirent *entry)
-{
-    const char ** filter;
-
-    for (filter = filter_image_names; *filter; ++filter) {
-        if(strstr(entry->d_name, *filter) != NULL) {
-            return 1;
-        }
-    }
-    return 0;
-}
 
 static int read_image_jpeg(const char* path, image_buffer_t* image)
 {
@@ -146,37 +133,6 @@ out:
     return 0;
 }
 
-static int read_image_raw(const char* path, image_buffer_t* image)
-{
-    FILE *fp = fopen(path, "rb");
-    if(fp == NULL) {
-        printf("fopen %s fail!\n", path);
-        return -1;
-    }
-    fseek(fp, 0, SEEK_END);
-    int file_size = ftell(fp);
-    unsigned char *data = image->virt_addr;
-    if (image->virt_addr == NULL) {
-        data = (unsigned char *)malloc(file_size+1);
-    }
-    data[file_size] = 0;
-    fseek(fp, 0, SEEK_SET);
-    if(file_size != fread(data, 1, file_size, fp)) {
-        printf("fread %s fail!\n", path);
-        free(data);
-        return -1;
-    }
-    if(fp) {
-        fclose(fp);
-    }
-    if (image->virt_addr == NULL) {
-        image->virt_addr = data;
-        image->size = file_size;
-    }
-
-    return 0;
-}
-
 static int write_image_jpeg(const char* path, int quality, const image_buffer_t* image)
 {
     int ret;
@@ -207,6 +163,50 @@ static int write_image_jpeg(const char* path, int quality, const image_buffer_t*
     tjDestroy(handle);
 
 	return 0;
+}
+#endif
+
+static int image_file_filter(const struct dirent *entry)
+{
+    const char ** filter;
+
+    for (filter = filter_image_names; *filter; ++filter) {
+        if(strstr(entry->d_name, *filter) != NULL) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int read_image_raw(const char* path, image_buffer_t* image)
+{
+    FILE *fp = fopen(path, "rb");
+    if(fp == NULL) {
+        printf("fopen %s fail!\n", path);
+        return -1;
+    }
+    fseek(fp, 0, SEEK_END);
+    int file_size = ftell(fp);
+    unsigned char *data = image->virt_addr;
+    if (image->virt_addr == NULL) {
+        data = (unsigned char *)malloc(file_size+1);
+    }
+    data[file_size] = 0;
+    fseek(fp, 0, SEEK_SET);
+    if(file_size != fread(data, 1, file_size, fp)) {
+        printf("fread %s fail!\n", path);
+        free(data);
+        return -1;
+    }
+    if(fp) {
+        fclose(fp);
+    }
+    if (image->virt_addr == NULL) {
+        image->virt_addr = data;
+        image->size = file_size;
+    }
+
+    return 0;
 }
 
 static int read_image_stb(const char* path, image_buffer_t* image)
@@ -249,9 +249,11 @@ int read_image(const char* path, image_buffer_t* image)
     }
     if (strcmp(_ext, ".data") == 0) {
         return read_image_raw(path, image);
+#ifndef DISABLE_LIBJPEG
     } else if (strcmp(_ext, ".jpg") == 0 || strcmp(_ext, ".jpeg") == 0 || strcmp(_ext, ".JPG") == 0 ||
         strcmp(_ext, ".JPEG") == 0) {
         return read_image_jpeg(path, image);
+#endif
     } else {
         return read_image_stb(path, image);
     }
@@ -272,12 +274,18 @@ int write_image(const char* path, const image_buffer_t* img)
         // missing extension
         return -1;
     }
-    if (strcmp(_ext, ".jpg") == 0 || strcmp(_ext, ".jpeg") == 0 || strcmp(_ext, ".JPG") == 0 ||
+
+    if (strcmp(_ext, ".png") == 0 | strcmp(_ext, ".PNG") == 0) {
+        ret = stbi_write_png(path, width, height, channel, data, 0);
+
+    } else if (strcmp(_ext, ".jpg") == 0 || strcmp(_ext, ".jpeg") == 0 || strcmp(_ext, ".JPG") == 0 ||
         strcmp(_ext, ".JPEG") == 0) {
         int quality = 95;
+#ifndef DISABLE_LIBJPEG
         ret = write_image_jpeg(path, quality, img);
-    } else if (strcmp(_ext, ".png") == 0 | strcmp(_ext, ".PNG") == 0) {
-        ret = stbi_write_png(path, width, height, channel, data, 0);
+#else
+        ret = stbi_write_jpg(path, width, height, channel, data, quality);
+#endif
     } else if (strcmp(_ext, ".data") == 0 | strcmp(_ext, ".DATA") == 0) {
         int size = get_image_size(img);
         ret = write_data_to_file(path, data, size);
