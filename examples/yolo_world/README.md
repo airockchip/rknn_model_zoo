@@ -29,8 +29,7 @@ https://github.com/airockchip/YOLO-World
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK3576
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B
 
 
 ## 3. Pretrained Model

@@ -31,8 +31,7 @@ https://github.com/THU-MIG/yolov10
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK3576, RK1808, RV1109, RV1126
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model

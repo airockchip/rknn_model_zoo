@@ -27,8 +27,7 @@ This is the deploy example of [Deeplabv3](https://arxiv.org/abs/1706.05587) mode
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK3576, RV1109, RV1126, RK1808, RK3399PRO
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model

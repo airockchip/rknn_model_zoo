@@ -31,8 +31,7 @@ https://huggingface.co/csukuangfj/k2fsa-zipformer-bilingual-zh-en-t
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK3576
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B
 
 
 ## 3. Pretrained Model
@@ -150,6 +149,8 @@ export LD_LIBRARY_PATH=./lib
 
 
 ## 7. Linux Demo
+
+Please note that the Linux compilation tool chain recommends using `gcc-linaro-6.3.1(aarch64)/gcc-arm-8.3(armhf)/armhf-uclibcgnueabihf(armhf for RV1106/RV1103 series)`. Using other versions may encounter the problem of Cdemo compilation failure. For detailed compilation guide, please refer to [Compilation_Environment_Setup_Guide.md](../../docs/Compilation_Environment_Setup_Guide.md)
 
 #### 7.1 Compile and Build
 

@@ -33,8 +33,7 @@ yolov8n-obb pt model download link:
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RV1109, RK3576, RV1126, RK1808, RK3399PRO
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model
@@ -81,8 +80,6 @@ python convert.py ../model/yolov8n-obb.onnx rk3588
 
 ```shell
 cd python
-# Inference with PyTorch model or ONNX model
-python yolov8_obb.py --model_path <pt_model/onnx_model>
 
 # Inference with RKNN model
 python yolov8_obb.py --model_path <rknn_model> --target <TARGET_PLATFORM>
@@ -90,7 +87,7 @@ python yolov8_obb.py --model_path <rknn_model> --target <TARGET_PLATFORM>
 *Description:*
 - <TARGET_PLATFORM>: Specify NPU platform name. Such as 'rk3588'.
 
-- <pt_model / onnx_model / rknn_model>: specified as the model path.
+- <rknn_model>: specified as the model path.
 
 
 

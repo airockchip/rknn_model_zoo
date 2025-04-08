@@ -27,7 +27,7 @@
 
 |              | RKNPU1                                                       | RKNPU2                                                       |
 | ------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 对应平台     | RV1109<br />RV1126<br />RK1808<br />RK3399pro                | RV1103<br />RV1106<br />RK3562<br />RK3566<br />RK3568<br />RK3588<br />RK3576 |
+| 对应平台     | RV1109<br />RV1126<br />RK1808<br />RK3399pro                | RV1103<br />RV1106<br />RV1126B<br />RK3562<br />RK3566<br />RK3568<br />RK3588<br />RK3576 |
 | 驱动         | 通过更新.ko文件升级                                          | 通过更新固件升级                                             |
 | runtime      | 参考[文档](https://github.com/airockchip/rknpu/blob/master/README.md)，替换 librknn_runtime.so 及其相关依赖文件升级<br />(如果需要使用python连板调试功能，请同步更新文档中涉及的 rknn_server 文件) | 参考[文档](https://github.com/airockchip/rknn-toolkit2/blob/master/doc/rknn_server_proxy.md)，替换 librknnrt.so 文件升级<br />(RV1103/RV1106 使用裁剪版本的 runtime，对应文件名称为 librknnmrt.so)<br />(如果需要使用 python 连板调试功能，请同步更新文档中涉及的 rknn_server 文件) |
 | RKNN-Toolkit | 参考[文档](https://github.com/airockchip/rknn-toolkit/blob/master/README.md)，安装新的 python whl 文件升级 | 参考[文档](https://github.com/airockchip/rknn-toolkit2/blob/master/doc/02_Rockchip_RKNPU_User_Guide_RKNN_SDK_V2.2.0_CN.pdf) 2.1小节，安装新的 python whl 文件升级 |

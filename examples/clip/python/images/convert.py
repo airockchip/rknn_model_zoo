@@ -10,7 +10,7 @@ IMAGE_SIZE=[224, 224]
 def parse_arg():
     if len(sys.argv) < 3:
         print("Usage: python3 {} onnx_model_path [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]))
-        print("       platform choose from [rk3562, rk3566, rk3568, rk3588, rk3576]")
+        print("       platform choose from [rk3562, rk3566, rk3568, rk3576, rk3588, rv1126b]")
         print("       dtype choose from    [fp]")
         exit(1)
 

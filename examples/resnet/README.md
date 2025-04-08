@@ -28,8 +28,7 @@ https://github.com/onnx/models/tree/8e893eb39b131f6d3970be6ebd525327d3df34ea/vis
 
 ## 2. Current Support Platform
 
-RK3566, RK3568, RK3588, RK3562, RK3576, RV1109, RV1126, RK1808, RK3399PRO
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model
@@ -53,10 +52,10 @@ cd model
 
 ```shell
 cd python
-python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
+python resnet.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
 
 # such as: 
-python convert.py ../model/resnet50-v2-7.onnx rk3588
+python resnet.py ../model/resnet50-v2-7.onnx rk3588
 # output model will be saved as ../model/resnet50-v2-7.rknn
 ```
 

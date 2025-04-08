@@ -40,7 +40,7 @@ done
 if [ -z ${TARGET_SOC} ] || [ -z ${BUILD_DEMO_NAME} ]; then
   echo "$0 -t <target> -a <arch> -d <build_demo_name> [-b <build_type>] [-m] [-r] [-j]"
   echo ""
-  echo "    -t : target (rk356x/rk3588/rk3576/rv1106/rk1808/rv1126)"
+  echo "    -t : target (rk356x/rk3588/rk3576/rv1126b/rv1106/rk1808/rv1126)"
   echo "    -a : arch (aarch64/armhf)"
   echo "    -d : demo name"
   echo "    -b : build_type(Debug/Release)"
@@ -48,7 +48,7 @@ if [ -z ${TARGET_SOC} ] || [ -z ${BUILD_DEMO_NAME} ]; then
   echo "    -r : disable rga, use cpu resize image"
   echo "    -j : disable libjpeg to avoid conflicts between libjpeg and opencv"
   echo "such as: $0 -t rk3588 -a aarch64 -d mobilenet"
-  echo "Note: 'rk356x' represents rk3562/rk3566/rk3568, 'rv1106' represents rv1103/rv1106, 'rv1126' represents rv1109/rv1126"
+  echo "Note: 'rk356x' represents rk3562/rk3566/rk3568, 'rv1106' represents rv1103/rv1106, 'rv1126' represents rv1109/rv1126, 'rv1126b' is different from 'rv1126'"
   echo "Note: 'disable rga option is invalid for rv1103/rv1103b/rv1106"
   echo "Note: 'if you want to use opencv to read or save jpg files, use the '-j' option to disable libjpeg"
   echo ""
@@ -153,9 +153,12 @@ case ${TARGET_SOC} in
     rv1126)
         TARGET_SOC="rv1126"
         ;;
+    rv1126b)
+        TARGET_SOC="rv1126b"
+        ;;
     *)
         echo "Invalid target: ${TARGET_SOC}"
-        echo "Valid target: rk3562,rk3566,rk3568,rk3588,rk3576,rv1106,rv1103,rk1808,rv1109,rv1126"
+        echo "Valid target: rk3562,rk3566,rk3568,rk3588,rk3576,rv1106,rv1103,rk1808,rv1109,rv1126,rv1126b"
         exit -1
         ;;
 esac

@@ -32,8 +32,7 @@ https://github.com/airockchip/MobileSAM, which fork from https://github.com/Chao
 
 ## 2. Current Support Platform
 
-RK3562, RK3576, RK3588
-
+RK3562, RK3576, RK3588, RV1126B
 
 
 ## 3. Pretrained Model

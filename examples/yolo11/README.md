@@ -29,8 +29,7 @@ https://github.com/airockchip/ultralytics_yolo11
 
 ## 2. Current Support Platform
 
-RV1103, RV1106, RK3562, RK3566, RK3568, RK3576, RK3588, RV1109, RV1126, RK1808, RK3399PRO
-
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model

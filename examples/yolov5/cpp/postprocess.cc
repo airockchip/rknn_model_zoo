@@ -248,9 +248,10 @@ static int process_u8(uint8_t *input, int *anchor, int grid_h, int grid_w, int h
                             maxClassProbs = prob;
                         }
                     }
-                    if (maxClassProbs > thres_u8)
+                    float limit_score = (deqnt_affine_u8_to_f32(maxClassProbs, zp, scale)) * (deqnt_affine_u8_to_f32(box_confidence, zp, scale));
+                    if (limit_score >= threshold)
                     {
-                        objProbs.push_back((deqnt_affine_u8_to_f32(maxClassProbs, zp, scale)) * (deqnt_affine_u8_to_f32(box_confidence, zp, scale)));
+                        objProbs.push_back(limit_score);
                         classId.push_back(maxClassId);
                         validCount++;
                         boxes.push_back(box_x);
