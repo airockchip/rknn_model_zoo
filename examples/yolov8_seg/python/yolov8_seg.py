@@ -193,13 +193,17 @@ def post_process(input_data):
     return boxes, classes, scores, seg_img
 
 def draw(image, boxes, scores, classes):
-    for box, score, cl in zip(boxes, scores, classes):
-        top, left, right, bottom = [int(_b) for _b in box]
-        print("%s @ (%d %d %d %d) %.3f" % (CLASSES[cl], top, left, right, bottom, score))
-        cv2.rectangle(image, (top, left), (right, bottom), (255, 0, 0), 2)
-        cv2.putText(image, '{0} {1:.2f}'.format(CLASSES[cl], score),
-                    (top, left - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-
+    #loop through each detected object 
+    if scores is not None:
+        for box, score, cl in zip(boxes, scores, classes):
+            top, left, right, bottom = [int(_b) for _b in box]
+            print("%s @ (%d %d %d %d) %.3f" % (CLASSES[cl], top, left, right, bottom, score))
+            cv2.rectangle(image, (top, left), (right, bottom), (255, 0, 0), 2)
+            cv2.putText(image, '{0} {1:.2f}'.format(CLASSES[cl], score),
+                        (top, left - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+    #no object is detected in the image
+    else:
+        print("No objects found")
 def _crop_mask(masks, boxes):
     """
     "Crop" predicted masks by zeroing out everything not in the predicted bbox.
@@ -305,7 +309,7 @@ if __name__ == '__main__':
             input_data = input_data.reshape(1,*input_data.shape).astype(np.float32)
             input_data = input_data/255.
         else:
-            input_data = img
+            input_data = np.expand_dims(img,0)
 
         outputs = model.run([input_data])
         boxes, classes, scores, seg_img = post_process(outputs)
@@ -314,12 +318,14 @@ if __name__ == '__main__':
             real_boxs = co_helper.get_real_box(boxes)
             real_segs = co_helper.get_real_seg(seg_img)
             img_p = merge_seg(img_src, real_segs, classes)
-
+        # if there is no object detected in the image 
+        img_p  = img_src.copy()
 
         if args.img_show or args.img_save:
             print('\n\nIMG: {}'.format(img_name))
-            
-            draw(img_p, real_boxs, scores, classes)
+            #draw masks only if there are any objects detected in the image
+            if boxes is not None:
+                draw(img_p, real_boxs, scores, classes)
             
             if args.img_save:
                 if not os.path.exists('./result'):
