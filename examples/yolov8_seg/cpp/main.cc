@@ -108,11 +108,14 @@ int main(int argc, char **argv)
             for (int k = 0; k < width; k++)
             {
                 int pixel_offset = 3 * (j * width + k);
-                if (seg_mask[j * width + k] != 0)
+                
+                if (seg_mask[j * width + k] != 0) // 'Pixels==0' are excluded in this line
                 {
-                    ori_img[pixel_offset + 0] = (unsigned char)clamp(class_colors[seg_mask[j * width + k] % N_CLASS_COLORS][0] * (1 - alpha) + ori_img[pixel_offset + 0] * alpha, 0, 255); // r
-                    ori_img[pixel_offset + 1] = (unsigned char)clamp(class_colors[seg_mask[j * width + k] % N_CLASS_COLORS][1] * (1 - alpha) + ori_img[pixel_offset + 1] * alpha, 0, 255); // g
-                    ori_img[pixel_offset + 2] = (unsigned char)clamp(class_colors[seg_mask[j * width + k] % N_CLASS_COLORS][2] * (1 - alpha) + ori_img[pixel_offset + 2] * alpha, 0, 255); // b
+                    // To make this code more intuitive, the index of class_colors[] need '-1' 
+                    // Let the color of the class1 correspond to class_colors[0]
+                    ori_img[pixel_offset + 0] = (unsigned char)clamp(class_colors[(seg_mask[j * width + k] - 1) % N_CLASS_COLORS][0] * (1 - alpha) + ori_img[pixel_offset + 0] * alpha, 0, 255); // r
+                    ori_img[pixel_offset + 1] = (unsigned char)clamp(class_colors[(seg_mask[j * width + k] - 1) % N_CLASS_COLORS][1] * (1 - alpha) + ori_img[pixel_offset + 1] * alpha, 0, 255); // g
+                    ori_img[pixel_offset + 2] = (unsigned char)clamp(class_colors[(seg_mask[j * width + k] - 1) % N_CLASS_COLORS][2] * (1 - alpha) + ori_img[pixel_offset + 2] * alpha, 0, 255); // b
                 }
             }
         }
