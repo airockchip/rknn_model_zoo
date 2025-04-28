@@ -85,7 +85,7 @@ python convert.py ../model/joiner-epoch-99-avg-1.onnx rk3588
 ```shell
 # Install kaldifeat
 # Refer to https://csukuangfj.github.io/kaldifeat/installation/from_wheels.html for installation.
-# This python demo is tested under version: kaldifeat-1.25.4.dev20240223
+# This python demo is tested under version: kaldifeat-1.25.4.dev20240223+cpu.torch1.10.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
 cd python
 # Inference with ONNX model
