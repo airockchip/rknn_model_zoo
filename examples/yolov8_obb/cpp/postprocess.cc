@@ -315,13 +315,21 @@ float Cal_IOU(float x1, float y1, float w1, float h1, float angle1, float x2, fl
 static int nms(int validCount, std::vector<float> &outputLocations, std::vector<int> classIds, std::vector<int> &order,
                int filterId, float threshold) {
     for (int i = 0; i < validCount; ++i) {
-        if (order[i] == -1 || classIds[i] != filterId) {
+        int n = order[i];
+        if (order[i] == -1) {
             continue;
         }
-        int n = order[i];
+        if (classIds[n] != filterId)
+        {
+            continue;
+        }
         for (int j = i + 1; j < validCount; ++j) {
             int m = order[j];
-            if (m == -1 || classIds[i] != filterId) {
+            if (m == -1) {
+                continue;
+            }
+            if(classIds[m] != filterId)
+            {
                 continue;
             }
             float xmin0 = outputLocations[n * 5 + 0];
@@ -334,7 +342,7 @@ static int nms(int validCount, std::vector<float> &outputLocations, std::vector<
             float ymin1 = outputLocations[m * 5 + 1];
             float w1 = outputLocations[m * 5 + 2];
             float h1 = outputLocations[m * 5 + 3];
-            float angle1 = outputLocations[n * 5 + 4];
+            float angle1 = outputLocations[m * 5 + 4];
 
             float iou = Cal_IOU(xmin0, ymin0, w0, h0, angle0, xmin1, ymin1, w1, h1, angle1);
             if (iou > threshold) {
