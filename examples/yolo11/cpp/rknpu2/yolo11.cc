@@ -212,7 +212,6 @@ int inference_yolo11_model(rknn_app_context_t *app_ctx, image_buffer_t *img, obj
     }
 
     // Run
-    printf("rknn_run\n");
     ret = rknn_run(app_ctx->rknn_ctx, nullptr);
     if (ret < 0)
     {
