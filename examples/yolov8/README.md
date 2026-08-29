@@ -58,6 +58,129 @@ cd model
   <img src="./model_comparison/yolov8_graph_comparison.jpg" alt="Image">
 </div>
 
+### 3.1 Optional: export the 6-output variant
+
+Besides the 9-output layout above, the example also supports a **6-output**
+variant that drops `score_sum` and keeps `Sigmoid(cls)` fused inside the graph:
+
+```
+[box(1, 64, h, w), cls(1, nc, h, w)] x 3 scales   ->  6 outputs
+```
+
+<div align=center>
+  <img src="./model_comparison/yolov8_6out_graph_comparison.jpg" alt="Image">
+</div>
+
+`score_sum = ReduceSum(Sigmoid(cls))` is only a pre-filter for the post-processor.
+It is also a *second consumer* of `Sigmoid(cls)`, which prevents the RKNN toolkit
+from fusing the sigmoid into the preceding convolution during INT8 quantization.
+When the fusion is blocked, the sigmoid output is quantized on its own and the
+INT8 confidence is both compressed at the top of its range and stair-stepped
+(e.g. PyTorch 0.98 -> RKNN 0.58~0.90). If `cls` is exported as raw logits instead
+(the pre-sigmoid value), the logit range is dominated by the deep negative
+background values, which makes the coarse confidence grid even worse.
+
+Removing `score_sum` leaves the sigmoid with a single consumer, so the toolkit
+fuses it into the conv: the INT8 confidence stays in `[0, 1]` and tracks the float
+model (within ~0.02).
+
+Both the C++ (`cpp/postprocess.cc`) and Python (`python/yolov8.py`) post-processors
+handle the two layouts automatically — with `n_output == 6`, `output_per_branch ==
+2` and the optional `score_sum` is simply disabled.
+
+Export a 6-output model from a PyTorch checkpoint with:
+
+```shell
+cd python
+python export_onnx.py <model.pt> <model_6out.onnx> [imgsz] [opset]
+# e.g.
+python export_onnx.py yolov8n.pt yolov8n_6out.onnx 640 17
+```
+
+Then convert it to RKNN with `convert.py` exactly like the 9-output model (see
+[3.2](#32-quantization-notes-6-output-model) for the calibration-set requirements
+that the INT8 confidence depends on). Example result of the exported 6-output
+`yolov8n` on `model/bus.jpg`:
+
+<div align=center>
+  <img src="./result_6out.png" alt="Image">
+</div>
+
+### 3.2 Quantization notes (6-output model)
+
+The 6-output layout only pays off if the INT8 calibration is done right:
+
+- **Calibration set must match the deployment preprocessing.** rknn-toolkit2
+  stretches the calibration images to the model input size directly (it does not
+  letterbox). If the deployment pre-processing letterboxes with gray-114 padding
+  while the calibration images are stretched, the model is quantized on a
+  different input distribution than the one it sees at inference and the
+  confidence can collapse (e.g. PyTorch 0.98 -> RKNN ~0). Fix: pre-letterbox the
+  calibration images to 640x640 with gray-114 padding so that the toolkit's
+  stretch becomes a no-op.
+- **Input convention.** Feed `uint8 [0, 255]` with `mean=0 / std=255` so the
+  normalization happens inside the model graph. Do not feed float `[0, 1]` with a
+  different mean/std.
+- **Calibration set composition.** Include high-confidence samples (PyTorch
+  conf >= 0.9). The top of the output quantization range is decided by the
+  calibration distribution; a handful of high-confidence samples will not move
+  the quantile. Keep the calibration domain the same as the deployment domain
+  (video frames vs still photos have different statistics).
+
+### 3.3 Measured results (single-class model)
+
+Measured with an INT8 RKNN single-class detector on a 4211-frame flight video
+(gray-114 letterbox input, DFL CPU decode + NMS 0.45):
+
+| layout | highest conf | median conf | confidence levels |
+|---|---|---|---|
+| 9-output (logit cls) | 0.855 | 0.413 | 17 |
+| 9-output (sigmoid cls + score_sum) | 0.899 | 0.639 | 277 |
+| **6-output** | **0.985** | **0.705** | **373** |
+| PyTorch (float) reference | 0.993 | — | continuous |
+
+Two effects are visible:
+
+- **Confidence grid.** Quantizing `cls` in the logit domain (range stretched by
+  the deep negative background values) leaves only 17 discrete confidence values
+  above the threshold (0.629 / 0.644 / 0.669 / 0.765 / 0.855). The 6-output keeps
+  a continuous scale (373 levels).
+- **Top compression.** The 9-output compresses the top of the confidence range by
+  20-40% (probe frame 2640: PyTorch 0.983 -> RKNN 0.594); the 6-output stays
+  within ~0.02 (PyTorch 0.983 -> RKNN 0.974).
+
+The compression directly causes **missed detections**: on the same video at a
+fixed threshold of 0.62, the 9-output still covers 591~873 frames while the
+6-output covers 1163, and 622 frames reach conf >= 0.9 for the 6-output vs 0~12
+for the 9-output. A true target whose confidence is compressed below the deployed
+threshold is simply lost, and lowering the threshold to recover it lets in more
+false positives. Keeping the confidence scale correct is therefore what lets the
+deployment use a trustworthy, stable threshold.
+
+<div align=center>
+  <img src="./model_comparison/yolov8_6out_measured.jpg" alt="Image">
+</div>
+
+NPU inference speed is unchanged: 23.78 ms/frame (6-output) vs 24.27 ms/frame
+(9-output), single core.
+
+### 3.4 COCO mAP validation (multi-class)
+
+On COCO val2017 (fixed 200-image subset, same `yolov8n` weights, INT8 RKNN on
+RK3588, same letterboxed-114 calibration set):
+
+| layout | FP32 CPU (mAP@0.5:0.95 / mAP@0.5) | INT8 RKNN (mAP@0.5:0.95 / mAP@0.5) |
+|---|---|---|
+| 9-output | 0.336 / 0.462 | 0.342 / 0.466 |
+| **6-output** | 0.336 / 0.462 | 0.342 / 0.466 |
+
+Both layouts score the **same** mAP (identical at every IoU / size band). This is
+expected: mAP is a ranking metric, and the layout change only affects the
+confidence *scale*, not the ranking. So the 6-output layout is **lossless in
+detection accuracy** while fixing the confidence scale (continuous, no top
+compression, no coarse grid) — which matters for downstream threshold semantics,
+visualization, and comparing scores across models.
+
 
 ## 4. Convert to RKNN
 

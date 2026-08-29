@@ -567,6 +567,13 @@ int post_process(rknn_app_context_t *app_ctx, void *outputs, letterbox_t *letter
             score_sum = _outputs[i*output_per_branch + 2].buf;
             score_sum_zp = app_ctx->output_attrs[i*output_per_branch + 2].zp;
             score_sum_scale = app_ctx->output_attrs[i*output_per_branch + 2].scale;
+            // Harden: an anomalous quantized output with scale <= 0 would make
+            // the affine threshold conversion divide by zero and produce garbage.
+            // Drop score_sum for that scale and fall back to per-cell scoring.
+            if (score_sum_scale <= 0.0f) {
+                score_sum = nullptr;
+                score_sum_scale = 1.0f;
+            }
         }
         int box_idx = i*output_per_branch;
         int score_idx = i*output_per_branch + 1;
