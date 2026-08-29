@@ -156,6 +156,23 @@ Two effects are visible:
 NPU inference speed is unchanged: 23.78 ms/frame (6-output) vs 24.27 ms/frame
 (9-output), single core.
 
+### 3.4 COCO mAP validation (multi-class)
+
+On COCO val2017 (fixed 200-image subset, same `yolov8n` weights, INT8 RKNN on
+RK3588, same letterboxed-114 calibration set):
+
+| layout | FP32 CPU (mAP@0.5:0.95 / mAP@0.5) | INT8 RKNN (mAP@0.5:0.95 / mAP@0.5) |
+|---|---|---|
+| 9-output | 0.336 / 0.462 | 0.342 / 0.466 |
+| **6-output** | 0.336 / 0.462 | 0.342 / 0.466 |
+
+Both layouts score the **same** mAP (identical at every IoU / size band). This is
+expected: mAP is a ranking metric, and the layout change only affects the
+confidence *scale*, not the ranking. So the 6-output layout is **lossless in
+detection accuracy** while fixing the confidence scale (continuous, no top
+compression, no coarse grid) — which matters for downstream threshold semantics,
+visualization, and comparing scores across models.
+
 
 ## 4. Convert to RKNN
 
