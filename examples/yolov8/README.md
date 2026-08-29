@@ -149,6 +149,14 @@ Two effects are visible:
   20-40% (probe frame 2640: PyTorch 0.983 -> RKNN 0.594); the 6-output stays
   within ~0.02 (PyTorch 0.983 -> RKNN 0.974).
 
+The compression directly causes **missed detections**: on the same video at a
+fixed threshold of 0.62, the 9-output still covers 591~873 frames while the
+6-output covers 1163, and 622 frames reach conf >= 0.9 for the 6-output vs 0~12
+for the 9-output. A true target whose confidence is compressed below the deployed
+threshold is simply lost, and lowering the threshold to recover it lets in more
+false positives. Keeping the confidence scale correct is therefore what lets the
+deployment use a trustworthy, stable threshold.
+
 <div align=center>
   <img src="./model_comparison/yolov8_6out_measured.jpg" alt="Image">
 </div>
