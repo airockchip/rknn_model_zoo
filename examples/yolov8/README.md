@@ -127,6 +127,35 @@ The 6-output layout only pays off if the INT8 calibration is done right:
   the quantile. Keep the calibration domain the same as the deployment domain
   (video frames vs still photos have different statistics).
 
+### 3.3 Measured results (single-class model)
+
+Measured with an INT8 RKNN single-class detector on a 4211-frame flight video
+(gray-114 letterbox input, DFL CPU decode + NMS 0.45):
+
+| layout | highest conf | median conf | confidence levels |
+|---|---|---|---|
+| 9-output (logit cls) | 0.855 | 0.413 | 17 |
+| 9-output (sigmoid cls + score_sum) | 0.899 | 0.639 | 277 |
+| **6-output** | **0.985** | **0.705** | **373** |
+| PyTorch (float) reference | 0.993 | — | continuous |
+
+Two effects are visible:
+
+- **Confidence grid.** Quantizing `cls` in the logit domain (range stretched by
+  the deep negative background values) leaves only 17 discrete confidence values
+  above the threshold (0.629 / 0.644 / 0.669 / 0.765 / 0.855). The 6-output keeps
+  a continuous scale (373 levels).
+- **Top compression.** The 9-output compresses the top of the confidence range by
+  20-40% (probe frame 2640: PyTorch 0.983 -> RKNN 0.594); the 6-output stays
+  within ~0.02 (PyTorch 0.983 -> RKNN 0.974).
+
+<div align=center>
+  <img src="./model_comparison/yolov8_6out_measured.jpg" alt="Image">
+</div>
+
+NPU inference speed is unchanged: 23.78 ms/frame (6-output) vs 24.27 ms/frame
+(9-output), single core.
+
 
 ## 4. Convert to RKNN
 
