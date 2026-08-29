@@ -97,12 +97,35 @@ python export_onnx.py <model.pt> <model_6out.onnx> [imgsz] [opset]
 python export_onnx.py yolov8n.pt yolov8n_6out.onnx 640 17
 ```
 
-Then convert it to RKNN with `convert.py` exactly like the 9-output model. Example
-result of the exported 6-output `yolov8n` on `model/bus.jpg`:
+Then convert it to RKNN with `convert.py` exactly like the 9-output model (see
+[3.2](#32-quantization-notes-6-output-model) for the calibration-set requirements
+that the INT8 confidence depends on). Example result of the exported 6-output
+`yolov8n` on `model/bus.jpg`:
 
 <div align=center>
   <img src="./result_6out.png" alt="Image">
 </div>
+
+### 3.2 Quantization notes (6-output model)
+
+The 6-output layout only pays off if the INT8 calibration is done right:
+
+- **Calibration set must match the deployment preprocessing.** rknn-toolkit2
+  stretches the calibration images to the model input size directly (it does not
+  letterbox). If the deployment pre-processing letterboxes with gray-114 padding
+  while the calibration images are stretched, the model is quantized on a
+  different input distribution than the one it sees at inference and the
+  confidence can collapse (e.g. PyTorch 0.98 -> RKNN ~0). Fix: pre-letterbox the
+  calibration images to 640x640 with gray-114 padding so that the toolkit's
+  stretch becomes a no-op.
+- **Input convention.** Feed `uint8 [0, 255]` with `mean=0 / std=255` so the
+  normalization happens inside the model graph. Do not feed float `[0, 1]` with a
+  different mean/std.
+- **Calibration set composition.** Include high-confidence samples (PyTorch
+  conf >= 0.9). The top of the output quantization range is decided by the
+  calibration distribution; a handful of high-confidence samples will not move
+  the quantile. Keep the calibration domain the same as the deployment domain
+  (video frames vs still photos have different statistics).
 
 
 ## 4. Convert to RKNN
