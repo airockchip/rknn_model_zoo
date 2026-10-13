@@ -14,6 +14,7 @@ CLASSES = ['person']
 
 nmsThresh = 0.4
 objectThresh = 0.5
+image_size = 640
 
 def letterbox_resize(image, size, bg_color):
     """
@@ -149,14 +150,44 @@ def process(out,keypoints,index,model_w,model_h,stride,scale_w=1,scale_h=1):
 
     return out
 
-pose_palette = np.array([[255, 128, 0], [255, 153, 51], [255, 178, 102], [230, 230, 0], [255, 153, 255],
-                         [153, 204, 255], [255, 102, 255], [255, 51, 255], [102, 178, 255], [51, 153, 255],
-                         [255, 153, 153], [255, 102, 102], [255, 51, 51], [153, 255, 153], [102, 255, 102],
-                         [51, 255, 51], [0, 255, 0], [0, 0, 255], [255, 0, 0], [255, 255, 255]],dtype=np.uint8)
-kpt_color  = pose_palette[[16, 16, 16, 16, 16, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9]]
-skeleton = [[16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8], 
-            [7, 9], [8, 10], [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
-limb_color = pose_palette[[9, 9, 9, 9, 7, 7, 7, 0, 0, 0, 0, 0, 16, 16, 16, 16, 16, 16, 16]]
+def check_output_consistence(output: list):
+    try:
+        assert len(output) == 4, (
+            f"Expected 4 output tensors, got {len(output)}"
+        )
+        for i, tensor in enumerate(output):
+            assert len(tensor.shape) == 4, (
+                    f"Expected 4 axis shape tensor, got {tensor.shape}"
+            )
+
+            shape = tensor.shape
+
+            assert shape[0] == 1, (
+                    f"Supports only 1 batch size in output tensor, got {shape[0]}"
+            )
+
+            # Detections feature maps
+            if i < 3:
+                assert shape[1] == 65, (
+                    f"Second axis must match the value 65, got {shape[1]}."
+                )
+                assert shape[2] == shape[3], (
+                    f"Supports only equal height==width feature map, got {shape[2]} and {shape[3]} shapes"
+                )
+            # Keypoint feature map
+            else:
+                assert shape[2] == 3, (
+                    f"Expected each keypoint channel contains (x, y, conf) in keypoints tensor, got {shape[2]}"
+                ) 
+    except Exception as e:
+        print(f"Found Yolo Pose model output problem: {e}")
+        print(
+            (
+                "In general case: expected shape [(1, 65, X1, X1), (1, 65, X2, X2), (1, 65, X3, X3), (1, X4, 3, X5)]"
+                f", got {[result.shape for result in output]}"
+                "Make sure that converted model is from ultralytics_yolov8"
+            )
+        )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Yolov8 Pose Python Demo', add_help=True)
@@ -190,29 +221,33 @@ if __name__ == '__main__':
     # Set inputs
     img = cv2.imread('../model/bus.jpg')
 
-    letterbox_img, aspect_ratio, offset_x, offset_y = letterbox_resize(img, (640,640), 56)  # letterbox缩放
+    letterbox_img, aspect_ratio, offset_x, offset_y = letterbox_resize(img, (image_size, image_size), 56)  # letterbox缩放
     infer_img = letterbox_img[..., ::-1]  # BGR2RGB
-
+    infer_img = infer_img.reshape((1, *infer_img.shape)) # Makes 4 dim instead of 3
+    
     # Inference
     print('--> Running model')
     results = rknn.inference(inputs=[infer_img])
 
+    check_output_consistence(results)
+
     outputs=[]
     keypoints=results[3]
-    for x in results[:3]:
-        index,stride=0,0
-        if x.shape[2]==20:
-            stride=32
-            index=20*4*20*4+20*2*20*2
-        if x.shape[2]==40:
-            stride=16
-            index=20*4*20*4
-        if x.shape[2]==80:
-            stride=8
-            index=0
-        feature=x.reshape(1,65,-1)
-        output=process(feature,keypoints,index,x.shape[3],x.shape[2],stride)
-        outputs=outputs+output
+    for i, x in enumerate(results[:3]):
+        stride = int(image_size / x.shape[2])
+
+        if i == 0:
+            index = 0 # This is the first feature map so the start index is 0
+        elif i == 1:
+            index = results[i - 1].shape[2] * results[i - 1].shape[3] # index = previous_feature_map_height * previous_feature_map_width
+        elif i == 2:
+            index = (results[i - 2].shape[2] * results[i - 2].shape[3] +
+                     results[i - 1].shape[2] * results[i - 1].shape[3])
+
+        feature = x.reshape(1, 65, -1)
+        output = process(feature, keypoints, index,
+                            x.shape[3], x.shape[2], stride)
+        outputs += output
     predbox = NMS(outputs)
 
     for i in range(len(predbox)):
@@ -227,24 +262,15 @@ if __name__ == '__main__':
         title= CLASSES[classId] + "%.2f" % score
 
         cv2.putText(img, title, ptext, cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
-        keypoints =predbox[i].keypoint.reshape(-1, 3) #keypoint [x, y, conf]
+        keypoints =predbox[i].keypoint.reshape(-1, 3) # keypoint [x, y, conf]
         keypoints[...,0]=(keypoints[...,0]-offset_x)/aspect_ratio
         keypoints[...,1]=(keypoints[...,1]-offset_y)/aspect_ratio
 
-        for k, keypoint in enumerate(keypoints):
-            x, y, conf = keypoint
-            color_k = [int(x) for x in kpt_color[k]]
-            if x != 0 and y != 0:
-                cv2.circle(img, (int(x), int(y)), 5, color_k, -1, lineType=cv2.LINE_AA)
-        for k, sk in enumerate(skeleton):
-                pos1 = (int(keypoints[(sk[0] - 1), 0]), int(keypoints[(sk[0] - 1), 1]))
-                pos2 = (int(keypoints[(sk[1] - 1), 0]), int(keypoints[(sk[1] - 1), 1]))
+        for j, keypoint in enumerate(keypoints):
+            x, y, conf = int(keypoint[0]), int(keypoint[1]), keypoint[2]
+            cv2.circle(img, (x, y), 3, (0, 0, 255), -1)
+            # cv2.putText(img, str(f"{j}-th: {conf:.2f}"), (x + 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
-                conf1 = keypoints[(sk[0] - 1), 2]
-                conf2 = keypoints[(sk[1] - 1), 2]
-                if pos1[0] == 0 or pos1[1] == 0 or pos2[0] == 0 or pos2[1] == 0:
-                    continue
-                cv2.line(img, pos1, pos2, [int(x) for x in limb_color[k]], thickness=2, lineType=cv2.LINE_AA)
     cv2.imwrite("./result.jpg", img)
     print("save image in ./result.jpg")
     # Release
