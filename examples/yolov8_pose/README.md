@@ -58,10 +58,15 @@ cd model
 cd python
 python convert.py <onnx_model> <TARGET_PLATFORM> <dtype(optional)> <output_rknn_path(optional)>
 
-# such as: 
-python convert.py ../model/yolov8n-pose.onnx rk3588
+# such as for float model: 
+python convert.py ../model/yolov8n-pose.onnx rk3588 fp
 # output model will be saved as ../model/yolov8n-pose.rknn
 # Currently the C code demo only supports 8-bit quantization
+
+# for hybrid-quantization-8 bit model, must convet by 2 steps
+python convert.py ../model/yolov8n-pose.onnx rk3588 i8 1
+python convert.py ../model/yolov8n-pose.onnx rk3588 i8 2
+  
 ```
 
 *Description:*
@@ -69,6 +74,7 @@ python convert.py ../model/yolov8n-pose.onnx rk3588
 - `<onnx_model>`: Specify ONNX model path.
 - `<TARGET_PLATFORM>`: Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
 - `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `i8`.
+- `<quantization-step>(optional)`: Specify hybrid-quantization step for the RKNN model.  
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model with name `yolov8n-pose.rknn`
 
 
@@ -168,7 +174,7 @@ cd ../../
 
 - `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
     ```sh
-    export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf
+    export GCC_COMPILER=~/opt/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf
     ```
 - `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
 - `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 

@@ -48,7 +48,13 @@ if __name__ == '__main__':
 
     # Load model
     print('--> Loading model')
-    ret = rknn.load_onnx(model=model_path)
+    if 'decoder' in model_path:
+        ret = rknn.load_onnx(model=model_path, 
+                            inputs=['attn', 'output_padding_mask', 'prior_means', 'prior_log_variances',
+                            '780'],
+                            input_size_list=[[1,1,400,200], [1,1,400],[1,200,192], [1,200,192], [1,192,400]])
+    else:
+        ret = rknn.load_onnx(model=model_path)
     if ret != 0:
         print('Load model failed!')
         exit(ret)

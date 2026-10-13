@@ -22,6 +22,9 @@
 #define ATTN_SIZE 1 * 1 * PREDICTED_LENGTHS_MAX *MAX_LENGTH
 #define OUTPUT_PADDING_MASK_SIZE 1 * 1 * PREDICTED_LENGTHS_MAX
 
+#define RANDOM_NORMAL_SIZE 1 * 192 * PREDICTED_LENGTHS_MAX
+#define RANDOM_NORMAL_SEED 42
+
 void preprocess_input(const char *text, std::map<char, int> vocab, int vocab_size, int max_length, std::vector<int64_t> &input_id, std::vector<int64_t> &attention_mask);
 void read_vocab(std::map<char, int> &vocab);
 void middle_process(std::vector<float> log_duration, std::vector<float> input_padding_mask, std::vector<float> &attn, std::vector<float> &output_padding_mask, int &predicted_lengths_max_real);

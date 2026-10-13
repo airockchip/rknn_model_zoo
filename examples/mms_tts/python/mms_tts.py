@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from rknn.api import RKNN
 import argparse
 import onnxruntime
@@ -8,6 +9,9 @@ import torch.nn as nn
 onnxruntime.set_default_logger_severity(3)
 
 MAX_LENGTH = 200
+
+# fixed seed of the decoder 'randn_like' input, shared with the C++ demo
+RANDOM_NORMAL_SEED = 42
 
 vocab = {' ': 19, "'": 1, '-': 14, '0': 23, '1': 15, '2': 28, '3': 11, '4': 27, '5': 35, '6': 36, '_': 30, 
         'a': 26, 'b': 24, 'c': 12, 'd': 5, 'e': 7, 'f': 20, 'g': 37, 'h': 6, 'i': 18, 'j': 16, 'k': 0, 'l': 21, 'm': 17, 
@@ -54,11 +58,36 @@ def run_encoder(encoder_model, input_ids_array, attention_mask_array):
 
     return log_duration, input_padding_mask, prior_means, prior_log_variances
 
-def run_decoder(decoder_model, attn, output_padding_mask, prior_means, prior_log_variances):
+def generate_random_normal(shape, seed=RANDOM_NORMAL_SEED):
+    # fixed-seed standard normal generator (mean=0, scale=1): 32-bit LCG plus
+    # Box-Muller transform. Must stay identical to generate_random_normal() in
+    # cpp/rknpu2/mms_tts.cc so both demo feed the same 'randn_like' input.
+    n = 1
+    for s in shape:
+        n *= s
+    state = seed & 0xFFFFFFFF
+    dst = [0.0] * n
+    for i in range(0, n, 2):
+        state = (state * 1664525 + 1013904223) & 0xFFFFFFFF
+        u1 = state / 4294967296.0
+        state = (state * 1664525 + 1013904223) & 0xFFFFFFFF
+        u2 = state / 4294967296.0
+        r = math.sqrt(-2.0 * math.log(u1))
+        dst[i] = r * math.cos(2.0 * math.pi * u2)
+        if i + 1 < n:
+            dst[i + 1] = r * math.sin(2.0 * math.pi * u2)
+    return np.array(dst, dtype=np.float32).reshape(shape)
+
+def run_decoder(decoder_model, attn, output_padding_mask, prior_means, prior_log_variances, random_normal):
     if 'rknn' in str(type(decoder_model)):
-        waveform  = decoder_model.inference(inputs=[attn, output_padding_mask, prior_means, prior_log_variances])[0]
+        waveform  = decoder_model.inference(inputs=[attn, output_padding_mask, prior_means, prior_log_variances, random_normal])[0]
     elif 'onnx' in str(type(decoder_model)):
-        waveform  = decoder_model.run(None, {"attn": attn, "output_padding_mask": output_padding_mask, "prior_means": prior_means, "prior_log_variances": prior_log_variances})[0]
+        # the modified decoder exposes the 'randn_like' tensor as an input named
+        # "780"; onnx exports that still sample it inside the model don't have it
+        feeds = {"attn": attn, "output_padding_mask": output_padding_mask, "prior_means": prior_means, "prior_log_variances": prior_log_variances}
+        if "780" in [i.name for i in decoder_model.get_inputs()]:
+            feeds["780"] = random_normal
+        waveform  = decoder_model.run(None, feeds)[0]
 
     return waveform
 
@@ -151,8 +180,12 @@ if __name__ == '__main__':
     # Middle process
     attn, output_padding_mask, predicted_lengths_max_real = middle_process(log_duration, input_padding_mask, MAX_LENGTH)
 
+    # the decoder model takes an extra 'randn_like' input [1, 192, MAX_LENGTH * 2];
+    # the fixed seed keeps the python and C++ inputs (and thus the wav) identical
+    random_normal = generate_random_normal((1, 192, MAX_LENGTH * 2), seed=RANDOM_NORMAL_SEED)
+
     # Decode
-    waveform = run_decoder(decoder_model, attn, output_padding_mask, prior_means, prior_log_variances)
+    waveform = run_decoder(decoder_model, attn, output_padding_mask, prior_means, prior_log_variances, random_normal)
 
     # Post process
     audio_save_path = "../output.wav"

@@ -50,9 +50,9 @@ Before using this script to compile C/C++ Demo, please specify the path of the c
 *(If the cross-compilation tool is already installed on your system, please ignore this step)*
 
 1. Different system architectures rely on different cross-compilation tools.The following are download links for cross-compilation tools recommended for different system architectures.：
-   - aarch64: https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/aarch64-linux-gnu/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz
+   - aarch64: https://developer.arm.com/-/cdn-downloads/permalink/legacy-linaro-gnu-toolchains/6.3-2017.05/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz
    - armhf: https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz?revision=e09a1c45-0ed3-4a8e-b06b-db3978fd8d56&rev=e09a1c450ed34a8eb06bdb3978fd8d56&hash=9C4F2E8255CB4D87EABF5769A2E65733
-   - armhf-uclibcgnueabihf(RV1103/RV1106): https://console.zbox.filez.com/l/H1fV9a (fetch code: rknn)
+   - armhf-uclibcgnueabihf(RV1103/RV1106): https://console.zbox.filez.com/l/c1cKaR (fetch code: rknn)
 2. Decompress the downloaded cross-compilation tool and remember the specific path, which will be used later during compilation.
 
 ### Compile C/C++ Demo
@@ -90,7 +90,7 @@ export GCC_COMPILER=<GCC_COMPILER_PATH>
     - `GCC_COMPILE_PATH` examples:
         - aarch64: ~/tools/cross_compiler/arm/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
         - armhf: ~/tools/cross_compiler/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf
-        - armhf-uclibcgnueabihf(RV1103/RV1106): ~/tools/cross_compiler/arm/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf
+        - armhf-uclibcgnueabihf(RV1103/RV1106): ~/tools/cross_compiler/arm/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf
 - `<TARGET_PLATFORM>`: Specify target platform. For example：`rk3588`. **Note: The target platforms currently supported by each model may be different, please refer to the `README.md` document in the specific model directory.**
 - `<ARCH>`: Specify the system architecture. To query the system architecture, refer to the following command: 
   ```shell

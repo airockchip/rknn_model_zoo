@@ -10,6 +10,7 @@ def parse_arg():
         print("Usage: python3 {} onnx_model_path [platform] [dtype(optional)] [output_rknn_path(optional)]".format(sys.argv[0]));
         print("       platform choose from [rk3562, rk3566, rk3568, rk3576, rk3588, rv1126b]")
         print("       dtype choose from [i8] for [rk3562, rk3566, rk3568, rk3576, rk3588, rv1126b]")
+        print("       hybrid-quant step choose from [1,2] for i8 for [rk3562, rk3566, rk3568, rk3576, rk3588, rv1126b]")
         exit(1)
 
     model_path = sys.argv[1]
@@ -26,15 +27,23 @@ def parse_arg():
         else:
             do_quant = False
 
-    if len(sys.argv) > 4:
-        output_path = sys.argv[4]
+    hybrid_step = 'hybrid-quant-step1'
+    if len(sys.argv) > 4 and do_quant:
+        step = sys.argv[4]
+        if step not in ['1', '2']:
+            print("ERROR: Invalid hybrid-quant step: {}".format(step))
+            exit(1)
+        hybrid_step = 'hybrid-quant-step1' if step == '1' else 'hybrid-quant-step2' 
+
+    if len(sys.argv) > 5:
+        output_path = sys.argv[5]
     else:
         output_path = DEFAULT_RKNN_PATH
 
-    return model_path, platform, do_quant, output_path
+    return model_path, platform, do_quant, output_path, hybrid_step
 
 if __name__ == '__main__':
-    model_path, platform, do_quant, output_path = parse_arg()
+    model_path, platform, do_quant, output_path, hybrid_step = parse_arg()
 
     # Create RKNN object
     rknn = RKNN(verbose=False)
@@ -47,11 +56,13 @@ if __name__ == '__main__':
     print('done')
 
     # Load model
+    ret = None 
     print('--> Loading model')
-    ret = rknn.load_onnx(model=model_path)
-    if ret != 0:
-        print('Load model failed!')
-        exit(ret)
+    if hybrid_step == 'hybrid-quant-step1' or do_quant == False:
+        ret = rknn.load_onnx(model=model_path)
+        if ret != 0:
+            print('Load model failed!')
+            exit(ret)
     print('done')
 
     # Build model
@@ -60,34 +71,37 @@ if __name__ == '__main__':
         ret = rknn.build(do_quantization=do_quant, dataset=DATASET_PATH, auto_hybrid_quant=True)
     else:
         if do_quant:
-            rknn.hybrid_quantization_step1(
-                dataset=DATASET_PATH,
-                proposal= False,
-                custom_hybrid=[['/model.22/cv4.0/cv4.0.0/act/Mul_output_0','/model.22/Concat_6_output_0'],
-                                ['/model.22/cv4.1/cv4.1.0/act/Mul_output_0','/model.22/Concat_6_output_0'],
+            if hybrid_step == 'hybrid-quant-step1':
+                rknn.hybrid_quantization_step1(
+                    dataset=DATASET_PATH,
+                    proposal= False,
+                    custom_hybrid=[['/model.22/cv4.0/cv4.0.0/act/Mul_output_0','/model.22/Concat_6_output_0'],
+                                    ['/model.22/cv4.1/cv4.1.0/act/Mul_output_0','/model.22/Concat_6_output_0'],
                                 ['/model.22/cv4.2/cv4.2.0/act/Mul_output_0','/model.22/Concat_6_output_0']]
-            )
-
-            model_name=os.path.basename(model_path).replace('.onnx','')
-            rknn.hybrid_quantization_step2(
-                model_input = model_name+".model",          # 表示第一步生成的模型文件
-                data_input= model_name+".data",             # 表示第一步生成的配置文件
-                model_quantization_cfg=model_name+".quantization.cfg"  # 表示第一步生成的量化配置文件
-            )
+                )
+            elif hybrid_step == 'hybrid-quant-step2':
+                model_name=os.path.basename(model_path).replace('.onnx','')
+                rknn.hybrid_quantization_step2(
+                    model_input  = model_name+".model",          # 表示第一步生成的模型文件
+                    data_input   = model_name+".data",             # 表示第一步生成的配置文件
+                    model_quantization_cfg=model_name+".quantization.cfg"  # 表示第一步生成的量化配置文件
+                )
         else:
             ret = rknn.build(do_quantization=do_quant, dataset=DATASET_PATH)
-    if ret != 0:
-        print('Build model failed!')
-        exit(ret)
+            if ret != 0:
+                print('Build model failed!')
+                exit(ret)
     print('done')
 
     # Export rknn model
     print('--> Export rknn model')
-    ret = rknn.export_rknn(output_path)
+    if do_quant and hybrid_step == 'hybrid-quant-step2':
+        ret = rknn.export_rknn(output_path)
+    elif do_quant == False:
+        ret = rknn.export_rknn(output_path)
     if ret != 0:
         print('Export rknn model failed!')
         exit(ret)
-    print("output_path:",output_path)
     print('done')
     # Release
     rknn.release()

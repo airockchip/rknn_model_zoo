@@ -58,7 +58,7 @@ fi
 if [[ -z ${GCC_COMPILER} ]];then
     if [[ ${TARGET_SOC} = "rv1106"  || ${TARGET_SOC} = "rv1103" ]];then
         echo "Please set GCC_COMPILER for $TARGET_SOC"
-        echo "such as export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf"
+        echo "such as export GCC_COMPILER=~/opt/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf"
         exit
     elif [[ ${TARGET_SOC} = "rv1109" || ${TARGET_SOC} = "rv1126" ]];then
         GCC_COMPILER=arm-linux-gnueabihf
@@ -75,7 +75,7 @@ if command -v ${CC} >/dev/null 2>&1; then
 else
     echo "${CC} is not available"
     echo "Please set GCC_COMPILER for $TARGET_SOC"
-    echo "such as export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf"
+    echo "such as export GCC_COMPILER=~/opt/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf"
     exit
 fi
 

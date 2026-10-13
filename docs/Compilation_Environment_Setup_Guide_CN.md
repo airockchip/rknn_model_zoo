@@ -50,9 +50,9 @@ export ANDROID_NDK_PATH=<android_ndk_path>
 *（如果系统中已经装有交叉编译工具，请忽略此步骤）*
 
 1. 不同的系统架构，依赖不同的交叉编译工具。下面给出具体系统架构建议使用的交叉编译工具下载链接：
-   - aarch64: https://releases.linaro.org/components/toolchain/binaries/6.3-2017.05/aarch64-linux-gnu/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz
+   - aarch64: https://developer.arm.com/-/cdn-downloads/permalink/legacy-linaro-gnu-toolchains/6.3-2017.05/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.xz
    - armhf: https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.03/binrel/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf.tar.xz?revision=e09a1c45-0ed3-4a8e-b06b-db3978fd8d56&rev=e09a1c450ed34a8eb06bdb3978fd8d56&hash=9C4F2E8255CB4D87EABF5769A2E65733
-   - armhf-uclibcgnueabihf(RV1103/RV1106): https://console.zbox.filez.com/l/H1fV9a (fetch code: rknn)
+   - armhf-uclibcgnueabihf(RV1103/RV1106): https://console.zbox.filez.com/l/c1cKaR (fetch code: rknn)
 2. 解压缩下载好的交叉编译工具，记住具体的路径，后面在编译时会用到该路径。
 
 ### 编译C/C++ Demo
@@ -90,7 +90,7 @@ export GCC_COMPILER=<GCC_COMPILER_PATH>
     - `GCC_COMPILE_PATH` 示例:
         - aarch64: ~/tools/cross_compiler/arm/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu
         - armhf: ~/tools/cross_compiler/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf
-        - armhf-uclibcgnueabihf(RV1103/RV1106): ~/tools/cross_compiler/arm/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf
+        - armhf-uclibcgnueabihf(RV1103/RV1106): ~/tools/cross_compiler/arm/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf
 - `<TARGET_PLATFORM>`: 指定目标平台。例如：`rk3588`。**注：每个模型当前支持的目标平台可能有所不同，请参考具体模型目录下的`README.md`文档。**
 - `<ARCH>`: 指定系统架构。可以在目标设备执行如下命令查询系统架构: 
   ```shell

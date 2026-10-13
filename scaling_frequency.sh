@@ -118,7 +118,7 @@ elif [ $chip_name == 'rv1126b' ]; then
     seting_strategy=8
     CPU_freq=1608000
     NPU_freq=950000000
-    DDR_freq=100000000
+    DDR_freq=1332000000
 else 
     echo "$chip_name not recognize"
     exit 1

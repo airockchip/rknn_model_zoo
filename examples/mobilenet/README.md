@@ -147,9 +147,9 @@ cd ../../
 *Description:*
 
 - `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
-  - For RV1106, RV1103, GCC_COMPILER version is `arm-rockchip830-linux-uclibcgnueabihf`
+  - For RV1106, RV1103, GCC_COMPILER version is `arm-rockchip831-linux-uclibcgnueabihf`
     ```sh
-    export GCC_COMPILER=~/opt/arm-rockchip830-linux-uclibcgnueabihf/bin/arm-rockchip830-linux-uclibcgnueabihf
+    export GCC_COMPILER=~/opt/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf
     ```
 - `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
 - `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 

@@ -99,218 +99,65 @@ static int loadLabelName(const char *locationFilename, char *label[]) {
     return 0;
 }
 
-static float CalculateOverlap(float xmin0, float ymin0, float xmax0, float ymax0, float xmin1, float ymin1, float xmax1,
-                              float ymax1) {
-    float w = fmax(0.f, fmin(xmax0, xmax1) - fmax(xmin0, xmin1) + 1.0);
-    float h = fmax(0.f, fmin(ymax0, ymax1) - fmax(ymin0, ymin1) + 1.0);
-    float i = w * h;
-    float u = (xmax0 - xmin0 + 1.0) * (ymax0 - ymin0 + 1.0) + (xmax1 - xmin1 + 1.0) * (ymax1 - ymin1 + 1.0) - i;
-    return u <= 0.f ? 0.f : (i / u);
+static inline void GetCovarianceMatrix(float Box_w,float Box_h, float Box_angle, float &A, float &B, float &C)
+{
+    float a = Box_w;
+    float b = Box_h;
+    float c = Box_angle;
+
+    float cos1 = cos(c);
+    float sin1 = sin(c);
+    float cos2 = pow(cos1, 2);
+    float sin2 = pow(sin1, 2);
+
+    A = a * cos2 + b * sin2;
+    B = a * sin2 + b * cos2;
+    C = (a - b) * cos1 * sin1;
 }
 
+static inline float probiou(float obb1_x,float obb1_y,float obb1_w,float obb1_h,float obb1_angle,
+    float obb2_x,float obb2_y,float obb2_w,float obb2_h,float obb2_angle)
+{
+    float eps = 1e-7;
 
-// box转化为角点
-std::vector<float> rbbox_to_corners(const std::vector<float> &rbbox) {
-    // generate clockwise corners and rotate it clockwise
-    // 顺时针方向返回角点位置
-    float cx = rbbox[0] + rbbox[2] / 2;
-    float cy = rbbox[1] + rbbox[3] / 2;
-    float x_d = rbbox[2];
-    float y_d = rbbox[3];
-    float angle = rbbox[4];
-    float a_cos = std::cos(angle);
-    float a_sin = std::sin(angle);
-    std::vector<float> corners(8, 0.0);
-    float corners_x[4] = {-x_d / 2, -x_d / 2, x_d / 2, x_d / 2};
-    float corners_y[4] = {-y_d / 2, y_d / 2, y_d / 2, -y_d / 2};
-    for (int i = 0; i < 4; ++i) {
-        corners[2 * i] = a_cos * corners_x[i] - a_sin * corners_y[i] + cx;
-        corners[2 * i + 1] = a_sin * corners_x[i] + a_cos * corners_y[i] + cy;
+    float x1 = obb1_x;
+    float y1 = obb1_y;
+    float x2 = obb2_x;
+    float y2 = obb2_y;
+    float a1 = 0, b1 = 0, c1 = 0;
+    GetCovarianceMatrix(obb1_w, obb1_h, obb1_angle, a1, b1, c1);
+
+    float a2 = 0, b2 = 0, c2 = 0;
+    GetCovarianceMatrix(obb2_w, obb2_h, obb2_angle, a2, b2, c2);
+
+    float t1 = (((a1 + a2) * pow((y1 - y2), 2) + (b1 + b2) * pow((x1 - x2), 2)) / ((a1 + a2) * (b1 + b2) - pow((c1 + c2), 2) + eps)) * 0.25;
+    float t2 = (((c1 + c2) * (x2 - x1) * (y1 - y2)) / ((a1 + a2) * (b1 + b2) - pow((c1 + c2), 2) + eps)) * 0.5;
+
+    float temp1 = (a1 * b1 - pow(c1, 2));
+    temp1 = temp1 > 0 ? temp1 : 0;
+
+    float temp2 = (a2 * b2 - pow(c2, 2));
+    temp2 = temp2 > 0 ? temp2 : 0;
+
+    float t3 = log((((a1 + a2) * (b1 + b2) - pow((c1 + c2), 2)) / (4 * sqrt((temp1 * temp2)) + eps) + eps)) * 0.5;
+
+    float bd = 0;
+    if ((t1 + t2 + t3) > 100)
+    {
+        bd = 100;
     }
-    return corners;
+    else if ((t1 + t2 + t3) < eps)
+    {
+        bd = eps;
+    }
+    else
+    {
+        bd = t1 + t2 + t3;
+    }
+
+    float hd = sqrt((1.0 - exp(-bd) + eps));
+    return 1 - hd;
 }
-
-// 检测点是否在四边形内的函数
-bool point_in_quadrilateral(float pt_x, float pt_y, const std::vector<float> &corners) {
-    float ab0 = corners[2] - corners[0];
-    float ab1 = corners[3] - corners[1];
-
-    float ad0 = corners[6] - corners[0];
-    float ad1 = corners[7] - corners[1];
-
-    float ap0 = pt_x - corners[0];
-    float ap1 = pt_y - corners[1];
-
-    float abab = ab0 * ab0 + ab1 * ab1;
-    float abap = ab0 * ap0 + ab1 * ap1;
-    float adad = ad0 * ad0 + ad1 * ad1;
-    float adap = ad0 * ap0 + ad1 * ap1;
-
-    return abab >= abap && abap >= 0 && adad >= adap && adap >= 0;
-}
-
-
-// 检测线段相交并计算交点的函数
-int line_segment_intersection(const std::vector<float> &pts1, const std::vector<float> &pts2, int i, int j
-                              , bool &ret1, float &point_x, float &point_y) {
-    // pts1, pts2 分别为 corners
-    // i j 分别表示第几个交点，取其和其后一个点构成的线段
-    // 返回 tuple(bool, pts) bool=true pts为交点
-    std::vector<float> A(2), B(2), C(2), D(2), ret(2);
-    A[0] = pts1[2 * i];
-    A[1] = pts1[2 * i + 1];
-
-    B[0] = pts1[2 * ((i + 1) % 4)];
-    B[1] = pts1[2 * ((i + 1) % 4) + 1];
-
-    C[0] = pts2[2 * j];
-    C[1] = pts2[2 * j + 1];
-
-    D[0] = pts2[2 * ((j + 1) % 4)];
-    D[1] = pts2[2 * ((j + 1) % 4) + 1];
-
-    float BA0 = B[0] - A[0];
-    float BA1 = B[1] - A[1];
-    float DA0 = D[0] - A[0];
-    float CA0 = C[0] - A[0];
-    float DA1 = D[1] - A[1];
-    float CA1 = C[1] - A[1];
-
-    // 叉乘判断方向
-    bool acd = DA1 * CA0 > CA1 * DA0;
-    bool bcd = (D[1] - B[1]) * (C[0] - B[0]) > (C[1] - B[1]) * (D[0] - B[0]);
-
-    if (acd != bcd) {
-        bool abc = CA1 * BA0 > BA1 * CA0;
-        bool abd = DA1 * BA0 > BA1 * DA0;
-
-        // 判断方向
-        if (abc != abd) {
-            float DC0 = D[0] - C[0];
-            float DC1 = D[1] - C[1];
-            float ABBA = A[0] * B[1] - B[0] * A[1];
-            float CDDC = C[0] * D[1] - D[0] * C[1];
-            float DH = BA1 * DC0 - BA0 * DC1;
-            float Dx = ABBA * DC0 - BA0 * CDDC;
-            float Dy = ABBA * DC1 - BA1 * CDDC;
-            ret[0] = Dx / DH;
-            ret[1] = Dy / DH;
-            ret1 = true;
-            point_x = ret[0] ;
-            point_y = ret[1] ;
-            return 0;
-        }
-    }
-    ret1 = false;
-    point_x = ret[0] ;
-    point_y = ret[1] ;
-    return 0;
-}
-
-
-
-// 比较函数，用于排序
-bool compare_points(const std::vector<float> &pt1, const std::vector<float> &pt2, const std::vector<float> &center) {
-    float vx1 = pt1[0] - center[0];
-    float vy1 = pt1[1] - center[1];
-    float vx2 = pt2[0] - center[0];
-    float vy2 = pt2[1] - center[1];
-    float d1 = std::sqrt(vx1 * vx1 + vy1 * vy1);
-    float d2 = std::sqrt(vx2 * vx2 + vy2 * vy2);
-    vx1 /= d1;
-    vy1 /= d1;
-    vx2 /= d2;
-    vy2 /= d2;
-    if (vy1 < 0) {
-        vx1 = -2 - vx1;
-    }
-    if (vy2 < 0) {
-        vx2 = -2 - vx2;
-    }
-    return vx1 < vx2;
-}
-
-// 对凸多边形的顶点进行排序
-void sort_vertex_in_convex_polygon(std::vector<std::vector<float>> &int_pts, int num_of_inter) {
-    if (num_of_inter > 0) {
-        std::vector<float> center(2, 0);
-        for (int i = 0; i < num_of_inter; ++i) {
-            center[0] += int_pts[i][0];
-            center[1] += int_pts[i][1];
-        }
-        center[0] /= num_of_inter;
-        center[1] /= num_of_inter;
-        std::sort(int_pts.begin(), int_pts.end(), [&center](const std::vector<float> &pt1, const std::vector<float> &pt2) {
-            return compare_points(pt1, pt2, center);
-        });
-    }
-}
-
-// 计算三角形的面积
-float triangle_area(const std::vector<float> &a, const std::vector<float> &b, const std::vector<float> &c) {
-    return std::abs((a[0] - c[0]) * (b[1] - c[1]) - (a[1] - c[1]) * (b[0] - c[0])) / 2.0;
-}
-
-// 计算多边形转化为多个三角形面积之和
-float polygon_area(const std::vector<std::vector<float>> &int_pts, int num_of_inter) {
-    float area_val = 0.0;
-    for (int i = 1; i < num_of_inter - 1; ++i) {
-        area_val += triangle_area(int_pts[0], int_pts[i], int_pts[i + 1]);
-    }
-    return area_val;
-}
-
-float Cal_IOU(float x1, float y1, float w1, float h1, float angle1, float x2, float y2, float w2, float h2, float angle2) {
-    // 定义两个box的数据
-    std::vector<float> rbbox1 = {x1, y1, w1, h1, angle1};
-    std::vector<float> rbbox2 = {x2, y2, w2, h2, angle2};
-
-    // 调用函数得到角点数据
-    std::vector<float> corners1 = rbbox_to_corners(rbbox1);
-    std::vector<float> corners2 = rbbox_to_corners(rbbox2);
-
-    std::vector<std::vector<float>> pts;
-    int num_pts = 0;
-    // 检测角点是否在对方的四边形内
-    for (int i = 0; i < 4; ++i) {
-        float point_x = corners1[2 * i];
-        float point_y = corners1[2 * i + 1];
-        if (point_in_quadrilateral(point_x, point_y, corners2)) {
-            num_pts++;
-            pts.push_back({point_x, point_y});
-        }
-    }
-    for (int i = 0; i < 4; ++i) {
-        float point_x = corners2[2 * i];
-        float point_y = corners2[2 * i + 1];
-        if (point_in_quadrilateral(point_x, point_y, corners1)) {
-            num_pts++;
-            pts.push_back({point_x, point_y});
-        }
-    }
-
-
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            float point_x, point_y;
-            bool ret;
-            line_segment_intersection(corners1, corners2, i, j, ret, point_x, point_y);
-            if (ret) {
-                num_pts++;
-                pts.push_back({point_x, point_y});
-            }
-        }
-    }
-
-    sort_vertex_in_convex_polygon(pts, num_pts);
-
-    float polygon_area_val = polygon_area(pts, num_pts);
-
-    // 计算 area_union
-    float area_union = rbbox1[2] * rbbox1[3] + rbbox2[2] * rbbox2[3] - polygon_area_val;
-    return polygon_area_val / area_union;
-}
-
 
 static int nms(int validCount, std::vector<float> &outputLocations, std::vector<int> classIds, std::vector<int> &order,
                int filterId, float threshold) {
@@ -335,8 +182,8 @@ static int nms(int validCount, std::vector<float> &outputLocations, std::vector<
             float w1 = outputLocations[m * 5 + 2];
             float h1 = outputLocations[m * 5 + 3];
             float angle1 = outputLocations[n * 5 + 4];
-
-            float iou = Cal_IOU(xmin0, ymin0, w0, h0, angle0, xmin1, ymin1, w1, h1, angle1);
+            
+            float iou = probiou(xmin0, ymin0, w0, h0, angle0, xmin1, ymin1, w1, h1, angle1);
             if (iou > threshold) {
                 order[j] = -1;
             }

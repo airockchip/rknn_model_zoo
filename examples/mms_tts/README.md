@@ -74,6 +74,13 @@ python convert.py ../model/mms_tts_eng_decoder_200.onnx rk3588
 - `<dtype>(optional)`: Specify as `i8` or `fp`. `i8` for doing quantization, `fp` for no quantization. Default is `fp`.
 - `<output_rknn_path>(optional)`: Specify save path for the RKNN model, default save in the same directory as ONNX model.
 
+**Note: the extra 'randn_like' input of the decoder model**
+
+The original MMS-TTS decoder samples the prior latents with an internal `RandomNormalLike` op (`prior_means + randn * exp(prior_log_variances) * noise_scale`). The NPU runtime cannot generate random data, so this tensor is exposed as an explicit input when converting to RKNN: the decoder takes a 5th input named `"780"`, shape `[1, 192, 400]`, a standard normal distribution sample (mean=0, scale=1).
+
+Both demos generate this input with a **fixed seed (42)**, using the same deterministic generator (32-bit LCG + Box-Muller) implemented in `python/mms_tts.py` and `cpp/rknpu2/mms_tts.cc`. This keeps the python and C++ inputs identical and makes the generated wav reproducible across runs. Changing the seed only changes the voice variation of the synthesized speech.
+
+
 
 
 ## 5. Python Demo

@@ -15,11 +15,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <math.h>
 #include "mms_tts.h"
 #include "file_utils.h"
 #include <vector>
 #include "process.h"
+
+// fixed-seed standard normal generator (mean=0, scale=1): 32-bit LCG plus
+// Box-Muller transform. Must stay identical to generate_random_normal() in
+// python/mms_tts.py so both demos feed the same 'randn_like' input.
+static void generate_random_normal(float *dst, int n, unsigned int seed)
+{
+    unsigned int state = seed;
+    for (int i = 0; i < n; i += 2)
+    {
+        state = state * 1664525u + 1013904223u;
+        double u1 = (double)state / 4294967296.0;
+        state = state * 1664525u + 1013904223u;
+        double u2 = (double)state / 4294967296.0;
+        double r = sqrt(-2.0 * log(u1));
+        dst[i] = (float)(r * cos(2.0 * M_PI * u2));
+        if (i + 1 < n)
+        {
+            dst[i + 1] = (float)(r * sin(2.0 * M_PI * u2));
+        }
+    }
+}
 
 static void dump_tensor_attr(rknn_tensor_attr *attr)
 {
@@ -206,7 +228,7 @@ int inference_decoder_model(rknn_app_context_t *app_ctx, std::vector<float> attn
                             std::vector<float> prior_means, std::vector<float> prior_log_variances, std::vector<float> &output_wav_data)
 {
     int ret;
-    int n_input = 4;
+    int n_input = 5;
     int n_output = 1;
     rknn_input inputs[n_input];
     rknn_output outputs[n_output];
@@ -239,6 +261,14 @@ int inference_decoder_model(rknn_app_context_t *app_ctx, std::vector<float> attn
     inputs[3].size = PRIOR_LOG_VARIANCES_SIZE * sizeof(float);
     inputs[3].buf = (float *)malloc(inputs[3].size);
     memcpy(inputs[3].buf, prior_log_variances.data(), inputs[3].size);
+
+    // extra 'randn_like' input ("780") of the modified decoder, filled with a
+    // fixed-seed N(0, 1) sample so the output is reproducible
+    inputs[4].index = 4;
+    inputs[4].type = RKNN_TENSOR_FLOAT32;
+    inputs[4].size = RANDOM_NORMAL_SIZE * sizeof(float);
+    inputs[4].buf = (float *)malloc(inputs[4].size);
+    generate_random_normal((float *)inputs[4].buf, RANDOM_NORMAL_SIZE, RANDOM_NORMAL_SEED);
 
     ret = rknn_inputs_set(app_ctx->rknn_ctx, n_input, inputs);
     if (ret < 0)

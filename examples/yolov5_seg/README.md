@@ -31,7 +31,7 @@ https://github.com/airockchip/yolov5
 
 ## 2. Current Support Platform
 
-RK3562, RK3566, RK3568, RK3576, RK3588, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
+RK3562, RK3566, RK3568, RK3576, RK3588, RV1103, RV1106, RV1126B, RV1109, RV1126, RK1808, RK3399PRO
 
 
 ## 3. Pretrained Model
@@ -106,7 +106,7 @@ python yolov5_seg.py --model_path <rknn_model> --target <TARGET_PLATFORM> --anno
 
 
 ## 6. Android Demo
-**Note: RK1808, RV1109, RV1126 does not support Android.**
+**Note: RK1808, RV1109, RV1126, RV1103, RV1106 does not support Android.**
 
 #### 6.1 Compile and Build
 
@@ -177,11 +177,17 @@ cd ../../
 
 # such as 
 ./build-linux.sh -t rk3588 -a aarch64 -d yolov5_seg
+# such as 
+./build-linux.sh -t rv1106 -a armhf -d yolov5_seg
 ```
 
 *Description:*
 
 - `<GCC_COMPILER_PATH>`: Specified as GCC_COMPILER path.
+  - For RV1106, RV1103, GCC_COMPILER version is `arm-rockchip831-linux-uclibcgnueabihf`
+    ```sh
+    export GCC_COMPILER=~/opt/arm-rockchip831-linux-uclibcgnueabihf/bin/arm-rockchip831-linux-uclibcgnueabihf
+    ```
 - `<TARGET_PLATFORM>` : Specify NPU platform name. Support Platform refer [here](#2-current-support-platform).
 - `<ARCH>`: Specify device system architecture. To query device architecture, refer to the following command: 
   
@@ -209,6 +215,12 @@ cd /data/rknn_yolov5_seg_demo
 export LD_LIBRARY_PATH=./lib
 ./rknn_yolov5_seg_demo model/yolov5_seg.rknn model/bus.jpg
 ```
+
+- RV1106/1103 LD_LIBRARY_PATH must specify as the absolute path. Such as 
+
+  ```sh
+  export LD_LIBRARY_PATH=/data/rknn_yolov5_seg_demo/lib
+  ```
 
 - After running, the result was saved as `out.png`. To check the result on host PC, pull back result referring to the following command: 
 

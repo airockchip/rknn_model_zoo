@@ -48,17 +48,6 @@ def letterbox_resize(image, size, bg_color):
     result_image[offset_y:offset_y + new_height, offset_x:offset_x + new_width] = image
     return result_image, aspect_ratio, offset_x, offset_y
 
-
-class DetectBox:
-    def __init__(self, classId, score, xmin, ymin, xmax, ymax,angle):
-        self.classId = classId
-        self.score = score
-        self.xmin = xmin
-        self.ymin = ymin
-        self.xmax = xmax
-        self.ymax = ymax
-        self.angle=angle
-
 def rotate_rectangle(x1, y1, x2, y2, a):
     # 计算中心点坐标
     cx = (x1 + x2) / 2
@@ -80,51 +69,130 @@ def rotate_rectangle(x1, y1, x2, y2, a):
     y4_new =int( (x2 - cx) * math.sin(a) + (y1 - cy) * math.cos(a) + cy)
     return [(x1_new, y1_new), (x3_new, y3_new),(x2_new, y2_new) ,(x4_new, y4_new)]
 
+import math
 
+class DetectBox:
+    def __init__(self, classId, score, xmin, ymin, xmax, ymax, angle):
+        self.classId = classId
+        self.score = score
+        self.xmin = xmin
+        self.ymin = ymin
+        self.xmax = xmax
+        self.ymax = ymax
+        self.angle = angle
 
-def intersection(g, p):
-    g=np.asarray(g)
-    p=np.asarray(p)
-    g = Polygon(g[:8].reshape((4, 2)))
-    p = Polygon(p[:8].reshape((4, 2)))
-    if not g.is_valid or not p.is_valid:
-        return 0
-    inter = Polygon(g).intersection(Polygon(p)).area
-    union = g.area + p.area - inter
-    if union == 0:
-        return 0
+def get_covariance_matrix(box_w, box_h, box_angle):
+    """
+    根据 box 宽、高和旋转角度计算协方差矩阵参数 A, B, C
+    对应C代码：
+        float cos1 = cos(c);
+        float sin1 = sin(c);
+        float cos2 = pow(cos1, 2);
+        float sin2 = pow(sin1, 2);
+        A = a * cos2 + b * sin2;
+        B = a * sin2 + b * cos2;
+        C = (a - b) * cos1 * sin1;
+    """
+    cos_val = math.cos(box_angle)
+    sin_val = math.sin(box_angle)
+    cos2 = cos_val ** 2
+    sin2 = sin_val ** 2
+    A = box_w * cos2 + box_h * sin2
+    B = box_w * sin2 + box_h * cos2
+    C = (box_w - box_h) * cos_val * sin_val
+    return A, B, C
+
+def probiou(obb1, obb2):
+    """
+    计算两个旋转框之间的 PIoU 值。
+    
+    输入参数：
+        obb: 元组 (cx, cy, w, h, angle)
+              其中 (cx, cy) 为中心坐标，w, h 为宽高，angle 为旋转角（弧度制）。
+              
+    算法逻辑与 C 实现对应：
+        - 根据宽、高和角度计算协方差矩阵参数 A, B, C
+        - 计算 t1, t2, t3，然后对 t1+t2+t3 进行上下限约束
+        - 计算 hd = sqrt(1 - exp(-bd) + eps) 并返回 1 - hd
+    """
+    eps = 1e-7
+    x1, y1, w1, h1, angle1 = obb1
+    x2, y2, w2, h2, angle2 = obb2
+
+    A1, B1, C1 = get_covariance_matrix(w1, h1, angle1)
+    A2, B2, C2 = get_covariance_matrix(w2, h2, angle2)
+
+    # 共同分母，避免除零
+    denom = (A1 + A2) * (B1 + B2) - (C1 + C2) ** 2 + eps
+
+    t1 = (((A1 + A2) * ((y1 - y2) ** 2) + (B1 + B2) * ((x1 - x2) ** 2)) / denom) * 0.25
+    t2 = (((C1 + C2) * (x2 - x1) * (y1 - y2)) / denom) * 0.5
+
+    temp1 = A1 * B1 - C1 ** 2
+    temp1 = temp1 if temp1 > 0 else 0
+    temp2 = A2 * B2 - C2 ** 2
+    temp2 = temp2 if temp2 > 0 else 0
+
+    t3 = math.log((( (A1 + A2) * (B1 + B2) - (C1 + C2) ** 2) / (4 * math.sqrt(temp1 * temp2) + eps) + eps)) * 0.5
+
+    s = t1 + t2 + t3
+    if s > 100:
+        bd = 100
+    elif s < eps:
+        bd = eps
     else:
-        return inter/union
+        bd = s
+
+    hd = math.sqrt(1.0 - math.exp(-bd) + eps)
+    return 1.0 - hd
 
 def NMS(detectResult):
-    predBoxs = []
+    """
+    采用 PIoU 来计算重叠率，对同一类别的检测框进行非极大值抑制（NMS）。
+    
+    参数：
+        detectResult: DetectBox 对象列表，每个对象包含 xmin, ymin, xmax, ymax, angle, score, classId 等信息。    
+    算法：
+        1. 根据 score 降序排列检测框。
+        2. 将 (xmin, ymin, xmax, ymax) 转换为中心坐标及宽高 (cx, cy, w, h)。
+        3. 使用 probiou 计算两个框之间的 PIoU 值，并对超过阈值的框进行抑制。
+    """
+    # 按 score 降序排序
+    sorted_boxes = sorted(detectResult, key=lambda x: x.score, reverse=True)
+    kept = []
+    for i in range(len(sorted_boxes)):
+        box_i = sorted_boxes[i]
+        if box_i.classId == -1:
+            continue
 
-    sort_detectboxs = sorted(detectResult, key=lambda x: x.score, reverse=True)
-    for i in range(len(sort_detectboxs)):
-        xmin1 = sort_detectboxs[i].xmin
-        ymin1 = sort_detectboxs[i].ymin
-        xmax1 = sort_detectboxs[i].xmax
-        ymax1 = sort_detectboxs[i].ymax
-        classId = sort_detectboxs[i].classId
-        angle = sort_detectboxs[i].angle
-        p1=rotate_rectangle(xmin1, ymin1, xmax1, ymax1, angle)
-        p1=np.array(p1).reshape(-1)
-        
-        if sort_detectboxs[i].classId != -1:
-            predBoxs.append(sort_detectboxs[i])
-            for j in range(i + 1, len(sort_detectboxs), 1):
-                if classId == sort_detectboxs[j].classId:
-                    xmin2 = sort_detectboxs[j].xmin
-                    ymin2 = sort_detectboxs[j].ymin
-                    xmax2 = sort_detectboxs[j].xmax
-                    ymax2 = sort_detectboxs[j].ymax
-                    angle2 = sort_detectboxs[j].angle
-                    p2=rotate_rectangle(xmin2, ymin2, xmax2, ymax2, angle2)
-                    p2=np.array(p2).reshape(-1)
-                    iou=intersection(p1, p2)
-                    if iou > nmsThresh:
-                        sort_detectboxs[j].classId = -1
-    return predBoxs
+        # 将 (xmin, ymin, xmax, ymax) 转换为 (cx, cy, w, h)
+        cx_i = (box_i.xmin + box_i.xmax) / 2.0
+        cy_i = (box_i.ymin + box_i.ymax) / 2.0
+        w_i = box_i.xmax - box_i.xmin
+        h_i = box_i.ymax - box_i.ymin
+
+        # 构成当前框的参数元组
+        obb_i = (cx_i, cy_i, w_i, h_i, box_i.angle)
+        kept.append(box_i)
+
+        for j in range(i + 1, len(sorted_boxes)):
+            box_j = sorted_boxes[j]
+            # 只处理同一类别且未被抑制的框
+            if box_j.classId == -1 or box_i.classId != box_j.classId:
+                continue
+
+            cx_j = (box_j.xmin + box_j.xmax) / 2.0
+            cy_j = (box_j.ymin + box_j.ymax) / 2.0
+            w_j = box_j.xmax - box_j.xmin
+            h_j = box_j.ymax - box_j.ymin
+
+            obb_j = (cx_j, cy_j, w_j, h_j, box_j.angle)
+            iou_val = probiou(obb_i, obb_j)
+            if iou_val > nmsThresh:
+                # 使用 -1 作为标记表示该框已被抑制
+                box_j.classId = -1
+
+    return kept
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
