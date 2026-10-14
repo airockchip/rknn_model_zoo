@@ -194,7 +194,7 @@ int inference_yolov5_model(rknn_app_context_t *app_ctx, image_buffer_t *img, obj
     if (ret < 0)
     {
         printf("convert_image_with_letterbox fail! ret=%d\n", ret);
-        return -1;
+        goto out;
     }
 
     // Set Input Data
@@ -208,7 +208,7 @@ int inference_yolov5_model(rknn_app_context_t *app_ctx, image_buffer_t *img, obj
     if (ret < 0)
     {
         printf("rknn_input_set fail! ret=%d\n", ret);
-        return -1;
+        goto out;
     }
 
     // Run
@@ -217,7 +217,7 @@ int inference_yolov5_model(rknn_app_context_t *app_ctx, image_buffer_t *img, obj
     if (ret < 0)
     {
         printf("rknn_run fail! ret=%d\n", ret);
-        return -1;
+        goto out;
     }
 
     // Get Output
